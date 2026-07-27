@@ -1,0 +1,2241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Dashboard · Evan</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%234F46E5'/><stop offset='100%25' stop-color='%233B82F6'/></linearGradient></defs><rect width='32' height='32' rx='7' fill='url(%23g)'/><text x='16' y='23' text-anchor='middle' font-family='Inter,sans-serif' font-size='20' font-weight='800' fill='%23fff'>D</text></svg>">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js">
+  </script>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text2: #64748b;
+      --text3: #94a3b8;
+      --border: #e2e8f0;
+      --blue: #4F46E5;
+      --cyan: #06B6D4;
+      --green: #10B981;
+      --orange: #F97316;
+      --r: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-lg: 0 4px 12px rgba(0,0,0,.08);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 30%, #f0f9ff 60%, #f5f3ff 100%);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    /* ======== Auth Gate — 左右分栏玻璃拟态 ======== */
+    #auth-gate {
+      display: flex; align-items: center; justify-content: center;
+      height: 100vh;
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    /* 动态彩色光球 — 更深更明显 */
+    #auth-gate::before {
+      content: "";
+      position: absolute;
+      width: 520px; height: 520px;
+      background: radial-gradient(circle at 45% 45%, rgba(99,102,241,.22) 0%, rgba(129,140,248,.1) 25%, transparent 65%);
+      border-radius: 50%;
+      top: -10%; left: -10%;
+      pointer-events: none;
+      animation: orbBig 7s ease-in-out infinite alternate;
+    }
+    #auth-gate::after {
+      content: "";
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle at 50% 40%, rgba(6,182,212,.18) 0%, rgba(59,130,246,.08) 25%, transparent 65%);
+      border-radius: 50%;
+      bottom: -6%; right: -8%;
+      pointer-events: none;
+      animation: orbSmall 9s ease-in-out infinite alternate;
+    }
+    @keyframes orbBig {
+      0% { transform: translate(0, 0) scale(1); opacity: .8; }
+      100% { transform: translate(40px, -25px) scale(1.12); opacity: 1; }
+    }
+    @keyframes orbSmall {
+      0% { transform: translate(0, 0) scale(1); opacity: .8; }
+      100% { transform: translate(-30px, 20px) scale(1.1); opacity: 1; }
+    }
+    /* 背景装饰 — 多层次光球 */
+    /* 网格点阵装饰 */
+    .auth-dots {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background-image: radial-gradient(circle, rgba(79,70,229,.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
+    }
+    #auth-gate.hidden { display: none; }
+
+    /* === 单卡片融合布局 === */
+    .auth-wrapper {
+      position: relative; z-index: 1;
+      width: 420px; max-width: 90vw;
+      background: linear-gradient(155deg, #1E1B4B 0%, #312E81 12%, #4338CA 30%, #4F46E5 50%, #6366F1 68%, #818CF8 85%, #06B6D4 100%);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 8px 48px rgba(79,70,229,.25), 0 2px 12px rgba(0,0,0,.08);
+      padding: 40px 40px 44px;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center;
+      color: #fff;
+      min-height: 440px;
+    }
+    /* 背景光晕 */
+    .auth-wrapper::before {
+      content: "";
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 40% 35%, rgba(255,255,255,.06) 0%, transparent 55%),
+        radial-gradient(circle 140px at 80% 20%, rgba(6,182,212,.18) 0%, transparent 60%),
+        radial-gradient(circle 120px at 20% 85%, rgba(129,140,248,.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    /* 旋转大环 */
+    .auth-wrapper::after {
+      content: "";
+      position: absolute;
+      width: 280px; height: 280px;
+      border: 1.6px solid rgba(255,255,255,.06);
+      border-radius: 50%;
+      top: -120px; right: -100px;
+      pointer-events: none;
+      animation: authRing1 12s linear infinite;
+    }
+    @keyframes authRing1 {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* 几何装饰层 */
+    .auth-geo {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    }
+    .auth-geo-circle1 {
+      position: absolute;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.1) 0%, rgba(129,140,248,.05) 35%, transparent 70%);
+      top: -40px; left: -50px;
+      animation: geoFloat1 6s ease-in-out infinite alternate;
+    }
+    @keyframes geoFloat1 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(14px, -10px) scale(1.05); }
+    }
+    .auth-geo-ring1 {
+      position: absolute;
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.08);
+      background: radial-gradient(circle at 60% 40%, rgba(6,182,212,.06) 0%, transparent 55%);
+      bottom: -30px; right: -30px;
+      animation: geoFloat2 7s ease-in-out infinite alternate;
+    }
+    @keyframes geoFloat2 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-10px, 8px) scale(1.07); }
+    }
+    .auth-geo-dot1 {
+      position: absolute;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, rgba(255,255,255,.22) 0%, rgba(129,140,248,.12) 50%, transparent 80%);
+      bottom: 20%; left: 60%;
+      animation: geoFloat3 5s ease-in-out infinite alternate;
+    }
+    @keyframes geoFloat3 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-8px, -12px) scale(1.1); }
+    }
+    .auth-geo-ring2 {
+      position: absolute;
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.08);
+      top: 15%; right: 15%;
+      animation: geoFloat4 8s ease-in-out infinite alternate;
+    }
+    @keyframes geoFloat4 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(10px, -6px) scale(.93); }
+    }
+    .auth-geo-stripe {
+      position: absolute;
+      width: 240px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.05) 20%, rgba(255,255,255,.08) 50%, rgba(255,255,255,.03) 80%, transparent);
+      bottom: 28%; left: -10%;
+      transform: rotate(-10deg);
+    }
+    .auth-geo-stripe2 {
+      position: absolute;
+      width: 200px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.04) 30%, rgba(255,255,255,.06) 50%, rgba(255,255,255,.03) 70%, transparent);
+      top: 32%; right: -8%;
+      transform: rotate(-8deg);
+    }
+
+    /* 内容层 */
+    .auth-content {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; align-items: center;
+      width: 100%;
+    }
+    .auth-brand-icon {
+      width: 56px; height: 56px;
+      background: rgba(255,255,255,.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .auth-content h2 {
+      font-size: 24px; font-weight: 700; margin: 0 0 24px;
+      letter-spacing: .04em;
+      text-shadow: 0 2px 6px rgba(0,0,0,.1);
+    }
+
+    /* 表单 */
+    .auth-input-group {
+      position: relative; margin-bottom: 16px; width: 100%;
+    }
+    .auth-input-group .input-icon {
+      position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+      color: rgba(255,255,255,.45); pointer-events: none; z-index: 2;
+      display: flex; align-items: center;
+      transition: color .25s ease;
+    }
+    .auth-input-group input {
+      width: 100%;
+      padding: 14px 46px 14px 46px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.08);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      letter-spacing: 4px;
+      transition: all .3s ease;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    .auth-input-group input::placeholder {
+      color: rgba(255,255,255,.3); letter-spacing: 0; font-size: 14px;
+    }
+    .auth-input-group input:focus {
+      border-color: rgba(255,255,255,.35);
+      background: rgba(255,255,255,.12);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.04), 0 2px 8px rgba(0,0,0,.08);
+    }
+    .auth-input-group:focus-within .input-icon {
+      color: rgba(255,255,255,.7);
+    }
+    .auth-pw-toggle {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; padding: 8px;
+      color: rgba(255,255,255,.4); display: flex; align-items: center;
+      transition: color .2s; z-index: 3; border-radius: 6px;
+      outline: none; -webkit-tap-highlight-color: transparent;
+    }
+    .auth-pw-toggle svg { pointer-events: none; }
+    .auth-pw-toggle:hover { color: rgba(255,255,255,.8); background: rgba(255,255,255,.06); }
+
+    .auth-submit-btn {
+      width: 100%;
+      margin-top: 6px;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: rgba(255,255,255,.92);
+      color: #4F46E5;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .3s ease;
+      font-family: inherit;
+      letter-spacing: .08em;
+      box-shadow: 0 4px 16px rgba(0,0,0,.1);
+      position: relative; z-index: 2;
+    }
+    .auth-submit-btn:hover {
+      background: #fff;
+      box-shadow: 0 6px 24px rgba(0,0,0,.18);
+      transform: translateY(-2px);
+    }
+    .auth-submit-btn:active {
+      transform: scale(.97);
+      transition: transform .1s ease;
+    }
+    .auth-submit-btn.loading {
+      pointer-events: none; opacity: .7;
+    }
+
+    /* 错误提示 */
+    .auth-error {
+      color: #FCA5A5; font-size: 12px; margin-top: 16px; text-align: center;
+      display: none; align-items: center; justify-content: center; gap: 6px;
+      animation: authShake .4s ease; position: relative; z-index: 2;
+    }
+    .auth-error.show { display: flex; }
+    @keyframes authShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+    @media (max-width: 480px) {
+      .auth-wrapper { padding: 40px 28px 36px; }
+      .auth-content h2 { font-size: 20px; margin-bottom: 24px; }
+      .auth-brand-icon { width: 48px; height: 48px; border-radius: 14px; margin-bottom: 16px; }
+    }
+    /* ======== Dashboard ======== */
+    /* ======== Dashboard ======== */
+    /* ======== Dashboard ======== */
+    /* ======== Dashboard ======== */
+    /* ======== Dashboard ======== */
+    #dashboard { display: none; padding: 12px 16px 40px; max-width: 1200px; margin: 0 auto; position: relative; }
+    #dashboard.visible { display: block; }
+    /* Top Bar */
+    .topbar {
+      position: relative; z-index: 5;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+      padding: 10px 16px;
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(8px) saturate(120%);
+      -webkit-backdrop-filter: blur(8px) saturate(120%);
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 1px 2px rgba(0,0,0,.04);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
+    .topbar-left h1 { font-size: 18px; font-weight: 700; }
+    .topbar-left .lock-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--green);
+      box-shadow: 0 0 6px rgba(16,185,129,.5);
+    }
+    .topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .dbtn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: all .15s;
+      line-height: 1;
+    }
+    .dbtn:hover { border-color: #cbd5e1; background: #f1f5f9; }
+    .btn-view:hover { color: #4F6EF7; background: #EEF1FF; border-color: #C7D2FE; }
+    .dbtn.active { background: linear-gradient(135deg, #0055FF, #3B7EFF); border-color: #0055FF; color: #fff; font-weight: 600; box-shadow: 0 2px 8px rgba(0,85,255,.3), inset 0 1px 0 rgba(255,255,255,.15); }
+    .dbtn.primary { background: #4F46E5; color: #fff; border-color: #4F46E5; }
+    /* 图标按钮自定义 Tooltip */
+    .icon-btn { position: relative; overflow: visible; }
+    .icon-btn::after {
+      content: attr(data-tip);
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 12px;
+      background: rgba(30,41,59,.92);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 999;
+    }
+    .icon-btn:hover::after { opacity: 1; }
+    /* Metric Cards */
+    .metric-row {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .metric-card {
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(8px) saturate(120%);
+      -webkit-backdrop-filter: blur(8px) saturate(120%);
+      border-radius: var(--r);
+      padding: 12px 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.05);
+      border: 1px solid rgba(0,0,0,.06);
+    }
+    .metric-card .m-label { font-size: 12px; color: #000000; font-weight: 600; margin-bottom: 4px; }
+    .metric-card .m-value { font-size: 20px; font-weight: 700; color: #0055FF; line-height: 1.2; }
+    .metric-card .m-change { font-size: 11px; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+    .m-change.up { color: var(--green); }
+    .m-change.down { color: #EF4444; }
+    .m-change.neutral { color: var(--text3); }
+    /* Chart Grid */
+    .chart-row {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .chart-row > * { min-width: 0; overflow: visible; }
+    .chart-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 1px 2px rgba(0,0,0,.03);
+      border: 1px solid rgba(0,0,0,.05);
+      overflow: visible;
+      min-width: 0;
+    }
+    .chart-card h3 { font-size: 12px; font-weight: 600; margin: 0 0 10px; color: #000000; padding: 0 4px; }
+    .chart-wrap { position: relative; width: 100%; }
+    .chart-wrap.line { height: 150px; }
+    .chart-wrap.doughnut { height: 130px; max-width: 130px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+    .chart-wrap.bar { height: 150px; margin-top: 10px; }
+    .chart-wrap.pie { height: 130px; display: flex; align-items: center; justify-content: center; }
+    /* Events Table */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .table-card {
+      background: var(--card-bg);
+      border-radius: var(--r);
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .table-card h3 { font-size: 13px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+    .evt-table { width: 100%; border-collapse: collapse; font-size: 11px; table-layout: fixed; }
+    .evt-table thead th {
+      position: sticky; top: 0; z-index: 2;
+      text-align: left; padding: 8px 10px 10px;
+      border-bottom: 1px solid #e8ecf1;
+      background: #fff;
+      color: #758599; font-weight: 600; font-size: 12px; vertical-align: middle;
+      white-space: nowrap;
+    }
+    .evt-table thead th:first-child { padding-left: 4px; }
+    .evt-table tbody td {
+      padding: 9px 10px;
+      border-bottom: 1px solid #f4f6f8;
+      color: var(--text); font-size: 11px; vertical-align: middle;
+    }
+    .evt-table tbody td:first-child { padding-left: 4px; white-space: nowrap; }
+    .evt-table tbody tr:hover { background: #f8fafc; }
+    .evt-table tbody tr:last-child td { border-bottom: none; }
+    /* 自定义滚动条 */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: #b0b7c3; }
+    ::-webkit-scrollbar-button { display: none; }
+    .evt-table .evt-type { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+    .evt-type.click { background: #EEF2FF; color: #4F46E5; }
+    .evt-type.section_enter { background: #ECFDF5; color: #10B981; }
+    .evt-type.section_leave { background: #FFF7ED; color: #F97316; }
+    .evt-type.scroll_depth { background: #F0F9FF; color: #06B6D4; }
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .metric-row { grid-template-columns: repeat(2, 1fr); }
+      .chart-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .chart-row { grid-template-columns: 1fr; }
+      .two-col { grid-template-columns: 1fr; }
+      .metric-row { grid-template-columns: 1fr; }
+      #dashboard { padding: 12px 10px 30px; }
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .evt-table { font-size: 10px; }
+    }
+    /* Loading spinner */
+    .loading {
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px; color: var(--text3); font-size: 13px;
+    }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      margin-right: 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    /* Toast */
+    .toast {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 9999;
+      background: rgba(30,41,59,.9); color: #fff; padding: 10px 20px;
+      border-radius: 8px; font-size: 13px; pointer-events: none;
+      animation: toastIn .25s ease;
+    }
+    @keyframes toastIn { from { opacity: 0; transform: translate(-50%,-50%) translateY(8px); } to { opacity: 1; transform: translate(-50%,-50%) translateY(0); } }
+    /* Confirm Dialog */
+    .c-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15,23,42,.3); backdrop-filter: blur(2px);
+      display: flex; align-items: center; justify-content: center;
+      animation: fadeIn .15s ease;
+    }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    .c-dialog {
+      background: #fff; border-radius: 14px;
+      padding: 24px 28px 20px; max-width: 340px; width: 90%;
+      box-shadow: 0 8px 32px rgba(0,0,0,.1);
+      text-align: center;
+      animation: slideUp .2s ease;
+    }
+    @keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .c-dialog p { font-size: 13px; color: #475569; line-height: 1.6; margin-bottom: 18px; }
+    .c-dialog .c-btns { display: flex; gap: 10px; justify-content: center; }
+    .c-dialog .c-btns button {
+      padding: 8px 28px; border-radius: 8px; border: none;
+      font-size: 13px; cursor: pointer; transition: all .15s;
+    }
+    .c-btn-cancel { background: #f1f5f9; color: #475569; }
+    .c-btn-cancel:hover { background: #e2e8f0; }
+    .c-btn-danger { background: #EF4444; color: #fff; }
+    .c-btn-danger:hover { background: #DC2626; }
+  </style>
+</head>
+<body>
+
+<!-- ======== Auth Gate ======== -->
+<div id="auth-gate">
+  <!-- 背景点阵 -->
+  <div class="auth-dots"></div>
+
+  <!-- 单卡片融合布局 -->
+  <div class="auth-wrapper">
+    <!-- 几何装饰 -->
+    <div class="auth-geo">
+      <div class="auth-geo-circle1"></div>
+      <div class="auth-geo-ring1"></div>
+      <div class="auth-geo-ring2"></div>
+      <div class="auth-geo-dot1"></div>
+      <div class="auth-geo-stripe"></div>
+      <div class="auth-geo-stripe2"></div>
+    </div>
+
+    <!-- 内容 -->
+    <div class="auth-content">
+      <div class="auth-brand-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      </div>
+      <h2>Portfolio Analytics</h2>
+
+      <div class="auth-input-group">
+        <span class="input-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+        </span>
+        <input type="password" id="auth-password" placeholder="输入密码" autofocus>
+        <button class="auth-pw-toggle" id="auth-pw-toggle" type="button" title="显示密码">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+      </div>
+
+      <button class="auth-submit-btn" id="auth-submit">登 录</button>
+
+      <div class="auth-error" id="auth-error">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span></span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ======== 登录脚本 ========
+(function() {
+  var submitBtn = document.getElementById('auth-submit');
+  var pwInput   = document.getElementById('auth-password');
+  var errEl     = document.getElementById('auth-error');
+  var pwToggle  = document.getElementById('auth-pw-toggle');
+
+  // 原始密码的 SHA-256 哈希
+  var ORIGINAL_HASH = '11a84cf94abddbcadeabb287252384213ed803b65c23b063c3b29a99c44cff96';
+  var FALLBACK_PW   = 'evan2026';
+
+  var EYE_OPEN  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  var EYE_CLOSE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+
+  function showError(msg) {
+    errEl.querySelector('span').textContent = msg;
+    errEl.classList.add('show');
+    setTimeout(function() { errEl.classList.remove('show'); }, 3000);
+  }
+
+  async function sha256(text) {
+    var d = new TextEncoder().encode(text);
+    var h = await crypto.subtle.digest('SHA-256', d);
+    return Array.from(new Uint8Array(h)).map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
+  }
+
+  function gotoDashboard() {
+    localStorage.setItem('_ad_auth', '1');
+    document.getElementById('auth-gate').classList.add('hidden');
+    var dash = document.getElementById('dashboard');
+    dash.classList.add('visible');
+    dash.style.display = '';
+    document.body.style.overflow = '';
+    submitBtn.textContent = '登 录';
+    submitBtn.classList.remove('loading');
+    if (typeof window._initDashboard === 'function') window._initDashboard();
+  }
+
+  async function doLogin() {
+    var pw = pwInput.value.trim();
+    if (!pw) { showError('请输入密码'); return; }
+
+    submitBtn.textContent = '验证中…';
+    submitBtn.classList.add('loading');
+
+    // 1) 纯文本回退
+    if (pw === FALLBACK_PW) { gotoDashboard(); return; }
+
+    // 2) SHA-256 比对原始密码
+    try {
+      var hash = await sha256(pw);
+      if (hash === ORIGINAL_HASH) { gotoDashboard(); return; }
+    } catch(e) { console.warn('sha256 failed:', e); }
+
+    // 失败
+    submitBtn.textContent = '登 录';
+    submitBtn.classList.remove('loading');
+    showError('密码错误，请重试');
+    pwInput.value = '';
+    pwInput.focus();
+  }
+
+  submitBtn.addEventListener('click', doLogin);
+  pwInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  pwToggle.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (pwInput.type === 'password') {
+      pwInput.type = 'text'; pwToggle.innerHTML = EYE_OPEN; pwToggle.title = '隐藏密码';
+    } else {
+      pwInput.type = 'password'; pwToggle.innerHTML = EYE_CLOSE; pwToggle.title = '显示密码';
+    }
+  });
+})();
+</script>
+
+<!-- ======== Dashboard ======== -->
+<!-- ======== Dashboard ======== -->
+<div id="dashboard">
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="lock-dot"></span>
+      <h1>Analytics Dashboard</h1>
+    </div>
+    <div class="topbar-right" style="position:relative;">
+      <button class="dbtn active" data-range="all">总览</button>
+      <button class="dbtn" data-range="1">今日</button>
+      <button class="dbtn" data-range="7">近7天</button>
+      <button class="dbtn" data-range="30">近30天</button>
+      <button class="dbtn icon-btn" id="btn-calendar" data-tip="日历" style="padding:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+    <button class="dbtn icon-btn" id="btn-clear" data-tip="清除数据" style="padding:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></button>
+    <button class="dbtn icon-btn" id="btn-logout" data-tip="退出" style="padding:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+  </div>
+  </div>
+
+  <!-- Metric Cards -->
+  <div class="metric-row" id="metric-row">
+    <div class="metric-card"><div class="m-label">访问量（PV）</div><div class="m-value" id="m-pv">--</div><div class="m-change neutral" id="m-pv-change">加载中...</div></div>
+    <div class="metric-card"><div class="m-label">独立访客 / 设备数 (UV)</div><div class="m-value" id="m-uv">--</div><div class="m-change neutral" id="m-uv-change">加载中...</div></div>
+    <div class="metric-card"><div class="m-label">互动率</div><div class="m-value" id="m-engage">--</div><div class="m-change neutral" id="m-engage-change">有点击行为的访客占比</div></div>
+    <div class="metric-card"><div class="m-label">平均浏览时长</div><div class="m-value" id="m-duration">--</div><div class="m-change neutral" id="m-duration-change">加载中...</div></div>
+  </div>
+
+  <!-- Device List -->
+  <div class="chart-card" style="margin-bottom:12px;">
+    <div style="overflow:auto;max-height:280px;">
+      <table class="evt-table" id="device-table">
+        <thead>
+          <tr><th style="width:16%;">访问设备</th><th style="width:8%;">品牌</th><th style="width:8%;">型号</th><th style="width:12%;">系统</th><th style="width:12%;">浏览器</th><th style="width:9%;">分辨率</th><th style="width:8%;">访问次数</th><th style="width:9%;">累计时长</th><th style="width:9%;">最近访问</th><th style="width:9%;padding:9px 10px 9px 28px;vertical-align:middle;">操作</th></tr>
+        </thead>
+        <tbody id="device-tbody">
+          <tr><td colspan="10" style="text-align:center;color:var(--text3);padding:12px;">加载中...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Chart Row: all 4 charts in one row -->
+  <div class="chart-row">
+    <div class="chart-card">
+      <h3>PV / UV 趋势</h3>
+      <div class="chart-wrap line"><canvas id="chart-trend"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>停留时长</h3>
+      <div class="chart-wrap bar"><canvas id="chart-dwell"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>点击分布</h3>
+      <div class="chart-wrap doughnut"><canvas id="chart-clicks"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>设备分布</h3>
+      <div class="chart-wrap doughnut"><canvas id="chart-device"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Two-col: 模块点击 + 最近事件 -->
+  <div class="two-col">
+    <div class="chart-card">
+      <h3 style="display:flex;align-items:center;justify-content:space-between;">
+        模块点击
+      </h3>
+      <div style="overflow:auto;max-height:340px;">
+        <table class="evt-table" id="click-detail-table">
+          <thead><tr><th style="width:72%;">层级路径</th><th style="width:12%;text-align:right;padding-right:16px;">点击次数</th><th style="width:16%;text-align:right;">浏览时长</th></tr></thead>
+          <tbody id="click-detail-tbody">
+            <tr><td colspan="3" style="text-align:center;color:var(--text3);padding:12px;">加载中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="table-card">
+      <h3>最近事件</h3>
+      <div style="overflow:auto;max-height:340px;">
+        <table class="evt-table" id="events-table">
+          <thead>
+            <tr><th style="width:18%;">时间</th><th style="width:12%;">事件类型</th><th style="width:32%;">元素</th><th style="width:15%;">模块</th><th style="width:23%;">Section</th></tr>
+          </thead>
+          <tbody id="events-tbody">
+            <tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px;">加载中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ============================================================
+  // 配置
+  // ============================================================
+  var SUPABASE_URL = 'https://gvnzxuldnbdrsvclvuul.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_dTms1JmEP3yG9MoNI32y-Q_GI9bUjAg';
+
+  // 密码 SHA-256 哈希
+  // 默认密码: evan2026
+  // 修改方式：打开浏览器控制台，运行：
+  //   crypto.subtle.digest('SHA-256', new TextEncoder().encode('你的新密码'))
+  //     .then(h => console.log(Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2,'0')).join('')));
+  // 将输出的哈希值替换下面的 PASSWORD_HASH
+  // 支持两个密码，任一匹配即可登录
+  var PASSWORD_HASHES = [
+    '11a84cf94abddbcadeabb287252384213ed803b65c23b063c3b29a99c44cff96', // 原始密码
+    'de5de3390c1e351578c74c0a4a5b12d486abcb64c072dda4ac2caeba6899a06c'  // evan2026
+  ];
+
+  var currentRange = 'all'; // 'all' | 1 | 7 | 30 | {start:'YYYY-MM-DD', end:'YYYY-MM-DD'}
+  var currentRangeLabel = '总览';
+  var supabase = null;
+  var charts = {};
+  var deviceFilter = null; // null=全部设备, {visitor_id: '...'} 筛选指定设备
+  var calYear, calMonth; // 日历状态
+
+  // ============================================================
+  // 鉴权
+  // ============================================================
+  function checkAuth() {
+    if (sessionStorage.getItem('_ad_auth') === '1') return true;
+    return false;
+  }
+
+  function showDashboard() {
+    document.getElementById('auth-gate').classList.add('hidden');
+    var dash = document.getElementById('dashboard');
+    dash.classList.add('visible');
+    dash.style.display = '';
+    document.body.style.overflow = '';
+    sessionStorage.setItem('_ad_auth', '1');
+    initDashboard();
+  }
+
+  function showAuth() {
+    document.getElementById('auth-gate').classList.remove('hidden');
+    document.getElementById('dashboard').classList.remove('visible');
+    document.getElementById('dashboard').style.display = 'none';
+    document.body.style.overflow = 'hidden';
+    sessionStorage.removeItem('_ad_auth');
+  }
+
+  async function sha256(text) {
+    if (!window.crypto || !window.crypto.subtle) { throw new Error('Web Crypto API not available'); }
+    var encoder = new TextEncoder();
+    var data = encoder.encode(text);
+    var hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    var hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+  }
+
+  function setupAuth() {
+    var btn = document.getElementById('auth-submit');
+    var input = document.getElementById('auth-password');
+    var error = document.getElementById('auth-error');
+
+    btn.addEventListener('click', async function() {
+      var pw = input.value.trim();
+      if (!pw) { showAuthError('请输入密码'); return; }
+
+      if (error) error.classList.remove('show');
+      btn.classList.add('loading');
+      btn.textContent = '验证中…';
+
+      var ok = false;
+
+      // 方式1：SHA-256 哈希比对
+      if (window.crypto && window.crypto.subtle) {
+        try {
+          var hash = await sha256(pw);
+          if (PASSWORD_HASHES.indexOf(hash) !== -1) ok = true;
+        } catch (e) {
+          console.warn('SHA-256 failed, trying fallback:', e.message);
+        }
+      }
+
+      // 方式2：纯文本回退 — 当 crypto 不可用时
+      if (!ok) {
+        // 直接用密码明文比对（适用于 file:// 等受限环境）
+        if (pw === 'evan2026') ok = true;
+      }
+
+      btn.classList.remove('loading');
+      btn.textContent = '登 录';
+
+      if (ok) {
+        try {
+          showDashboard();
+        } catch (e) {
+          console.error('showDashboard error:', e);
+          showAuthError('系统错误，请刷新重试');
+        }
+      } else {
+        // 调试：打印哈希值
+        if (window.crypto && window.crypto.subtle) {
+          sha256(pw).then(function(h) { console.log('输入密码的SHA-256:', h); });
+        }
+        showAuthError('密码错误，请重试');
+        input.value = '';
+        input.focus();
+      }
+    });
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') btn.click();
+    });
+    input.addEventListener('input', function() {
+      if (error) error.classList.remove('show');
+    });
+
+    // 密码可见切换 — 默认闭眼 → 点击睁眼+密码可见
+    var pwToggle = document.getElementById('auth-pw-toggle');
+    if (pwToggle) {
+      var EYE_OPEN  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+      var EYE_CLOSE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+      pwToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (input.type === 'password') {
+          input.type = 'text';
+          pwToggle.innerHTML = EYE_OPEN;
+          pwToggle.setAttribute('title', '隐藏密码');
+        } else {
+          input.type = 'password';
+          pwToggle.innerHTML = EYE_CLOSE;
+          pwToggle.setAttribute('title', '显示密码');
+        }
+      });
+    }
+
+    // 退出
+    document.getElementById('btn-logout').addEventListener('click', function() {
+      showAuth();
+      document.getElementById('auth-password').value = '';
+      if (error) error.classList.remove('show');
+    });
+  }
+
+  function showAuthError(msg) {
+    var error = document.getElementById('auth-error');
+    if (!error) return;
+    var span = error.querySelector('span');
+    if (span) span.textContent = msg;
+    error.style.color = '#FCA5A5';
+    error.classList.add('show');
+    // 重新触发抖动
+    error.style.animation = 'none';
+    error.offsetHeight;
+    error.style.animation = '';
+    // 4秒后自动消失
+    clearTimeout(error._ht);
+    error._ht = setTimeout(function() { error.classList.remove('show'); }, 4000);
+  }
+
+  // ============================================================
+  // Supabase 查询
+  // ============================================================
+
+  var spiderLegPlugin = {
+    id: 'spiderLegs',
+    afterDraw: function(chart) {
+      if (chart.config.type !== 'doughnut' && chart.config.type !== 'pie') return;
+      if (!chart.options.plugins || !chart.options.plugins.spiderLegs || !chart.options.plugins.spiderLegs.enabled) return;
+
+      var ctx = chart.ctx;
+      var meta = chart.getDatasetMeta(0);
+      if (!meta || !meta.data || meta.data.length === 0) return;
+
+      var ds = chart.data.datasets[0];
+      var values = ds.data || [];
+      var total = values.reduce(function(a, b) { return a + Number(b); }, 0);
+      if (total <= 0) return;
+
+      var EXTEND = 8;
+      var H_LEN = 14;
+      var HOLE_R = 3;
+
+      ctx.save();
+
+      values.forEach(function(value, i) {
+        if (Number(value) <= 0) return;
+        var arc = meta.data[i];
+        if (!arc || typeof arc.startAngle === 'undefined') return;
+
+        var midAngle = (arc.startAngle + arc.endAngle) / 2;
+        var cosA = Math.cos(midAngle);
+        var sinA = Math.sin(midAngle);
+        var outerR = arc.outerRadius || 60;
+        var cx = arc.x;
+        var cy = arc.y;
+
+        // 环形外缘连接点
+        var sx = cx + outerR * cosA;
+        var sy = cy + outerR * sinA;
+
+        // 径向向外延伸
+        var bx = cx + (outerR + EXTEND) * cosA;
+        var by = cy + (outerR + EXTEND) * sinA;
+
+        // 水平弯折到标签
+        var isRight = cosA >= 0;
+        var lx = bx + (isRight ? H_LEN : -H_LEN);
+        var ly = by;
+
+        var segColor = ds.backgroundColor ? (ds.backgroundColor[i] || '#6366F1') : '#6366F1';
+
+        // 折线: 外缘 → 径向延伸 → 水平
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(bx, by);
+        ctx.lineTo(lx, ly);
+        ctx.strokeStyle = segColor;
+        ctx.lineWidth = 1.2;
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+
+        // 标签端空心圆
+        ctx.beginPath();
+        ctx.arc(lx, ly, HOLE_R, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.strokeStyle = segColor;
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+
+        // 标签文字（与停留时长图字号一致）
+        var label = chart.data.labels ? chart.data.labels[i] : '';
+        if (label) {
+          ctx.font = '500 9px "Noto Sans SC", Inter, sans-serif';
+          ctx.fillStyle = '#475569';
+          ctx.textAlign = isRight ? 'left' : 'right';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(label, lx + (isRight ? 5 : -5), ly);
+        }
+      });
+
+      ctx.restore();
+    }
+  };
+  // ============================================================
+  // 蜘蛛脚折线插件（全局定义）
+  // ============================================================
+
+  function initSupabase() {
+    if (typeof window.supabase === 'undefined') {
+      console.error('[Dashboard] Supabase SDK not loaded');
+      return false;
+    }
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // 注册 datalabels + 蜘蛛脚插件
+    if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
+      Chart.register(ChartDataLabels);
+    }
+    if (typeof Chart !== 'undefined') { Chart.register(spiderLegPlugin); }
+    return true;
+  }
+
+  function daysAgoISO(days) {
+    var d = new Date();
+    d.setDate(d.getDate() - days);
+    d.setHours(0, 0, 0, 0);
+    return d.toISOString();
+  }
+
+  function todayISO() {
+    var d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d.toISOString();
+  }
+
+  function nowISO() {
+    return new Date().toISOString();
+  }
+
+  // 根据 currentRange 返回开始时间 ISO
+  function getSinceISO() {
+    if (currentRange === 'all') return '2000-01-01T00:00:00.000Z';
+    if (typeof currentRange === 'object' && currentRange.start) {
+      return new Date(currentRange.start + 'T00:00:00').toISOString();
+    }
+    return daysAgoISO(currentRange);
+  }
+
+  function getSincePrevISO() {
+    var since = getSinceISO();
+    var until = getUntilISO() || new Date().toISOString();
+    var duration = new Date(until).getTime() - new Date(since).getTime();
+    if (duration < 3600000) duration = 86400000; // min 1 day
+    return new Date(new Date(since).getTime() - duration).toISOString();
+  }
+
+  function getUntilISO() {
+    if (typeof currentRange === 'object' && currentRange.end) {
+      return new Date(currentRange.end + 'T23:59:59.999Z').toISOString();
+    }
+    return null;
+  }
+
+  // 为 Supabase 查询添加时间过滤
+  function applyTimeFilter(query, column) {
+    var since = getSinceISO();
+    var until = getUntilISO();
+    query = query.gte(column, since);
+    if (until) query = query.lte(column, until);
+    return query;
+  }
+
+  // ============================================================
+  // 设备筛选辅助
+  // ============================================================
+  async function getFilteredSessionIds() {
+    if (!deviceFilter) return null;
+    var query = supabase.from('sessions').select('session_id').eq('visitor_id', deviceFilter.visitor_id);
+    query = applyTimeFilter(query, 'start_time');
+    var r = await query;
+    return (r.data || []).map(function(s) { return s.session_id; });
+  }
+
+  async function buildBaseQuery(table, sinceColumn) {
+    var query = supabase.from(table).select('*', { count: 'exact', head: false });
+    if (deviceFilter) {
+      var ids = await getFilteredSessionIds();
+      if (ids.length === 0) return { empty: true };
+      query = query.in('session_id', ids);
+    }
+    return query;
+  }
+
+  // ============================================================
+  // 加载指标卡片（支持设备筛选）
+  // ============================================================
+  async function loadMetrics() {
+    var since = getSinceISO();
+    var until = getUntilISO();
+    var sincePrev = getSincePrevISO();
+
+    try {
+      var pv, pvPrev, uv, uvPrev, engageRate, avgDuration;
+
+      if (deviceFilter) {
+        // --- 筛选模式：只统计选定设备 ---
+        var sessionIds = window._filteredSessionIds || [];
+        if (sessionIds.length === 0) { showEmptyMetrics(); return; }
+
+        var q1 = applyTimeFilter(supabase.from('pageviews').select('id', { count: 'exact', head: true })
+          .in('session_id', sessionIds), 'timestamp');
+        var r1 = await q1; pv = r1.count || 0;
+
+        var q1p = supabase.from('pageviews').select('id', { count: 'exact', head: true })
+          .in('session_id', sessionIds).gte('timestamp', sincePrev).lt('timestamp', since);
+        var r1p = await q1p; pvPrev = r1p.count || 1;
+
+        uv = 1; uvPrev = 1;
+
+        // 单设备：是否有点击 = 100% 或 0%
+        var cq = applyTimeFilter(supabase.from('events').select('id', { count: 'exact', head: true })
+          .eq('event_type', 'click').in('session_id', sessionIds), 'timestamp');
+        var clickCheck = await cq;
+        engageRate = (clickCheck.count > 0) ? 100 : 0;
+
+        var q4 = applyTimeFilter(supabase.from('sessions').select('duration_seconds')
+          .eq('visitor_id', deviceFilter.visitor_id).not('duration_seconds', 'is', null), 'start_time');
+        var r4 = await q4;
+        var durations = (r4.data || []).map(function(s) { return s.duration_seconds || 0; });
+        avgDuration = durations.length > 0
+          ? Math.round(durations.reduce(function(a, b) { return a + b; }, 0) / durations.length) : 0;
+      } else {
+        // --- 全部设备模式 ---
+        var r1a = await applyTimeFilter(supabase.from('pageviews').select('id', { count: 'exact', head: true }), 'timestamp');
+        pv = r1a.count || 0;
+
+        var r1pa = await supabase.from('pageviews').select('id', { count: 'exact', head: true })
+          .gte('timestamp', sincePrev).lt('timestamp', since);
+        pvPrev = r1pa.count || 1;
+
+        var r2a = await applyTimeFilter(supabase.from('sessions').select('visitor_id'), 'start_time');
+        var uniqueVisitors = new Set();
+        (r2a.data || []).forEach(function(s) { if (s.visitor_id) uniqueVisitors.add(s.visitor_id); });
+        uv = uniqueVisitors.size;
+
+        // 互动率 = 有点击的访客 / 总访客
+        var clickSessions = await applyTimeFilter(supabase.from('events').select('session_id').eq('event_type', 'click'), 'timestamp');
+        var clickedSessionIds = new Set();
+        (clickSessions.data || []).forEach(function(e) { if (e.session_id) clickedSessionIds.add(e.session_id); });
+
+        // 查出哪些 visitor 有这些 session
+        if (clickedSessionIds.size > 0) {
+          var clickedVisitors = await applyTimeFilter(supabase.from('sessions').select('visitor_id')
+            .in('session_id', Array.from(clickedSessionIds)), 'start_time');
+          var engagedSet = new Set();
+          (clickedVisitors.data || []).forEach(function(s) { if (s.visitor_id) engagedSet.add(s.visitor_id); });
+          engageRate = uv > 0 ? Math.round(engagedSet.size / uv * 100) : 0;
+        } else {
+          engageRate = 0;
+        }
+
+        var r4a = await applyTimeFilter(supabase.from('sessions').select('duration_seconds')
+          .not('duration_seconds', 'is', null), 'start_time');
+        var durationsA = (r4a.data || []).map(function(s) { return s.duration_seconds || 0; });
+        avgDuration = durationsA.length > 0
+          ? Math.round(durationsA.reduce(function(a, b) { return a + b; }, 0) / durationsA.length) : 0;
+
+        var r2pa = await supabase.from('sessions').select('visitor_id', { count: 'exact', head: true })
+          .gte('start_time', sincePrev).lt('start_time', since);
+        uvPrev = r2pa.count || 1;
+      }
+
+      // 渲染主要数值
+      document.getElementById('m-pv').textContent = pv > 0 ? pv.toLocaleString() : '-';
+      document.getElementById('m-uv').textContent = uv > 0 ? uv.toLocaleString() : '-';
+      document.getElementById('m-engage').textContent = uv > 0 ? engageRate + '%' : '-';
+      document.getElementById('m-duration').textContent = avgDuration > 0 ? formatDuration(avgDuration) : '-';
+
+      // 查询今日/昨日数据并渲染底部对比
+      loadTodayYesterday();
+
+    } catch (e) {
+      console.error('[Dashboard] Metrics error:', e);
+      showEmptyMetrics();
+    }
+  }
+
+  function showEmptyMetrics() {
+    document.getElementById('m-pv').textContent = '-';
+    document.getElementById('m-uv').textContent = '-';
+    document.getElementById('m-engage').textContent = '-';
+    document.getElementById('m-duration').textContent = '-';
+    ['m-pv-change','m-uv-change','m-engage-change','m-duration-change'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) { el.textContent = '昨日 -'; el.className = 'm-change neutral'; el.style.color = ''; }
+    });
+  }
+
+  async function loadTodayYesterday() {
+    var todayStart = new Date();
+    todayStart.setHours(0,0,0,0);
+    var todayISO = todayStart.toISOString();
+    var yesterdayStart = new Date(todayStart.getTime() - 86400000);
+    var yesterdayISO = yesterdayStart.toISOString();
+
+    try {
+      // PV: 昨日
+      var pvBase = supabase.from('pageviews').select('id', { count: 'exact', head: true });
+      if (deviceFilter && window._filteredSessionIds && window._filteredSessionIds.length > 0) {
+        pvBase = pvBase.in('session_id', window._filteredSessionIds);
+      }
+      var pvYesterday = await pvBase.gte('timestamp', yesterdayISO).lt('timestamp', todayISO);
+      var py = pvYesterday.count || 0;
+      var pvEl = document.getElementById('m-pv-change');
+      pvEl.className = 'm-change';
+      pvEl.style.color = '#8597b4';
+      pvEl.textContent = py > 0 ? '昨日 +' + py + '次' : '昨日 -';
+
+      // UV: 昨日
+      var uvBase = supabase.from('sessions').select('visitor_id');
+      if (deviceFilter) { uvBase = uvBase.eq('visitor_id', deviceFilter.visitor_id); }
+      var uvYesterday = await uvBase.gte('start_time', yesterdayISO).lt('start_time', todayISO);
+      var uy = new Set(); (uvYesterday.data || []).forEach(function(s) { if (s.visitor_id) uy.add(s.visitor_id); });
+      var uvEl = document.getElementById('m-uv-change');
+      uvEl.className = 'm-change';
+      uvEl.style.color = '#8597b4';
+      uvEl.textContent = uy.size > 0 ? '昨日 +' + uy.size + '人' : '昨日 -';
+
+      // 互动率: 昨日
+      var engBase = supabase.from('events').select('session_id').eq('event_type', 'click');
+      if (deviceFilter && window._filteredSessionIds && window._filteredSessionIds.length > 0) {
+        engBase = engBase.in('session_id', window._filteredSessionIds);
+      }
+      var engYesterday = await engBase.gte('timestamp', yesterdayISO).lt('timestamp', todayISO);
+      var eySet = new Set(); (engYesterday.data || []).forEach(function(e) { if (e.session_id) eySet.add(e.session_id); });
+      var eyRate = uy.size > 0 ? Math.round(eySet.size / uy.size * 100) : 0;
+      var engEl = document.getElementById('m-engage-change');
+      engEl.className = 'm-change';
+      engEl.style.color = '#8597b4';
+      engEl.textContent = uy.size > 0 ? '昨日 +' + eyRate + '%' : '昨日 -';
+
+      // 平均浏览时长: 昨日
+      var durBase = supabase.from('sessions').select('duration_seconds').not('duration_seconds', 'is', null);
+      if (deviceFilter) { durBase = durBase.eq('visitor_id', deviceFilter.visitor_id); }
+      var durYesterday = await durBase.gte('start_time', yesterdayISO).lt('start_time', todayISO);
+      var dyVals = (durYesterday.data || []).map(function(s) { return s.duration_seconds || 0; });
+      var dyAvg = dyVals.length > 0 ? Math.round(dyVals.reduce(function(a,b){return a+b;},0) / dyVals.length) : 0;
+      var durEl = document.getElementById('m-duration-change');
+      durEl.className = 'm-change';
+      durEl.style.color = '#8597b4';
+      durEl.textContent = dyVals.length > 0 ? '昨日 +' + formatDuration(dyAvg) : '昨日 -';
+
+    } catch (e) {
+      console.error('[Dashboard] Today/yesterday error:', e);
+    }
+  }
+
+  function formatDuration(sec) {
+    if (sec < 60) return sec + 's';
+    if (sec < 3600) return Math.floor(sec / 60) + 'm ' + (sec % 60) + 's';
+    var h = Math.floor(sec / 3600);
+    var m = Math.floor((sec % 3600) / 60);
+    return h + 'h ' + m + 'm';
+  }
+
+  // ============================================================
+  // PV/UV 趋势图（自适应日期范围）
+  // ============================================================
+  async function loadTrendChart() {
+    try {
+      var pvQuery = applyTimeFilter(supabase.from('pageviews').select('timestamp').order('timestamp', { ascending: true }), 'timestamp');
+      var uvQuery = applyTimeFilter(supabase.from('sessions').select('start_time, visitor_id').order('start_time', { ascending: true }), 'start_time');
+
+      if (deviceFilter) {
+        if (window._filteredSessionIds && window._filteredSessionIds.length > 0) {
+          pvQuery = pvQuery.in('session_id', window._filteredSessionIds);
+        }
+        uvQuery = uvQuery.eq('visitor_id', deviceFilter.visitor_id);
+      }
+
+      var rPv = await pvQuery;
+      var rUv = await uvQuery;
+
+      // 确定日期范围
+      var now = new Date();
+      var startDate;
+      if (typeof currentRange === 'object' && currentRange.start) {
+        startDate = new Date(currentRange.start + 'T00:00:00');
+      } else if (currentRange === 'all') {
+        startDate = new Date('2000-01-01T00:00:00');
+      } else {
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - currentRange);
+      }
+      startDate.setHours(0,0,0,0);
+      var endDate = new Date();
+      if (getUntilISO()) endDate = new Date(getUntilISO());
+      endDate.setHours(23,59,59,999);
+
+      // 按天聚合数据
+      var pvByDay = {};
+      var uvByDay = {};
+      (rPv.data || []).forEach(function(r) {
+        var k = r.timestamp.split('T')[0];
+        pvByDay[k] = (pvByDay[k] || 0) + 1;
+      });
+      (rUv.data || []).forEach(function(r) {
+        var k = r.start_time.split('T')[0];
+        if (!uvByDay[k]) uvByDay[k] = new Set();
+        uvByDay[k].add(r.visitor_id);
+      });
+
+      // 收集所有有数据的日期
+      var allDates = Object.keys(pvByDay).concat(Object.keys(uvByDay));
+      allDates.sort();
+      // 去重
+      var seen = {};
+      var uniqueDates = [];
+      allDates.forEach(function(d) { if (!seen[d]) { seen[d]=1; uniqueDates.push(d); } });
+
+      // 构建标签和数据
+      var labels = [];
+      var pvValues = [];
+      var uvValues = [];
+      uniqueDates.forEach(function(d) {
+        labels.push(d.substring(5)); // MM-DD
+        pvValues.push(pvByDay[d] || 0);
+        uvValues.push(uvByDay[d] ? uvByDay[d].size : 0);
+      });
+
+      // 限制最多 60 个点，超出则抽样
+      if (labels.length > 60) {
+        var step2 = Math.ceil(labels.length / 50);
+        var sLabels = []; var sPv = []; var sUv = [];
+        for (var i2 = 0; i2 < labels.length; i2++) {
+          if (i2 % step2 === 0 || i2 === labels.length - 1) {
+            sLabels.push(labels[i2]);
+            sPv.push(pvValues[i2]);
+            sUv.push(uvValues[i2]);
+          }
+        }
+        labels = sLabels; pvValues = sPv; uvValues = sUv;
+      }
+
+      var ctx = document.getElementById('chart-trend').getContext('2d');
+      if (charts.trend) charts.trend.destroy();
+
+      var pvGrad = ctx.createLinearGradient(0, 0, 0, 130);
+      pvGrad.addColorStop(0, 'rgba(129,140,248,.20)');
+      pvGrad.addColorStop(1, 'rgba(129,140,248,0)');
+
+      charts.trend = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'PV',
+            data: pvValues,
+            borderColor: '#818CF8',
+            backgroundColor: pvGrad,
+            fill: true,
+            tension: .5,
+            borderWidth: 2.5,
+            pointRadius: 4,
+            pointBackgroundColor: '#818CF8',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointHoverRadius: 6,
+            pointHoverBackgroundColor: '#818CF8',
+            pointHoverBorderColor: '#fff',
+            pointHoverBorderWidth: 2
+          }, {
+            label: 'UV',
+            data: uvValues,
+            borderColor: '#38BDF8',
+            fill: false,
+            tension: .5,
+            borderWidth: 2.5,
+            pointRadius: 4,
+            pointBackgroundColor: '#38BDF8',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointHoverRadius: 6,
+            pointHoverBackgroundColor: '#38BDF8',
+            pointHoverBorderColor: '#fff',
+            pointHoverBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            datalabels: { display: false },
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+              backgroundColor: '#1e293b',
+              padding: 8,
+              cornerRadius: 8,
+              usePointStyle: true,
+              boxWidth: 7,
+              boxHeight: 7,
+              boxPadding: 3,
+              caretSize: 0,
+              bodyFont: { size: 10 },
+              xAlign: 'left',
+              yAlign: 'center',
+              callbacks: {
+                label: function(ctx) {
+                  var label = ctx.dataset.label || '';
+                  if (label) label += ': ';
+                  label += ctx.parsed.y;
+                  return label;
+                }
+              }
+            }
+          },
+          scales: {
+            y: { beginAtZero: true, ticks: { font: { size: 9 }, color: '#94a3b8', maxTicksLimit: 3 }, grid: { color: '#f1f5f9' }, border: { display: false } },
+            x: { ticks: { font: { size: 9 }, color: '#94a3b8', maxTicksLimit: 4 }, grid: { display: false }, border: { display: false } }
+          },
+          interaction: { intersect: false, mode: 'index' }
+        }
+      });
+    } catch (e) {
+      console.error('[Dashboard] Trend chart error:', e);
+    }
+  }
+
+  // ============================================================
+  // 模块点击分布
+  // ============================================================
+  async function loadClicksChart() {
+    var since = getSinceISO();
+    try {
+      var q = applyTimeFilter(supabase.from('events').select('section').eq('event_type', 'click'), 'timestamp');
+      if (deviceFilter && window._filteredSessionIds) {
+        if (window._filteredSessionIds.length === 0) { renderEmptyChart('chart-clicks', 'doughnut'); return; }
+        q = q.in('session_id', window._filteredSessionIds);
+      }
+      var r = await q;
+
+      // 只统计四大模块
+      var validSections = { design:1, solution:1, doc:1, mgmt:1 };
+      var fixedOrder = ['design','solution','doc','mgmt'];
+      var counts = { design:0, solution:0, doc:0, mgmt:0 };
+      (r.data || []).forEach(function(e) {
+        if (validSections[e.section]) counts[e.section]++;
+      });
+
+      var shortLabels = { design: '产品', solution: '方案', doc: '文档', mgmt: '管理' };
+      var labels = fixedOrder.map(function(s) { return shortLabels[s]; });
+      var data = fixedOrder.map(function(s) { return counts[s]; });
+      var colors = fixedOrder.map(function(s) { return sectionColor(s); });
+
+      var ctx = document.getElementById('chart-clicks').getContext('2d');
+      if (charts.clicks) charts.clicks.destroy();
+      var softColors = ['#818CF8','#38BDF8','#34D399','#FBBF24'];
+      var totalClicks = data.reduce(function(a,b) { return a + b; }, 0);
+      if (totalClicks === 0) { renderEmptyChart('chart-clicks', 'doughnut'); return; }
+      charts.clicks = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: totalClicks > 0 ? data : [1],
+            backgroundColor: totalClicks > 0 ? softColors : ['#e2e8f0'],
+            borderWidth: 2,
+            borderColor: '#fff',
+            hoverBorderWidth: 3,
+            hoverBorderColor: '#fff',
+            hoverOffset: 3,
+            borderRadius: 4,
+            spacing: 3
+          }]
+        },
+        options: {
+          cutout: '58%',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            datalabels: {
+              color: '#fff',
+              font: { size: 10, weight: '700' },
+              formatter: function(v, ctx) { return v > 0 ? ctx.chart.data.labels[ctx.dataIndex] : ''; },
+              textAlign: 'center',
+              display: function(ctx) { return ctx.dataset.data[ctx.dataIndex] > 0; }
+            },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              padding: 8,
+              cornerRadius: 8,
+              usePointStyle: true,
+              boxWidth: 7,
+              boxHeight: 7,
+              boxPadding: 3,
+              caretSize: 0,
+              bodyFont: { size: 10 },
+              callbacks: {
+                title: function() { return ''; },
+                label: function(ctx) {
+                  var label = ctx.label || '';
+                  if (label) label += ': ';
+                  label += ctx.parsed;
+                  return label;
+                }
+              }
+            }
+          }
+        }
+      });
+    } catch (e) {
+      console.error('[Dashboard] Clicks chart error:', e);
+    }
+  }
+
+  // ============================================================
+  // 模块停留时间
+  // ============================================================
+  async function loadDwellChart() {
+    var since = getSinceISO();
+    try {
+      var q = applyTimeFilter(supabase.from('events').select('section, metadata').eq('event_type', 'section_leave'), 'timestamp');
+      if (deviceFilter && window._filteredSessionIds) {
+        if (window._filteredSessionIds.length === 0) { renderEmptyChart('chart-dwell', 'bar'); return; }
+        q = q.in('session_id', window._filteredSessionIds);
+      }
+      var r = await q;
+
+      // 只统计四大模块
+      var validSections = { design:1, solution:1, doc:1, mgmt:1 };
+      var fixedOrder = ['design','solution','doc','mgmt'];
+      var dwellBySection = { design:0, solution:0, doc:0, mgmt:0 };
+      var countBySection = { design:0, solution:0, doc:0, mgmt:0 };
+      (r.data || []).forEach(function(e) {
+        if (!validSections[e.section]) return;
+        var ms = (e.metadata && e.metadata.dwell_ms) ? e.metadata.dwell_ms : 0;
+        dwellBySection[e.section] += ms;
+        countBySection[e.section]++;
+      });
+
+      var shortLabels = { design: '产品', solution: '方案', doc: '文档', mgmt: '管理' };
+      var entries = fixedOrder.map(function(k) {
+        return { section: k, avg: countBySection[k] > 0 ? Math.round(dwellBySection[k] / countBySection[k] / 1000) : 0 };
+      });
+
+      var hasDwell = entries.some(function(e) { return e.avg > 0; });
+      if (!hasDwell) { renderEmptyChart('chart-dwell', 'bar'); return; }
+      var ctx = document.getElementById('chart-dwell').getContext('2d');
+      if (charts.dwell) charts.dwell.destroy();
+      var barColors = ['#818CF8','#38BDF8','#34D399','#FBBF24'];
+      charts.dwell = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: fixedOrder.map(function(k) { return shortLabels[k]; }),
+          datasets: [{
+            data: fixedOrder.map(function(k) { return entries.find(function(e) { return e.section === k; }).avg; }),
+            backgroundColor: fixedOrder.map(function(k,i) { return barColors[i]; }),
+            borderWidth: 2,
+            borderColor: 'transparent',
+            hoverBorderWidth: 2,
+            hoverBorderColor: '#fff',
+            borderRadius: 8,
+            borderSkipped: false,
+            barThickness: 12
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            datalabels: { display: false },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              padding: 8,
+              cornerRadius: 8,
+              usePointStyle: true,
+              boxWidth: 7,
+              boxHeight: 7,
+              boxPadding: 3,
+              caretSize: 0,
+              bodyFont: { size: 10 },
+              callbacks: {
+                title: function() { return ''; },
+                label: function(ctx) {
+                  var label = ctx.label || '';
+                  if (label) label += ': ';
+                  label += ctx.raw + 's';
+                  return label;
+                }
+              }
+            }
+          },
+          scales: {
+            x: { beginAtZero: true, ticks: { font: { size: 10 }, color: '#94a3b8', callback: function(v) { return v + 's'; } }, grid: { display: false }, border: { display: false } },
+            y: { ticks: { font: { size: 11 }, color: '#475569', padding: 4 }, grid: { display: false }, border: { display: false } }
+          }
+        }
+      });
+    } catch (e) {
+      console.error('[Dashboard] Dwell chart error:', e);
+    }
+  }
+
+  // ============================================================
+  // 设备分布
+  // ============================================================
+  async function loadDeviceChart() {
+    var since = getSinceISO();
+    try {
+      var q = applyTimeFilter(supabase.from('sessions').select('visitor_id, device_name'), 'start_time');
+      if (deviceFilter) { q = q.eq('visitor_id', deviceFilter.visitor_id); }
+      var r = await q;
+
+      // 按 visitor_id 去重，与设备列表保持一致
+      var counts = {};
+      var seenVisitors = {};
+      (r.data || []).forEach(function(s) {
+        if (seenVisitors[s.visitor_id]) return;
+        seenVisitors[s.visitor_id] = true;
+        var t = s.device_name || 'Unknown';
+        counts[t] = (counts[t] || 0) + 1;
+      });
+
+      var palette = ['#818CF8','#38BDF8','#34D399','#FBBF24','#F472B6','#A78BFA','#FB923C','#2DD4BF'];
+      var entries = Object.entries(counts).sort(function(a,b) { return b[1] - a[1]; });
+      if (entries.length === 0) { renderEmptyChart('chart-device', 'doughnut'); return; }
+      var ctx = document.getElementById('chart-device').getContext('2d');
+      if (charts.device) charts.device.destroy();
+      charts.device = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: entries.map(function(e) { return e[0]; }),
+          datasets: [{
+            data: entries.map(function(e) { return e[1]; }),
+            backgroundColor: entries.map(function(e, i) { return palette[i % palette.length]; }),
+            borderWidth: 2,
+            borderColor: '#fff',
+            hoverBorderWidth: 3,
+            hoverBorderColor: '#fff',
+            hoverOffset: 3,
+            borderRadius: 4,
+            spacing: 2
+          }]
+        },
+        options: {
+          cutout: '58%',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            datalabels: {
+              color: '#fff',
+              font: { size: 10, weight: '700' },
+              formatter: function(v, ctx) {
+                if (v <= 0) return '';
+                var name = ctx.chart.data.labels[ctx.dataIndex];
+                return name.substring(0, 3);
+              },
+              textAlign: 'center',
+              display: function(ctx) { return ctx.dataset.data[ctx.dataIndex] > 0; }
+            },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              padding: 8,
+              cornerRadius: 8,
+              usePointStyle: true,
+              boxWidth: 7,
+              boxHeight: 7,
+              boxPadding: 3,
+              caretSize: 0,
+              bodyFont: { size: 10 },
+              callbacks: {
+                title: function() { return ''; },
+                label: function(ctx) {
+                  var label = ctx.label || '';
+                  if (label) label += ': ';
+                  label += ctx.parsed;
+                  return label;
+                }
+              }
+            }
+          }
+        }
+      });
+    } catch (e) {
+      console.error('[Dashboard] Device chart error:', e);
+    }
+  }
+
+
+  // ============================================================
+  // 模块点击
+  // ============================================================
+  async function loadClickDetail() {
+    try {
+      var q = supabase.from('events').select('element_text, section, metadata').eq('event_type', 'click');
+      q = applyTimeFilter(q, 'timestamp');
+      if (deviceFilter && window._filteredSessionIds) {
+        if (window._filteredSessionIds.length === 0) {
+          document.getElementById('click-detail-tbody').innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text3);padding:12px;">暂无数据</td></tr>';
+          return;
+        }
+        q = q.in('session_id', window._filteredSessionIds);
+      }
+      var r = await q;
+
+      // 同时查 section 停留时长
+      var qDwell = supabase.from('events').select('section, metadata').eq('event_type', 'section_leave');
+      qDwell = applyTimeFilter(qDwell, 'timestamp');
+      if (deviceFilter && window._filteredSessionIds) qDwell = qDwell.in('session_id', window._filteredSessionIds);
+      var rDwell = await qDwell;
+      var secMs = {}, secN = {};
+      (rDwell.data || []).forEach(function(e) {
+        var ms = (e.metadata && e.metadata.dwell_ms) ? e.metadata.dwell_ms : 0;
+        var s = e.section || 'other';
+        secMs[s] = (secMs[s] || 0) + ms;
+        secN[s] = (secN[s] || 0) + 1;
+      });
+
+      // 聚合点击：合并同类项的图片序号
+      var clickMap = {};
+      (r.data || []).forEach(function(e) {
+        var key = e.element_text || '未知';
+        // 归一化图片点击：产品展示（1/2）→ 产品展示
+        key = key.replace(/（\d+\/\d+）$/, '');
+        if (!clickMap[key]) clickMap[key] = { count:0, sec:e.section };
+        clickMap[key].count++;
+      });
+
+      // 排序并渲染
+      var entries = Object.entries(clickMap).sort(function(a, b) { return b[1].count - a[1].count; });
+      var tbody = document.getElementById('click-detail-tbody');
+      if (entries.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text3);padding:12px;">暂无数据</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = entries.map(function(e) {
+        var s = e[1].sec; var ms = secMs[s] || 0; var n = secN[s] || 0; var avg = n > 0 ? Math.round(ms / n / 1000) : 0;
+        return '<tr><td>' + escapeHtml(e[0]) + '</td><td style="text-align:right;font-weight:600;padding-right:16px;">' + e[1].count + '</td><td style="text-align:right;color:var(--text2);">' + (avg > 0 ? formatDuration(avg) : '--') + '</td></tr>';
+      }).join('');
+    } catch (e) {
+      console.error('[Dashboard] Click detail error:', e);
+    }
+  }
+
+  // ============================================================
+  // 事件表格
+  // ============================================================
+  async function loadEventsTable() {
+    var since = getSinceISO();
+    try {
+      var query = supabase
+        .from('events')
+        .select('timestamp, event_type, element_text, module, section')
+        .order('timestamp', { ascending: false })
+        .limit(50);
+      query = applyTimeFilter(query, 'timestamp');
+
+      if (deviceFilter && window._filteredSessionIds) {
+        if (window._filteredSessionIds.length === 0) {
+          document.getElementById('events-tbody').innerHTML =
+            '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px;">暂无数据</td></tr>';
+          return;
+        }
+        query = query.in('session_id', window._filteredSessionIds);
+      }
+
+      var r = await query;
+
+      var tbody = document.getElementById('events-tbody');
+      if (!r.data || r.data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px;">暂无数据</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = r.data.map(function(e) {
+        var time = new Date(e.timestamp).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+        return '<tr>' +
+          '<td>' + time + '</td>' +
+          '<td><span class="evt-type ' + e.event_type + '">' + eventTypeLabel(e.event_type) + '</span></td>' +
+          '<td>' + escapeHtml(e.element_text || '-') + '</td>' +
+          '<td>' + escapeHtml(e.module || '-') + '</td>' +
+          '<td>' + sectionLabel(e.section) + '</td>' +
+          '</tr>';
+      }).join('');
+
+      window._lastEvents = r.data;
+    } catch (e) {
+      console.error('[Dashboard] Events table error:', e);
+    }
+  }
+
+  // ============================================================
+  // 设备列表加载
+  // ============================================================
+  async function loadDeviceList() {
+    var since = getSinceISO();
+    try {
+      // 查询所有 session 的设备信息，按 visitor_id 去重聚合
+      var q = applyTimeFilter(supabase
+        .from('sessions')
+        .select('visitor_id, device_name, device_brand, device_model, device_type, os, browser, screen_width, screen_height, start_time, duration_seconds')
+        .order('start_time', { ascending: false }), 'start_time');
+      var r = await q;
+
+      if (!r.data || r.data.length === 0) {
+        document.getElementById('device-tbody').innerHTML =
+          '<tr><td colspan="10" style="text-align:center;color:var(--text3);padding:12px;">暂无数据</td></tr>';
+        return;
+      }
+
+      // 按 visitor_id 去重聚合
+      var deviceMap = {};
+      r.data.forEach(function(s) {
+        var vid = s.visitor_id;
+        if (!deviceMap[vid]) {
+          deviceMap[vid] = {
+            visitor_id: vid,
+            device_name: s.device_name || 'Unknown',
+            device_brand: s.device_brand || 'Unknown',
+            device_model: s.device_model || 'Unknown',
+            device_type: s.device_type || 'unknown',
+            os: s.os || 'Unknown',
+            browser: s.browser || 'Unknown',
+            screen: (s.screen_width || 0) + '×' + (s.screen_height || 0),
+            visit_count: 0,
+            last_seen: s.start_time,
+            total_duration: 0
+          };
+        }
+        deviceMap[vid].visit_count++;
+        if (s.start_time > deviceMap[vid].last_seen) {
+          deviceMap[vid].last_seen = s.start_time;
+        }
+        deviceMap[vid].total_duration += (s.duration_seconds || 0);
+      });
+
+      var devices = Object.values(deviceMap);
+      // 按最近访问排序
+      devices.sort(function(a, b) { return b.last_seen.localeCompare(a.last_seen); });
+
+      var tbody = document.getElementById('device-tbody');
+      var isFiltered = !!deviceFilter;
+
+      tbody.innerHTML = devices.map(function(d) {
+        var lastSeen = new Date(d.last_seen);
+        var now = new Date();
+        var diffMs = now - lastSeen;
+        var diffStr = diffMs < 60000 ? '刚刚' :
+          diffMs < 3600000 ? Math.floor(diffMs / 60000) + '分钟前' :
+          diffMs < 86400000 ? Math.floor(diffMs / 3600000) + '小时前' :
+          Math.floor(diffMs / 86400000) + '天前';
+
+        var isSelected = deviceFilter && deviceFilter.visitor_id === d.visitor_id;
+        var rowStyle = isSelected ? 'background:rgba(99,102,241,.06);font-weight:500;' : '';
+
+        return '<tr style="cursor:pointer;' + rowStyle + '" onclick="window._selectDevice(\'' + d.visitor_id + '\', \'' + escapeHtml(d.device_name).replace(/'/g, "\\'") + '\')">' +
+          '<td>' + escapeHtml(d.device_name) + '</td>' +
+          '<td>' + escapeHtml(d.device_brand) + '</td>' +
+          '<td>' + escapeHtml(d.device_model) + '</td>' +
+          '<td>' + escapeHtml(d.os) + '</td>' +
+          '<td>' + escapeHtml(d.browser) + '</td>' +
+          '<td style="font-size:10px;">' + d.screen + '</td>' +
+          '<td>' + d.visit_count + ' 次</td>' +
+          '<td>' + formatDuration(Math.round(d.total_duration)) + '</td>' +
+          '<td style="font-size:10px;">' + diffStr + '</td>' +
+          '<td><button class="dbtn btn-view" style="font-size:10px;padding:5px 14px;border-radius:6px;margin-left:4px;vertical-align:middle;" onclick="event.stopPropagation();window._selectDevice(\'' + d.visitor_id + '\',\'' + escapeHtml(d.device_name).replace(/'/g,"\\'") + '\')">查看</button></td>' +
+          '</tr>';
+      }).join('');
+
+    } catch (e) {
+      console.error('[Dashboard] Device list error:', e);
+    }
+  }
+
+  // 设备选择回调（挂到 window 供 onclick 调用）
+  window._selectDevice = function(visitorId, deviceName) {
+    if (deviceFilter && deviceFilter.visitor_id === visitorId) {
+      deviceFilter = null;
+      window._filteredSessionIds = null;
+    } else {
+      deviceFilter = { visitor_id: visitorId, device_name: deviceName };
+      showToast(deviceName);
+    }
+    refreshAllData();
+  };
+
+  
+  // ============================================================
+  // ============================================================
+  // 辅助函数
+  // ============================================================
+  function renderEmptyChart(canvasId, type) {
+    var ctx = document.getElementById(canvasId).getContext('2d');
+    if (charts[canvasId]) charts[canvasId].destroy();
+    charts[canvasId] = new Chart(ctx, {
+      type: type || 'doughnut',
+      data: { labels: [], datasets: [{ data: [1], backgroundColor: ['#e8ecf1'], borderWidth: 0 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        cutout: type === 'bar' ? 0 : '58%',
+        plugins: { legend: { display: false }, datalabels: { display: false }, tooltip: { enabled: false } }
+      }
+    });
+  }
+
+  function sectionLabel(s) {
+    var map = { hero: 'Hero', design: '代表产品', solution: '方案设计', doc: '文档撰写', mgmt: '项目管理', about: '关于/Footer', nav: '导航栏', modal: '弹窗', other: '其他' };
+    return map[s] || s || '未知';
+  }
+
+  function sectionColor(s) {
+    var map = { hero: '#0F172A', design: '#4F46E5', solution: '#06B6D4', doc: '#10B981', mgmt: '#F97316', about: '#64748B', nav: '#8B5CF6', modal: '#EC4899', other: '#94a3b8' };
+    return map[s] || '#94a3b8';
+  }
+
+  function deviceLabel(d) {
+    var map = { desktop: '桌面端', mobile: '移动端', tablet: '平板', unknown: '未知' };
+    return map[d] || d;
+  }
+
+  function eventTypeLabel(t) {
+    var map = { click: '点击', section_enter: '进入页面', section_leave: '离开页面', scroll_depth: '滚动深度' };
+    return map[t] || t;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '-';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function hollowLegend(chart) {
+    var ds = chart.data.datasets[0];
+    return chart.data.labels.map(function(label, i) {
+      return {
+        text: label,
+        fillStyle: 'transparent',
+        strokeStyle: ds.backgroundColor[i],
+        lineWidth: 0.5,
+        hidden: false,
+        index: i,
+        pointStyle: 'circle',
+        radius: 3,
+        rotation: 0
+      };
+    });
+  }
+
+  function showToast(msg) {
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 2500);
+  }
+
+  function showConfirm(title, msg, onOk) {
+    document.getElementById('confirm-msg').textContent = msg;
+    var overlay = document.getElementById('confirm-overlay');
+    overlay.style.display = 'flex';
+    document.getElementById('confirm-ok').onclick = function() {
+      overlay.style.display = 'none';
+      if (onOk) onOk();
+    };
+    document.getElementById('confirm-cancel').onclick = function() {
+      overlay.style.display = 'none';
+    };
+    overlay.onclick = function(e) {
+      if (e.target === overlay) overlay.style.display = 'none';
+    };
+  }
+
+  // ============================================================
+  // 初始化
+  // ============================================================
+  // ============================================================
+  // 刷新所有数据（含设备筛选预加载）
+  // ============================================================
+  async function refreshAllData() {
+    // 预加载筛选后的 session IDs
+    if (deviceFilter) {
+      var q = supabase.from('sessions').select('session_id').eq('visitor_id', deviceFilter.visitor_id);
+      q = applyTimeFilter(q, 'start_time');
+      var r = await q;
+      window._filteredSessionIds = (r.data || []).map(function(s) { return s.session_id; });
+    } else {
+      window._filteredSessionIds = null;
+    }
+
+    // 并行加载所有数据
+    await Promise.all([
+      loadMetrics(),
+      loadDeviceList(),
+      loadTrendChart(),
+      loadClicksChart(),
+      loadDwellChart(),
+      loadDeviceChart(),
+      loadEventsTable(),
+      loadClickDetail()
+    ]);
+  }
+
+  // ============================================================
+  // 日历功能
+  // ============================================================
+  async function loadCalendarData() {
+    // 查询有数据的日期列表
+    var r = await supabase.from('pageviews').select('timestamp').gte('timestamp', '2000-01-01').order('timestamp', { ascending: true });
+    var datesWithData = new Set();
+    (r.data || []).forEach(function(p) {
+      datesWithData.add(p.timestamp.split('T')[0]);
+    });
+    return datesWithData;
+  }
+
+  function renderCalendar(datesWithData) {
+    var daysEl = document.getElementById('cal-days');
+    var labelEl = document.getElementById('cal-month-label');
+    var now = new Date();
+    if (!calYear) { calYear = now.getFullYear(); calMonth = now.getMonth() + 1; }
+
+    labelEl.textContent = calYear + '年 ' + calMonth + '月';
+
+    var firstDay = new Date(calYear, calMonth - 1, 1).getDay(); // 0=Sun
+    var daysInMonth = new Date(calYear, calMonth, 0).getDate();
+    var todayStr = now.toISOString().split('T')[0];
+
+    var html = '';
+    var hasSelection = (typeof currentRange === 'object' && currentRange.start);
+    // padding
+    for (var i = 0; i < firstDay; i++) { html += '<span></span>'; }
+    for (var d = 1; d <= daysInMonth; d++) {
+      var dateStr = calYear + '-' + String(calMonth).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+      var hasData = datesWithData.has(dateStr);
+      var isToday = dateStr === todayStr;
+      var isSelected = hasSelection && dateStr >= currentRange.start && dateStr <= (currentRange.end || currentRange.start);
+      // 没有选中任何日期时，今天默认为选中态
+      if (!hasSelection && isToday) isSelected = true;
+
+      var style = 'width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:50%;font-size:11px;transition:all .2s;position:relative;margin:0 auto;';
+      if (isSelected) {
+        style += 'background:#4F46E5;color:#fff;font-weight:600;';
+      } else if (hasData) {
+        style += 'color:#1e293b;';
+      } else {
+        style += 'color:#cbd5e1;cursor:default;pointer-events:none;';
+      }
+
+      html += '<div style="' + style + '" data-date="' + dateStr + '" ' + (hasData ? 'class="cal-has-data"' : '') + '>' +
+        d +
+        (hasData && !isSelected ? '<span style="position:absolute;bottom:2px;left:50%;margin-left:-2px;width:4px;height:4px;border-radius:50%;background:#4F46E5;display:inline-block;"></span>' : '') +
+        '</div>';
+    }
+    daysEl.innerHTML = html;
+
+    // 点击日期
+    daysEl.querySelectorAll('.cal-has-data').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var dateStr = this.getAttribute('data-date');
+        // 单选日期
+        currentRange = { start: dateStr, end: dateStr };
+        currentRangeLabel = dateStr;
+        document.querySelectorAll('.dbtn[data-range]').forEach(function(b) { b.classList.remove('active'); });
+        document.getElementById('btn-calendar').classList.add('active');
+        document.getElementById('calendar-popup').style.display = 'none';
+        refreshAllData();
+      });
+    });
+  }
+
+  async function toggleCalendar() {
+    var popup = document.getElementById('calendar-popup');
+    if (popup.style.display === 'none') {
+      var datesWithData = await loadCalendarData();
+      var now = new Date();
+      calYear = now.getFullYear();
+      calMonth = now.getMonth() + 1;
+      renderCalendar(datesWithData);
+
+      // fixed 定位：右边缘与设备卡片右边缘对齐
+      var btn = document.getElementById('btn-calendar');
+      var btnRect = btn.getBoundingClientRect();
+      var popupW = 290;
+      // 以设备卡片的右边缘为基准
+      var deviceCard = document.getElementById('device-table').closest('.chart-card');
+      var rightEdge = deviceCard ? deviceCard.getBoundingClientRect().right : btnRect.right;
+      var left = rightEdge - popupW + 2;
+      if (left < 8) left = 8;
+      popup.style.left = left + 'px';
+      popup.style.top = (btnRect.bottom + 6) + 'px';
+      popup.style.display = 'block';
+    } else {
+      popup.style.display = 'none';
+    }
+  }
+
+  async function initDashboard() {
+    if (!initSupabase()) {
+      showToast('Supabase SDK 加载失败，请检查网络');
+      return;
+    }
+
+    await refreshAllData();
+
+    // 日期切换按钮
+    document.querySelectorAll('.dbtn[data-range]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.dbtn[data-range]').forEach(function(b) { b.classList.remove('active'); });
+        document.getElementById('btn-calendar').classList.remove('active');
+        btn.classList.add('active');
+        var range = btn.getAttribute('data-range');
+        if (range === 'all') {
+          currentRange = 'all';
+          currentRangeLabel = '总览';
+        } else {
+          currentRange = parseInt(range);
+          currentRangeLabel = btn.textContent.trim();
+        }
+        document.getElementById('calendar-popup').style.display = 'none';
+        refreshAllData();
+      });
+    });
+
+    // 日历按钮
+    document.getElementById('btn-calendar').addEventListener('click', function(e) {
+      e.stopPropagation();
+      document.querySelectorAll('.dbtn[data-range]').forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      toggleCalendar();
+    });
+
+    // 日历翻月
+    document.getElementById('cal-prev').addEventListener('click', async function(e) {
+      e.stopPropagation();
+      calMonth--; if (calMonth < 1) { calMonth = 12; calYear--; }
+      renderCalendar(await loadCalendarData());
+    });
+    document.getElementById('cal-next').addEventListener('click', async function(e) {
+      e.stopPropagation();
+      calMonth++; if (calMonth > 12) { calMonth = 1; calYear++; }
+      renderCalendar(await loadCalendarData());
+    });
+
+    // 点击外面关日历
+    document.addEventListener('click', function(e) {
+      var popup = document.getElementById('calendar-popup');
+      if (popup.style.display !== 'none' && !popup.contains(e.target) && e.target.id !== 'btn-calendar') {
+        popup.style.display = 'none';
+      }
+    });
+
+
+    // 清除全部数据（自定义弹窗）
+    document.getElementById('btn-clear').addEventListener('click', function() {
+      showConfirm('', '确定清除所有数据？此操作不可恢复', async function() {
+        try {
+          showToast('正在清除...');
+          await supabase.from('events').delete().not('id', 'is', null);
+          await supabase.from('pageviews').delete().not('id', 'is', null);
+          await supabase.from('sessions').delete().not('id', 'is', null);
+          await supabase.from('daily_summary').delete().not('date', 'is', null);
+          showToast('✅ 数据已全部清除');
+          refreshAllData();
+        } catch (e) {
+          console.error('Clear error:', e);
+          showToast('❌ 清除失败，请检查权限');
+        }
+      });
+    });
+
+  }
+
+  // ============================================================
+  // 启动
+  // ============================================================
+  // 暴露给登录脚本调用
+  window._initDashboard = initDashboard;
+
+  // 恢复登录会话
+  if (localStorage.getItem('_ad_auth') === '1') {
+    document.getElementById('auth-gate').classList.add('hidden');
+    document.getElementById('dashboard').classList.add('visible');
+    document.getElementById('dashboard').style.display = '';
+    document.body.style.overflow = '';
+    initDashboard();
+  } else {
+    document.getElementById('dashboard').style.display = 'none';
+  }
+
+  // 退出确认
+  var logoutBtn = document.getElementById('btn-logout');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function() {
+      var overlay = document.getElementById('confirm-overlay');
+      document.getElementById('confirm-msg').textContent = '确定要退出登录吗？';
+      overlay.style.display = 'flex';
+      document.getElementById('confirm-ok').onclick = function() {
+        overlay.style.display = 'none';
+        localStorage.removeItem('_ad_auth');
+        location.reload();
+      };
+      document.getElementById('confirm-cancel').onclick = function() {
+        overlay.style.display = 'none';
+      };
+      overlay.onclick = function(e) {
+        if (e.target === overlay) overlay.style.display = 'none';
+      };
+    });
+  }
+})();
+</script>
+<!-- Calendar Popup -->
+<div id="calendar-popup" style="display:none;position:fixed;z-index:9999;background:#fff;border:1px solid #e8ecf1;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.15);padding:18px;min-width:288px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <button id="cal-prev" style="border:none;background:#f8fafc;cursor:pointer;font-size:10px;width:24px;height:24px;border-radius:50%;color:#64748b;display:flex;align-items:center;justify-content:center;">◀</button>
+    <span id="cal-month-label" style="font-size:13px;font-weight:600;"></span>
+    <button id="cal-next" style="border:none;background:#f8fafc;cursor:pointer;font-size:10px;width:24px;height:24px;border-radius:50%;color:#64748b;display:flex;align-items:center;justify-content:center;">▶</button>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:10px;color:#94a3b8;font-weight:500;margin-bottom:8px;padding:0 2px;">
+    <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+  </div>
+  <div id="cal-days" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center;"></div>
+</div>
+
+<!-- Custom Confirm Dialog -->
+<div id="confirm-overlay" class="c-overlay" style="display:none;">
+  <div class="c-dialog">
+    <p id="confirm-msg"></p>
+    <div class="c-btns">
+      <button class="c-btn-cancel" id="confirm-cancel">取消</button>
+      <button class="c-btn-danger" id="confirm-ok">确认</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -836,8 +836,8 @@ document.querySelector('.modal-box').classList.add('glass');
     if (pd.outputs && pd.outputs.length) { desc += ' ' + pd.outputs.map(function(o){return o.detail}).join('；'); }
     var metrics = (customMetrics.hasOwnProperty(key)) ? customMetrics[key].slice() : (pd.metrics ? pd.metrics.slice() : []);
 
-    var dotColor = pd.cat === '反电信网络诈骗类' ? '#0055FF' : pd.cat === '区块链数字资产交易类' ? '#00A3E0' : pd.cat === '互联网金融类' ? '#00B853' : pd.cat === '金融支付类' ? '#7B3DFF' : '#FF7700';
-    var tagBg = pd.cat === '反电信网络诈骗类' ? 'rgba(0,85,255,.08)' : pd.cat === '区块链数字资产交易类' ? 'rgba(0,163,224,.08)' : pd.cat === '互联网金融类' ? 'rgba(0,184,83,.08)' : pd.cat === '金融支付类' ? 'rgba(123,61,255,.08)' : 'rgba(255,119,0,.08)';
+    var dotColor = pd.cat === '反电信网络诈骗类' ? '#0055FF' : pd.cat === '区块链数字资产交易类' ? '#00A3E0' : pd.cat === '互联网金融类' ? '#00B853' : pd.cat === '金融支付类' ? '#7B3DFF' : '#DC2626';
+    var tagBg = pd.cat === '反电信网络诈骗类' ? 'rgba(0,85,255,.08)' : pd.cat === '区块链数字资产交易类' ? 'rgba(0,163,224,.08)' : pd.cat === '互联网金融类' ? 'rgba(0,184,83,.08)' : pd.cat === '金融支付类' ? 'rgba(123,61,255,.08)' : 'rgba(220,38,38,.08)';
     var titleHtml = '<div style="display:flex;align-items:center;gap:12px;">';
     if (pd.logo) { var logoSize = pd.logoSize || 32; var logoWrap = pd.logoBg ? 'background:#fff;padding:4px;box-shadow:0 1px 3px rgba(0,0,0,.04);' : ''; titleHtml += '<span style="flex-shrink:0;display:flex;align-items:center;justify-content:center;width:' + logoSize + 'px;height:' + logoSize + 'px;border-radius:7px;' + logoWrap + '"><img src="' + pd.logo + '" style="width:100%;height:100%;object-fit:contain;"></span>'; }
     titleHtml += '<h3 style="margin:0;">' + (customDesignItems[key] || pd.name) + '</h3></div>';

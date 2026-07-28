@@ -75,9 +75,11 @@
               // 2) 本地有但云端无 → 从本地移除（在其他浏览器被删除了）
               var removed = false;
               if (urls.length === 0 && existing.length > 0) {
-                // 云端清空了 → 本地也清空
+                // 云端清空了 → 本地（localStorage + sessionStorage + IndexedDB）也清空
                 merged = [];
                 removed = true;
+                try { sessionStorage.removeItem(localKey); } catch(e) {}
+                _prodDBSave(localKey, []);
               } else if (urls.length > 0 && existing.length > 0) {
                 // 过滤掉本地不在云端列表中的 Supabase URL
                 var filtered = existing.filter(function(item) {
@@ -142,7 +144,7 @@
         );
       });
       return Promise.all(uploads).then(function() {
-        if (hasUpdate) location.reload();
+        if (hasUpdate) setTimeout(function() { location.reload(); }, 300);
       });
     });
   }
@@ -244,7 +246,7 @@
       if (localUrls.size > 0) {
         map[key] = Array.from(localUrls);
       } else {
-        delete map[key];
+        map[key] = [];
       }
       try { localStorage.setItem(contentKey, JSON.stringify(map)); } catch(e) {}
       // Push to Supabase

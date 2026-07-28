@@ -134,7 +134,9 @@
   function listFiles(category, key) {
     if (!_online) return Promise.resolve([]);
 
-    var prefix = category + '/' + key + '/';
+    var prefix = category + '/' + (key || '') + '/';
+    // clean double slashes
+    prefix = prefix.replace(/\/{2,}/g, '/');
     return fetch(
       apiURL('/storage/v1/object/list/' + BUCKET + '?prefix=' + encodeURIComponent(prefix)),
       { headers: apiHeaders() }

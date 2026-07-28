@@ -39,7 +39,8 @@
     rg.appendChild(inn);ov.appendChild(rg);document.body.appendChild(ov);
     function upd(p){inn.textContent=p+'%';rg.style.background='conic-gradient(#10B981 '+p*3.6+'deg,transparent 0deg)';}
     function finish(){save(k,a,function(){
-      if(window.DS&&window.DS.isOnline()){for(var ci=Math.max(0,a.length-t);ci<a.length;ci++){window.DS.uploadCompressedImage(a[ci],'prod',k,'img_'+ci+'.jpg').catch(function(){});}}
+      console.log('[Cloud] prod_finish DS='+!!window.DS+' online='+(window.DS?window.DS.isOnline():'N/A'));
+      if(window.DS&&window.DS.isOnline()){for(var ci=Math.max(0,a.length-t);ci<a.length;ci++){(function(idx){window.DS.uploadCompressedImage(a[idx],'prod',k,'img_'+idx+'.jpg').then(function(url){console.log('[Cloud] prod上传成功:',url)}).catch(function(err){console.error('[Cloud] prod上传失败:',err)})})(ci)}}else{console.log('[Cloud] prod跳过:',!!window.DS,!!(window.DS&&window.DS.isOnline()))}
       setTimeout(function(){ov.innerHTML='<div style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:10000;background:rgba(255,255,255,.55);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.4);border-radius:30px;padding:8px 18px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.6);font-size:12px;color:var(--text)"><span style="display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#10B981;color:#fff;font-size:11px;flex-shrink:0">&#10003;</span><span>上传成功，共 <b>'+a.length+'</b> 张</span></div>';},100);setTimeout(function(){ov.remove();},2000);});}
     for(var i=0;i<f.length;i++){(function(idx){compress(f[idx],function(d){a.push(d);dn++;upd(Math.round(dn/t*100));if(window._prodRebuild)window._prodRebuild(k,a,false);if(dn>=t)finish();});})(i);}
   });};

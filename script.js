@@ -16,12 +16,9 @@
     }
   }
 
-  /** 页面加载时从 Supabase 拉取云端文本内容，合并到 localStorage */
+  /** 页面加载时双向同步：上传本地 → 下载云端 → 合并刷新 */
   function _initCloudContent() {
     if (!window.DS || !window.DS.isOnline()) return;
-    // 每会话只同步一次，避免无限重载
-    if (sessionStorage.getItem('_cloud_synced') === '1') return;
-    sessionStorage.setItem('_cloud_synced', '1');
 
     var CONTENT_KEYS = [
       '_custom_sec_titles', '_custom_prod_descs', '_custom_prod_metrics',
@@ -31,56 +28,77 @@
       '_custom_doc_descs', '_custom_design_cats', '_custom_design_items',
       '_design_desc'
     ];
-    var pending = CONTENT_KEYS.length;
+
+    // 第一步：从云端下载并合并到本地
+    var downloads = [];
     var hasUpdate = false;
     CONTENT_KEYS.forEach(function(k) {
-      window.DS.loadContent(k).then(function(cloudVal) {
-        pending--;
-        if (cloudVal != null) {
-          // 检查云端数据是否和本地不同
-          var localRaw = localStorage.getItem(k);
-          var localVal = null;
-          try { if (localRaw) localVal = JSON.parse(localRaw); } catch(e) {}
-          if (JSON.stringify(cloudVal) !== JSON.stringify(localVal)) {
-            try { localStorage.setItem(k, JSON.stringify(cloudVal)); } catch(e) {}
-            hasUpdate = true;
+      downloads.push(
+        window.DS.loadContent(k).then(function(cloudVal) {
+          if (cloudVal != null) {
+            var localRaw = localStorage.getItem(k);
+            var localVal = null;
+            try { if (localRaw) localVal = JSON.parse(localRaw); } catch(e) { localVal = localRaw; }
+            if (JSON.stringify(cloudVal) !== JSON.stringify(localVal)) {
+              try { localStorage.setItem(k, JSON.stringify(cloudVal)); } catch(e) {}
+              hasUpdate = true;
+            }
           }
-        }
-        if (pending <= 0 && hasUpdate) {
-          // 云端有更新，刷新页面让初始化逻辑重新应用
-          location.reload();
-        }
-      }).catch(function() { pending--; });
+        }).catch(function(){})
+      );
     });
 
-    // 同时检查本地是否有未同步的内容，自动上传到云端
-    _autoMigrateIfNeeded();
-  }
-
-  /** 如果本地有内容但云端为空，自动同步 */
-  function _autoMigrateIfNeeded() {
-    if (!window.DS || !window.DS.isOnline()) return;
-    if (localStorage.getItem('_migration_done') === '1') return;
-    // 检查是否有本地数据
-    var hasLocal = false;
-    var localKeys = [
-      '_custom_sec_titles', '_custom_prod_descs', '_custom_prod_metrics',
-      '_custom_sln_data', '_custom_mgmt_steps', '_design_desc'
-    ];
-    for (var i = 0; i < localKeys.length; i++) {
-      if (localStorage.getItem(localKeys[i])) { hasLocal = true; break; }
-    }
-    if (!hasLocal) { localStorage.setItem('_migration_done', '1'); return; }
-    // 有本地数据，执行静默迁移
-    window.DS.migrateFromLocal().then(function(r) {
-      console.log('[Cloud] 自动迁移完成:', r.migrated + '/' + r.total);
-    }).catch(function(){});
+    // 第二步：上传本地数据到云端（直接用 fetch，绕过 DS）
+    Promise.all(downloads).then(function() {
+      var SUPABASE_URL = 'https://gvnzxuldnbdrsvclvuul.supabase.co';
+      var SUPABASE_KEY = 'sb_publishable_dTms1JmEP3yG9MoNI32y-Q_GI9bUjAg';
+      var uploads = [];
+      CONTENT_KEYS.forEach(function(k) {
+        var raw = localStorage.getItem(k);
+        if (!raw) return;
+        var val;
+        try { val = JSON.parse(raw); } catch(e) { val = raw; }
+        uploads.push(
+          fetch(SUPABASE_URL + '/rest/v1/portfolio_content?key=eq.' + encodeURIComponent(k), {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': 'Bearer ' + SUPABASE_KEY,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify({ key: k, value: val, updated_at: new Date().toISOString() })
+          }).then(function(r) {
+            if (!r.ok) {
+              // PATCH 失败（行不存在），回退到 POST
+              return fetch(SUPABASE_URL + '/rest/v1/portfolio_content', {
+                method: 'POST',
+                headers: {
+                  'apikey': SUPABASE_KEY,
+                  'Authorization': 'Bearer ' + SUPABASE_KEY,
+                  'Content-Type': 'application/json',
+                  'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify({ key: k, value: val, updated_at: new Date().toISOString() })
+              });
+            }
+          }).catch(function(){})
+        );
+      });
+      return Promise.all(uploads).then(function() {
+        if (hasUpdate) location.reload();
+      });
+    });
   }
 
   /** 文件上传后同步到 Supabase Storage */
   function _uploadToCloud(base64data, category, key, filename) {
-    if (!window.DS || !window.DS.isOnline()) return;
-    window.DS.uploadCompressedImage(base64data, category, key, filename || 'image.jpg').catch(function(){});
+    if (!window.DS || !window.DS.isOnline()) { console.log('[Cloud] 离线或无DS，跳过上传'); return; }
+    window.DS.uploadCompressedImage(base64data, category, key, filename || 'image.jpg').then(function(url) {
+      console.log('[Cloud] 上传成功:', url);
+    }).catch(function(err) {
+      console.error('[Cloud] 上传失败:', err);
+    });
   }
 
   /** 原始文件上传到 Supabase Storage（PDF/Word/PPT） */
@@ -1484,7 +1502,7 @@ document.querySelector('.modal-box').classList.add('glass');
   function _prodDBLoad(k,cb){if(_prodDB){var t=_prodDB.transaction('imgs','readonly');var r=t.objectStore('imgs').get(k);r.onsuccess=function(){cb(r.result||[]);};r.onerror=function(){cb([]);};}else{_prodQueue.push(function(){_prodDBLoad(k,cb);});}}
   window._prodGetImgs=function(k,cb){if(cb){_prodDBLoad(k,cb);return;}var r=sessionStorage.getItem(k);if(!r)return[];try{return JSON.parse(r);}catch(ee){return[];}};
   window._prodRebuild=function(k,a,save){if(save!==false){try{sessionStorage.setItem(k,JSON.stringify(a));}catch(ee){}_prodDBSave(k,a);}var s=k.replace('prod_imgs_','');var d=document.getElementById('prod-scroll-'+s);if(!d){var s2=k.replace('sln_img_','');if(s2!==k){d=document.getElementById('sln-scroll-'+s2);}if(!d)return;}if(!a||!a.length){d.style.display='none';d.innerHTML='';return;}d.style.display='flex';var h='';for(var i=0;i<a.length;i++)h+='<div style="position:relative;flex-shrink:0" onmouseenter="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x271\x27" onmouseleave="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x270\x27"><img src="'+a[i]+'" style="width:200px;height:130px;object-fit:contain;border-radius:10px;cursor:pointer;background:rgba(0,0,0,.02)" onclick="event.stopPropagation();openLightbox(this.src,'+JSON.stringify(a).replace(/"/g,'&quot;')+')"><button class="dg-del-btn" style="position:absolute;top:4px;right:4px;opacity:0;transition:opacity .2s" onclick="event.stopPropagation();window._prodDelImg(\x27'+k+'\x27,'+i+')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';d.innerHTML=h;};
-  window._prodUpload=function(e,k){var f=e.target.files;if(!f.length)return;_prodDBLoad(k,function(ex){var a=(ex&&ex.length)?ex:[];var t=f.length;var dn=0;var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center';var rg=document.createElement('div');rg.style.cssText='width:72px;height:72px;border-radius:50%;background:conic-gradient(#10B981 0%,transparent 0%);display:flex;align-items:center;justify-content:center';var inn=document.createElement('div');inn.style.cssText='width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--text)';inn.textContent='0%';rg.appendChild(inn);ov.appendChild(rg);document.body.appendChild(ov);var rds=[];for(var i=0;i<f.length;i++){rds[i]=new FileReader();rds[i].onload=function(ev){a.push(ev.target.result);dn++;var p=Math.round(dn/t*100);inn.textContent=p+'%';rg.style.background='conic-gradient(#10B981 '+p*3.6+'deg,transparent 0deg)';window._prodRebuild(k,a,false);if(dn>=t){try{sessionStorage.setItem(k,JSON.stringify(a));}catch(ee){}window._prodRebuild(k,a);setTimeout(function(){ov.innerHTML='<div style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:10000;background:rgba(255,255,255,.55);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.4);border-radius:30px;padding:8px 18px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.6);font-size:12px;color:var(--text)"><span style="display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#10B981;color:#fff;font-size:11px;flex-shrink:0">&#10003;</span><span>上传成功，共 <b>'+a.length+'</b> 张</span></div>';},100);setTimeout(function(){ov.remove();},2000);}};rds[i].onerror=function(){dn++;if(dn>=t){ov.remove();}};rds[i].readAsDataURL(f[i]);}});};
+  window._prodUpload=function(e,k){var f=e.target.files;if(!f.length)return;_prodDBLoad(k,function(ex){var a=(ex&&ex.length)?ex:[];var t=f.length;var dn=0;var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center';var rg=document.createElement('div');rg.style.cssText='width:72px;height:72px;border-radius:50%;background:conic-gradient(#10B981 0%,transparent 0%);display:flex;align-items:center;justify-content:center';var inn=document.createElement('div');inn.style.cssText='width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--text)';inn.textContent='0%';rg.appendChild(inn);ov.appendChild(rg);document.body.appendChild(ov);var rds=[];for(var i=0;i<f.length;i++){rds[i]=new FileReader();rds[i].onload=function(ev){a.push(ev.target.result);dn++;var p=Math.round(dn/t*100);inn.textContent=p+'%';rg.style.background='conic-gradient(#10B981 '+p*3.6+'deg,transparent 0deg)';window._prodRebuild(k,a,false);if(dn>=t){try{sessionStorage.setItem(k,JSON.stringify(a));}catch(ee){}window._prodRebuild(k,a);for(var ci=Math.max(0,a.length-t);ci<a.length;ci++){_uploadToCloud(a[ci],'prod',k,'img_'+ci+'.jpg');}setTimeout(function(){ov.innerHTML='<div style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:10000;background:rgba(255,255,255,.55);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.4);border-radius:30px;padding:8px 18px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.6);font-size:12px;color:var(--text)"><span style="display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#10B981;color:#fff;font-size:11px;flex-shrink:0">&#10003;</span><span>上传成功，共 <b>'+a.length+'</b> 张</span></div>';},100);setTimeout(function(){ov.remove();},2000);}};rds[i].onerror=function(){dn++;if(dn>=t){ov.remove();}};rds[i].readAsDataURL(f[i]);}});};
   window._prodDelImg=function(k,i){_prodDBLoad(k,function(db){var a=(db&&db.length)?db:window._prodGetImgs(k);i=parseInt(i);if(isNaN(i)||i<0||i>=a.length)return;a.splice(i,1);window._prodRebuild(k,a);try{sessionStorage.setItem(k,JSON.stringify(a));}catch(ee){}if(_prodDB){var t=_prodDB.transaction('imgs','readwrite');if(a.length>0){t.objectStore('imgs').put(a,k);}else{t.objectStore('imgs').delete(k);}}});};
   /* Solution file helpers */
   function _slnLoad(k,cb){var done=false;function resolve(a){if(!done){done=true;cb(a);}}_prodDBLoad(k,function(db){if(db&&db.length){resolve(db);return;}var r=sessionStorage.getItem(k)||localStorage.getItem(k);var a=[];if(r){try{a=JSON.parse(r);}catch(ee){a=[];}}resolve(a);});setTimeout(function(){resolve([]);},2000);}
@@ -2145,5 +2163,75 @@ document.querySelector('.modal-box').classList.add('glass');
 
   // 延迟加载云端内容（等页面渲染完成后）
   setTimeout(function() { _initCloudContent(); }, 2000);
+
+  /** 从 Supabase Storage 下载文件到本地缓存 */
+  function _syncFilesFromCloud() {
+    if (!window.DS || !window.DS.isOnline()) return;
+
+    // 扫描所有 category，从云端拉文件列表
+    var CATS = ['doc', 'sln', 'design', 'prod'];
+    var allTasks = [];
+
+    // 1. 先扫描 local key（已有上传记录的）
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (!k) continue;
+      var cat = null;
+      if (k.indexOf('docimg_') === 0) cat = 'doc';
+      else if (k.indexOf('sln_file_') === 0) cat = 'sln';
+      else if (k.indexOf('design_img_') === 0) cat = 'design';
+      else if (k.indexOf('prod_imgs_') === 0) cat = 'prod';
+      if (!cat) continue;
+      allTasks.push({ key: k, cat: cat });
+    }
+
+    // 2. 再按 category 全局扫描（发现新 key）
+    CATS.forEach(function(cat) {
+      allTasks.push({ key: '', cat: cat, global: true });
+    });
+
+    var seen = {};
+    allTasks.forEach(function(t) {
+      window.DS.listFiles(t.cat, t.key).then(function(files) {
+        if (!files || !files.length) return;
+        // 按 key 分组
+        var groups = {};
+        files.forEach(function(f) {
+          var parts = f.path.split('/');
+          // path: category/key/filename -> key is parts[1]
+          var fkey = parts[1] || t.key;
+          if (!groups[fkey]) groups[fkey] = [];
+          groups[fkey].push(f.url);
+        });
+        // 合并到本地
+        Object.keys(groups).forEach(function(fkey) {
+          if (seen[fkey]) return;
+          seen[fkey] = true;
+          var newUrls = groups[fkey];
+          var existing = [];
+          try {
+            var raw = localStorage.getItem(fkey);
+            if (raw) {
+              var parsed = JSON.parse(raw);
+              if (Array.isArray(parsed) && !(parsed.length === 1 && parsed[0] === '__IDB__')) {
+                existing = parsed;
+              }
+            }
+          } catch(e) {}
+          var added = newUrls.filter(function(u) { return existing.indexOf(u) === -1; });
+          if (added.length) {
+            var merged = existing.concat(added);
+            try { localStorage.setItem(fkey, JSON.stringify(merged)); } catch(e) {}
+            if (fkey.indexOf('docimg_') === 0) window._docImgs[fkey] = merged;
+            if (!sessionStorage.getItem('_files_sync_once')) {
+              sessionStorage.setItem('_files_sync_once', '1');
+              setTimeout(function() { location.reload(); }, 800);
+            }
+          }
+        });
+      }).catch(function() {});
+    });
+  }
+  setTimeout(function() { _syncFilesFromCloud(); }, 3000);
 
 })();

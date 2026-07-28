@@ -112,6 +112,7 @@
       var SUPABASE_KEY = 'sb_publishable_dTms1JmEP3yG9MoNI32y-Q_GI9bUjAg';
       var uploads = [];
       CONTENT_KEYS.forEach(function(k) {
+        if (k === '_cloud_file_urls') return; // 由上传/删除的专用函数管理，不在这里覆盖
         var raw = localStorage.getItem(k);
         if (!raw) return;
         var val;

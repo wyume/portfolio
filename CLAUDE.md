@@ -4,6 +4,38 @@
 > - `script-20260724-latest.js`、`index-20260724-latest.html`、`style-20260724-latest.css`（**最新版**——含代表产品弹窗优化）
 > - `script-backup-20260724.js`、`index-backup-20260724.html`、`style-backup-20260724.css`（中间版）
 
+## 2026-07-28 更新日志
+
+### 跨浏览器数据双向同步（重大改造）
+- **问题**：Chrome 上传的图片在搜狗浏览器看不到，删除后刷新又恢复，两个浏览器数据不一致
+- **根因**：
+  1. Supabase Storage list API 对匿名用户不可用，`_syncFilesFromCloud` 永远拿不到文件列表
+  2. 产品弹窗加载只读 IndexedDB → sessionStorage，不读 localStorage
+  3. 删除操作不更新云端 `_cloud_file_urls`，刷新后被重新下载回来
+  4. `_initCloudContent` 和删除操作存在竞态条件，互相覆盖 `_cloud_file_urls`
+- **修复**：
+  - 上传时：`_saveCloudFileUrl(key, url)` 将 Supabase URL 持久化到 localStorage + `portfolio_content` 表的 `_cloud_file_urls` 键
+  - 下载时：`_initCloudContent` 从云端下载 `_cloud_file_urls`，合并 URL 到对应 localStorage key
+  - 加载时：产品弹窗增加 localStorage 回退路径（IndexedDB → sessionStorage → localStorage）
+  - 删除时：四个删除函数（`_prodDelImg`/`_slnFileDel`/`_docDel`/`_dd`）均调用 `_syncCloudUrlsAfterDelete` 同步云端
+  - 协调时：`_initCloudContent` 双向协调——云端有本地无则添加，本地有云端无则删除（含 IndexedDB 清理）
+  - 竞态修复：`_initCloudContent` 不再上传 `_cloud_file_urls`，该键由专用函数管理
+  - 其他修复：`_prodGetImgs` 增加 localStorage 回退、`_prodRebuild`/`_slnFileRebuild` 同步写 localStorage、空数组保留 key 而非 delete、reload 延迟 300ms 等 IndexedDB 写入
+
+### 代表产品标签增强
+- 全部 20 个产品各新增 3-4 个成果导向标签（metrics），原有标签保留不删
+- 覆盖反诈类（4产品）、区块链类（4产品）、互联网金融类（4产品）、金融支付类（4产品）、社交电商类（4产品）
+
+### Git 历史重写
+- 首次 commit message 从"基础版本：产品经理项目选集，含云端数据持久化、响应式适配、密码门"改为"profile"
+- Force push 到 GitHub，旧描述已从提交历史中移除
+
+### 文件变更
+| 文件 | 变更 |
+|------|------|
+| `script.js` | 大量修改（跨浏览器同步、删除同步、标签新增） |
+| `CLAUDE.md` | 更新日志 |
+
 ## 2026-07-27 更新日志
 
 ### 图片压缩品质提升

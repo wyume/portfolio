@@ -26,7 +26,7 @@
       '_custom_sln_card_descs', '_custom_mgmt_titles', '_custom_mgmt_descs',
       '_custom_mgmt_steps', '_custom_doc_titles', '_custom_doc_items',
       '_custom_doc_descs', '_custom_design_cats', '_custom_design_items',
-      '_design_desc'
+      '_design_desc', '_cloud_file_urls'
     ];
 
     // 第一步：从云端下载并合并到本地
@@ -50,6 +50,36 @@
 
     // 第二步：上传本地数据到云端（直接用 fetch，绕过 DS）
     Promise.all(downloads).then(function() {
+      // 将 _cloud_file_urls 中的 URL 合并到各自的 localStorage key
+      var cloudUrlsRaw = localStorage.getItem('_cloud_file_urls');
+      if (cloudUrlsRaw) {
+        try {
+          var cloudMap = JSON.parse(cloudUrlsRaw);
+          if (cloudMap && typeof cloudMap === 'object' && !Array.isArray(cloudMap)) {
+            Object.keys(cloudMap).forEach(function(localKey) {
+              var urls = cloudMap[localKey];
+              if (!Array.isArray(urls) || !urls.length) return;
+              var existing = [];
+              try {
+                var raw = localStorage.getItem(localKey);
+                if (raw) {
+                  var parsed = JSON.parse(raw);
+                  if (Array.isArray(parsed) && !(parsed.length === 1 && parsed[0] === '__IDB__')) {
+                    existing = parsed;
+                  }
+                }
+              } catch(e) {}
+              var merged = existing.slice();
+              urls.forEach(function(u) { if (merged.indexOf(u) === -1) merged.push(u); });
+              if (merged.length > existing.length) {
+                try { localStorage.setItem(localKey, JSON.stringify(merged)); } catch(e) {}
+                hasUpdate = true;
+              }
+            });
+          }
+        } catch(e) {}
+      }
+
       var SUPABASE_URL = 'https://gvnzxuldnbdrsvclvuul.supabase.co';
       var SUPABASE_KEY = 'sb_publishable_dTms1JmEP3yG9MoNI32y-Q_GI9bUjAg';
       var uploads = [];
@@ -96,6 +126,7 @@
     if (!window.DS || !window.DS.isOnline()) { console.log('[Cloud] 离线或无DS，跳过上传'); return; }
     window.DS.uploadCompressedImage(base64data, category, key, filename || 'image.jpg').then(function(url) {
       console.log('[Cloud] 上传成功:', url);
+      _saveCloudFileUrl(key, url);
     }).catch(function(err) {
       console.error('[Cloud] 上传失败:', err);
     });
@@ -105,6 +136,49 @@
   function _uploadFileToCloud(file, category, key) {
     if (!window.DS || !window.DS.isOnline()) return;
     window.DS.uploadFile(file, category, key).catch(function(){});
+  }
+
+  /** 将云端文件 URL 持久化到 localStorage + portfolio_content 表，新浏览器打开时可加载 */
+  function _saveCloudFileUrl(key, url) {
+    var SUPABASE_URL = 'https://gvnzxuldnbdrsvclvuul.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_dTms1JmEP3yG9MoNI32y-Q_GI9bUjAg';
+    // 1. 更新 localStorage
+    var existing = [];
+    try {
+      var raw = localStorage.getItem(key);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && !(parsed.length === 1 && parsed[0] === '__IDB__')) { existing = parsed; }
+      }
+    } catch(e) {}
+    if (existing.indexOf(url) === -1) {
+      existing.push(url);
+      try { localStorage.setItem(key, JSON.stringify(existing)); } catch(e) {}
+    }
+    // 2. 同步到 Supabase content 表（统一 key: _cloud_file_urls，值为 { localStorageKey: [urls] }）
+    var contentKey = '_cloud_file_urls';
+    fetch(SUPABASE_URL + '/rest/v1/portfolio_content?key=eq.' + encodeURIComponent(contentKey), {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    }).then(function(r) { return r.json(); }).then(function(rows) {
+      var map = (rows && rows.length && rows[0].value) ? rows[0].value : {};
+      if (typeof map !== 'object' || Array.isArray(map)) map = {};
+      if (!map[key]) map[key] = [];
+      if (map[key].indexOf(url) === -1) {
+        map[key].push(url);
+        var payload = { key: contentKey, value: map, updated_at: new Date().toISOString() };
+        return fetch(SUPABASE_URL + '/rest/v1/portfolio_content?key=eq.' + encodeURIComponent(contentKey), {
+          method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify(payload)
+        }).then(function(r2) {
+          if (!r2.ok) {
+            return fetch(SUPABASE_URL + '/rest/v1/portfolio_content', {
+              method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+              body: JSON.stringify(payload)
+            });
+          }
+        });
+      }
+    }).catch(function(){});
   }
 
   /* ==============================

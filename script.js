@@ -711,14 +711,26 @@ document.querySelector('.modal-box').classList.add('glass');
       document.getElementById('modal').scrollTop = 0;
       document.body.style.overflow = 'hidden';
     }
-    // Try IndexedDB first, fall back to sessionStorage (session only, not localStorage)
+    // Try IndexedDB first → sessionStorage → localStorage (cloud sync fallback)
     _prodDBLoad(productKey, function(dbImgs) {
       if (dbImgs && dbImgs.length) {
         renderProductModal(dbImgs);
       } else {
-        var savedRaw = sessionStorage.getItem(productKey);
         var imgs = [];
-        if (savedRaw) { try { imgs = JSON.parse(savedRaw); } catch(ee) {} }
+        var ssRaw = sessionStorage.getItem(productKey);
+        if (ssRaw) { try { imgs = JSON.parse(ssRaw); } catch(ee) {} }
+        if (!imgs.length) {
+          var lsRaw = localStorage.getItem(productKey);
+          if (lsRaw) {
+            try {
+              var parsed = JSON.parse(lsRaw);
+              if (Array.isArray(parsed) && parsed.length && parsed[0] !== '__IDB__') {
+                imgs = parsed;
+                _prodDBSave(productKey, imgs);
+              }
+            } catch(ee) {}
+          }
+        }
         renderProductModal(imgs);
       }
     });

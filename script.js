@@ -50,15 +50,14 @@
 
     // 第二步：上传本地数据到云端（直接用 fetch，绕过 DS）
     Promise.all(downloads).then(function() {
-      // 将 _cloud_file_urls 中的 URL 合并到各自的 localStorage key
+      // 双向协调 _cloud_file_urls：云端→本地添加，本地→云端清理
       var cloudUrlsRaw = localStorage.getItem('_cloud_file_urls');
       if (cloudUrlsRaw) {
         try {
           var cloudMap = JSON.parse(cloudUrlsRaw);
           if (cloudMap && typeof cloudMap === 'object' && !Array.isArray(cloudMap)) {
             Object.keys(cloudMap).forEach(function(localKey) {
-              var urls = cloudMap[localKey];
-              if (!Array.isArray(urls) || !urls.length) return;
+              var urls = cloudMap[localKey] || [];
               var existing = [];
               try {
                 var raw = localStorage.getItem(localKey);
@@ -69,10 +68,37 @@
                   }
                 }
               } catch(e) {}
+              // 1) 云端有但本地无 → 添加到本地（来自其他浏览器的新文件）
+              var added = false;
               var merged = existing.slice();
-              urls.forEach(function(u) { if (merged.indexOf(u) === -1) merged.push(u); });
-              if (merged.length > existing.length) {
-                try { localStorage.setItem(localKey, JSON.stringify(merged)); } catch(e) {}
+              urls.forEach(function(u) { if (merged.indexOf(u) === -1) { merged.push(u); added = true; } });
+              // 2) 本地有但云端无 → 从本地移除（在其他浏览器被删除了）
+              var removed = false;
+              if (urls.length === 0 && existing.length > 0) {
+                // 云端清空了 → 本地也清空
+                merged = [];
+                removed = true;
+              } else if (urls.length > 0 && existing.length > 0) {
+                // 过滤掉本地不在云端列表中的 Supabase URL
+                var filtered = existing.filter(function(item) {
+                  // 保留非 URL 项目（base64 等本地数据）
+                  if (typeof item !== 'string' || item.indexOf('supabase.co/storage') === -1) return true;
+                  // Supabase URL 必须在云端列表里才保留
+                  return urls.indexOf(item) !== -1;
+                });
+                if (filtered.length < existing.length) {
+                  merged = filtered;
+                  removed = true;
+                  // 重新合并云端新增的
+                  urls.forEach(function(u) { if (merged.indexOf(u) === -1) merged.push(u); });
+                }
+              }
+              if (added || removed) {
+                if (merged.length > 0) {
+                  try { localStorage.setItem(localKey, JSON.stringify(merged)); } catch(e) {}
+                } else {
+                  try { localStorage.removeItem(localKey); } catch(e) {}
+                }
                 hasUpdate = true;
               }
             });
@@ -179,6 +205,62 @@
         });
       }
     }).catch(function(){});
+  }
+
+  /** 删除操作后同步云端状态：从 _cloud_file_urls 中移除已不存在的 URL */
+  function _syncCloudUrlsAfterDelete(key) {
+    var SUPABASE_URL = 'https://gvnzxuldnbdrsvclvuul.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_dTms1JmEP3yG9MoNI32y-Q_GI9bUjAg';
+    // 收集当前本地还存在的 Supabase URLs
+    var localUrls = new Set();
+    function collect(store) {
+      try {
+        var raw = store.getItem(key);
+        if (!raw) return;
+        var arr = JSON.parse(raw);
+        if (!Array.isArray(arr)) return;
+        arr.forEach(function(item) {
+          if (typeof item === 'string' && item.indexOf('supabase.co/storage') > -1) {
+            localUrls.add(item);
+          }
+        });
+      } catch(e) {}
+    }
+    collect(localStorage);
+    collect(sessionStorage);
+    // 异步查 IndexedDB
+    _prodDBLoad(key, function(dbItems) {
+      (dbItems || []).forEach(function(item) {
+        if (typeof item === 'string' && item.indexOf('supabase.co/storage') > -1) {
+          localUrls.add(item);
+        }
+      });
+      // 更新 _cloud_file_urls
+      var contentKey = '_cloud_file_urls';
+      var raw = localStorage.getItem(contentKey);
+      var map = {};
+      try { if (raw) map = JSON.parse(raw); } catch(e) {}
+      if (typeof map !== 'object' || Array.isArray(map)) map = {};
+      if (localUrls.size > 0) {
+        map[key] = Array.from(localUrls);
+      } else {
+        delete map[key];
+      }
+      try { localStorage.setItem(contentKey, JSON.stringify(map)); } catch(e) {}
+      // Push to Supabase
+      var payload = { key: contentKey, value: map, updated_at: new Date().toISOString() };
+      fetch(SUPABASE_URL + '/rest/v1/portfolio_content?key=eq.' + encodeURIComponent(contentKey), {
+        method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify(payload)
+      }).then(function(r2) {
+        if (!r2.ok) {
+          return fetch(SUPABASE_URL + '/rest/v1/portfolio_content', {
+            method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+            body: JSON.stringify(payload)
+          });
+        }
+      }).catch(function(){});
+    });
   }
 
   /* ==============================
@@ -1521,7 +1603,7 @@ document.querySelector('.modal-box').classList.add('glass');
   /* _docUp: upload with canvas compression + progress ring + IndexedDB dual-write */
   window._docUp=function(e,k,i,nm){var f=e.target.files;if(!f.length)return;var a=window._docImgs[k]||[];var t=f.length;var dn=0;var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center';var rg=document.createElement('div');rg.style.cssText='width:72px;height:72px;border-radius:50%;background:conic-gradient(#10B981 0%,transparent 0%);display:flex;align-items:center;justify-content:center';var inn=document.createElement('div');inn.style.cssText='width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--text)';inn.textContent='0%';rg.appendChild(inn);ov.appendChild(rg);document.body.appendChild(ov);function upd(p){inn.textContent=p+'%';rg.style.background='conic-gradient(#10B981 '+p*3.6+'deg,transparent 0deg)';}function finish(){window._docImgs[k]=a;try{var str=JSON.stringify(a);if(str.length<3000000){localStorage.setItem(k,str);}else{localStorage.setItem(k,'["__IDB__"]');}}catch(ee){try{localStorage.setItem(k,'["__IDB__"]');}catch(e2){}}_prodDBSave(k,a);for(var ci=Math.max(0,a.length-t);ci<a.length;ci++){_uploadToCloud(a[ci],'doc',k,'img_'+ci+'.jpg');}setTimeout(function(){ov.innerHTML='<div style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:10000;background:rgba(255,255,255,.55);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.4);border-radius:30px;padding:8px 18px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.6);font-size:12px;color:var(--text)"><span style="display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#10B981;color:#fff;font-size:11px;flex-shrink:0">&#10003;</span><span>上传成功，共 <b>'+a.length+'</b> 张</span></div>';},100);setTimeout(function(){ov.remove();},2000);var cs=document.querySelectorAll('#modal-body .doc-file');var c=cs[parseInt(i)];if(c)_refreshDocCard(c,k,a,i);}for(var j=0;j<f.length;j++){(function(file){var img=new Image();img.onload=function(){var cvs=document.createElement('canvas');var mx=2400,w=img.width,h=img.height;if(w>mx){h=h*mx/w;w=mx;}cvs.width=w;cvs.height=h;cvs.getContext('2d').drawImage(img,0,0,w,h);cvs.toBlob(function(blob){var fr=new FileReader();fr.onload=function(ev){a.push(ev.target.result);dn++;upd(Math.round(dn/t*100));if(dn>=t)finish();};fr.readAsDataURL(blob);},'image/jpeg',0.85);};img.onerror=function(){dn++;if(dn>=t)finish();};img.src=URL.createObjectURL(file);})(f[j]);}};
   /* _docDel: delete from all stores + refresh DOM */
-  window._docDel=function(k,i){delete window._docImgs[k];try{localStorage.removeItem(k);}catch(ee){}if(_prodDB){var t=_prodDB.transaction('imgs','readwrite');t.objectStore('imgs').delete(k);}var cs=document.querySelectorAll('#modal-body .doc-file');var c=cs[parseInt(i)];if(c)_refreshDocCard(c,k,[],i);};
+  window._docDel=function(k,i){delete window._docImgs[k];try{localStorage.removeItem(k);}catch(ee){}if(_prodDB){var t=_prodDB.transaction('imgs','readwrite');t.objectStore('imgs').delete(k);}_syncCloudUrlsAfterDelete(k);var cs=document.querySelectorAll('#modal-body .doc-file');var c=cs[parseInt(i)];if(c)_refreshDocCard(c,k,[],i);};
 
   /* ====== Doc Unified Preview ====== */
   window._openDocLightbox=function(k,itemName){
@@ -1589,11 +1671,11 @@ document.querySelector('.modal-box').classList.add('glass');
   window._prodGetImgs=function(k,cb){if(cb){_prodDBLoad(k,cb);return;}var r=sessionStorage.getItem(k);if(!r)return[];try{return JSON.parse(r);}catch(ee){return[];}};
   window._prodRebuild=function(k,a,save){if(save!==false){try{sessionStorage.setItem(k,JSON.stringify(a));}catch(ee){}_prodDBSave(k,a);}var s=k.replace('prod_imgs_','');var d=document.getElementById('prod-scroll-'+s);if(!d){var s2=k.replace('sln_img_','');if(s2!==k){d=document.getElementById('sln-scroll-'+s2);}if(!d)return;}if(!a||!a.length){d.style.display='none';d.innerHTML='';return;}d.style.display='flex';var h='';for(var i=0;i<a.length;i++)h+='<div style="position:relative;flex-shrink:0" onmouseenter="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x271\x27" onmouseleave="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x270\x27"><img src="'+a[i]+'" style="width:200px;height:130px;object-fit:contain;border-radius:10px;cursor:pointer;background:rgba(0,0,0,.02)" onclick="event.stopPropagation();openLightbox(this.src,'+JSON.stringify(a).replace(/"/g,'&quot;')+')"><button class="dg-del-btn" style="position:absolute;top:4px;right:4px;opacity:0;transition:opacity .2s" onclick="event.stopPropagation();window._prodDelImg(\x27'+k+'\x27,'+i+')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';d.innerHTML=h;};
   window._prodUpload=function(e,k){var f=e.target.files;if(!f.length)return;_prodDBLoad(k,function(ex){var a=(ex&&ex.length)?ex:[];var t=f.length;var dn=0;var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center';var rg=document.createElement('div');rg.style.cssText='width:72px;height:72px;border-radius:50%;background:conic-gradient(#10B981 0%,transparent 0%);display:flex;align-items:center;justify-content:center';var inn=document.createElement('div');inn.style.cssText='width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--text)';inn.textContent='0%';rg.appendChild(inn);ov.appendChild(rg);document.body.appendChild(ov);var rds=[];for(var i=0;i<f.length;i++){rds[i]=new FileReader();rds[i].onload=function(ev){a.push(ev.target.result);dn++;var p=Math.round(dn/t*100);inn.textContent=p+'%';rg.style.background='conic-gradient(#10B981 '+p*3.6+'deg,transparent 0deg)';window._prodRebuild(k,a,false);if(dn>=t){try{sessionStorage.setItem(k,JSON.stringify(a));}catch(ee){}window._prodRebuild(k,a);for(var ci=Math.max(0,a.length-t);ci<a.length;ci++){_uploadToCloud(a[ci],'prod',k,'img_'+ci+'.jpg');}setTimeout(function(){ov.innerHTML='<div style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:10000;background:rgba(255,255,255,.55);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.4);border-radius:30px;padding:8px 18px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.6);font-size:12px;color:var(--text)"><span style="display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#10B981;color:#fff;font-size:11px;flex-shrink:0">&#10003;</span><span>上传成功，共 <b>'+a.length+'</b> 张</span></div>';},100);setTimeout(function(){ov.remove();},2000);}};rds[i].onerror=function(){dn++;if(dn>=t){ov.remove();}};rds[i].readAsDataURL(f[i]);}});};
-  window._prodDelImg=function(k,i){_prodDBLoad(k,function(db){var a=(db&&db.length)?db:window._prodGetImgs(k);i=parseInt(i);if(isNaN(i)||i<0||i>=a.length)return;a.splice(i,1);window._prodRebuild(k,a);try{sessionStorage.setItem(k,JSON.stringify(a));}catch(ee){}if(_prodDB){var t=_prodDB.transaction('imgs','readwrite');if(a.length>0){t.objectStore('imgs').put(a,k);}else{t.objectStore('imgs').delete(k);}}});};
+  window._prodDelImg=function(k,i){_prodDBLoad(k,function(db){var a=(db&&db.length)?db:window._prodGetImgs(k);i=parseInt(i);if(isNaN(i)||i<0||i>=a.length)return;a.splice(i,1);window._prodRebuild(k,a);try{sessionStorage.setItem(k,JSON.stringify(a));}catch(ee){}if(_prodDB){var t=_prodDB.transaction('imgs','readwrite');if(a.length>0){t.objectStore('imgs').put(a,k);}else{t.objectStore('imgs').delete(k);}}_syncCloudUrlsAfterDelete(k);});};
   /* Solution file helpers */
   function _slnLoad(k,cb){var done=false;function resolve(a){if(!done){done=true;cb(a);}}_prodDBLoad(k,function(db){if(db&&db.length){resolve(db);return;}var r=sessionStorage.getItem(k)||localStorage.getItem(k);var a=[];if(r){try{a=JSON.parse(r);}catch(ee){a=[];}}resolve(a);});setTimeout(function(){resolve([]);},2000);}
   window._slnUpload=function(e,k){var f=e.target.files;if(!f.length)return;_slnLoad(k,function(ex){var a=ex||[];var t=f.length;var dn=0;var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center';var rg=document.createElement('div');rg.style.cssText='width:72px;height:72px;border-radius:50%;background:conic-gradient(#10B981 0%,transparent 0%);display:flex;align-items:center;justify-content:center';var inn=document.createElement('div');inn.style.cssText='width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--text)';inn.textContent='0%';rg.appendChild(inn);ov.appendChild(rg);document.body.appendChild(ov);function upd(p){inn.textContent=p+'%';rg.style.background='conic-gradient(#10B981 '+p*3.6+'deg,transparent 0deg)';}function finish(){try{sessionStorage.setItem(k,JSON.stringify(a));}catch(ee){}_prodDBSave(k,a);for(var ci=Math.max(0,a.length-t);ci<a.length;ci++){var item=a[ci];if(item&&item.type==='image'){_uploadToCloud(item.data,'sln',k,item.name||'image.jpg');}}setTimeout(function(){ov.innerHTML='<div style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:10000;background:rgba(255,255,255,.55);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.4);border-radius:30px;padding:8px 18px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.6);font-size:12px;color:var(--text)"><span style="display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#10B981;color:#fff;font-size:11px;flex-shrink:0">&#10003;</span><span>上传成功，共 <b>'+a.length+'</b> 个文件</span></div>';},100);setTimeout(function(){ov.remove();},2000);window._slnFileRebuild(k,a);}for(var j=0;j<f.length;j++){(function(file){var isPdf=file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf');var isWord=!isPdf&&(file.type==='application/vnd.openxmlformats-officedocument.wordprocessingml.document'||file.name.toLowerCase().endsWith('.docx')||file.name.toLowerCase().endsWith('.doc'));var isPpt=!isPdf&&!isWord&&(file.type==='application/vnd.openxmlformats-officedocument.presentationml.presentation'||file.name.toLowerCase().endsWith('.pptx')||file.name.toLowerCase().endsWith('.ppt'));if(isPdf){var fr=new FileReader();fr.onload=function(ev){a.push({type:'pdf',data:ev.target.result,name:file.name});dn++;upd(Math.round(dn/t*100));if(dn>=t)finish();};fr.readAsDataURL(file);}else if(isWord){var fr2=new FileReader();fr2.onload=function(ev){a.push({type:'word',data:ev.target.result,name:file.name});dn++;upd(Math.round(dn/t*100));if(dn>=t)finish();};fr2.readAsDataURL(file);}else if(isPpt){var fr3=new FileReader();fr3.onload=function(ev){a.push({type:'ppt',data:ev.target.result,name:file.name});dn++;upd(Math.round(dn/t*100));if(dn>=t)finish();};fr3.readAsDataURL(file);}else{var img=new Image();img.onload=function(){var cvs=document.createElement('canvas');var mx=2400,w=img.width,h=img.height;if(w>mx){h=h*mx/w;w=mx;}cvs.width=w;cvs.height=h;cvs.getContext('2d').drawImage(img,0,0,w,h);cvs.toBlob(function(blob){var fr=new FileReader();fr.onload=function(ev){a.push({type:'image',data:ev.target.result});dn++;upd(Math.round(dn/t*100));if(dn>=t)finish();};fr.readAsDataURL(blob);},'image/jpeg',0.85);};img.onerror=function(){dn++;if(dn>=t)finish();};img.src=URL.createObjectURL(file);}})(f[j]);}});};
-  window._slnFileDel=function(k,i){_slnLoad(k,function(a){i=parseInt(i);if(isNaN(i)||i<0||i>=a.length)return;a.splice(i,1);window._slnFileRebuild(k,a);if(_prodDB){var t=_prodDB.transaction('imgs','readwrite');if(a.length>0){t.objectStore('imgs').put(a,k);}else{t.objectStore('imgs').delete(k);}}});};
+  window._slnFileDel=function(k,i){_slnLoad(k,function(a){i=parseInt(i);if(isNaN(i)||i<0||i>=a.length)return;a.splice(i,1);window._slnFileRebuild(k,a);if(_prodDB){var t=_prodDB.transaction('imgs','readwrite');if(a.length>0){t.objectStore('imgs').put(a,k);}else{t.objectStore('imgs').delete(k);}}_syncCloudUrlsAfterDelete(k);});};
   window._slnFileRebuild=function(k,a,save){if(save!==false){try{sessionStorage.setItem(k,JSON.stringify(a));}catch(ee){}_prodDBSave(k,a);}var s=k.replace('sln_file_','');var d=document.getElementById('sln-scroll-'+s);if(!d)return;if(!a||!a.length){d.style.display='none';d.innerHTML='';return;}d.style.display='flex';var h='';for(var i=0;i<a.length;i++){var f=a[i];var isPdf=f&&f.type==='pdf';var isWord=f&&f.type==='word';var isPpt=f&&f.type==='ppt';var data=f&&f.data?f.data:f;var name=f&&f.name?f.name:'';if(isPdf||isWord||isPpt){var iconSrc2=isPdf?'images/doc-type-pdf.png':isWord?'images/doc-type-word.png':'images/doc-type-ppt.png';var label2=isPdf?(name||'PDF 文件'):isWord?(name||'Word 文件'):(name||'PPT 文件');h+='<div style="position:relative;flex-shrink:0" onmouseenter="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x271\x27" onmouseleave="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x270\x27"><div onclick="event.stopPropagation();window._openSlnPreview(\x27'+k+'\x27)" style="width:160px;height:130px;border-radius:10px;cursor:pointer;background:linear-gradient(rgba(255,255,255,.5),rgba(255,255,255,.5)),url(images/sln-cover-bg.png) center/cover no-repeat;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all .25s ease" onmouseenter="this.style.transform=\x27translateY(-5px)\x27" onmouseleave="this.style.transform=\x27translateY(0)\x27"><img src="'+iconSrc2+'" style="width:36px;height:36px;object-fit:contain" alt=""><span style="font-size:10px;color:var(--text2);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+label2+'</span></div><button class="dg-del-btn" style="position:absolute;top:4px;right:4px;opacity:0;transition:opacity .2s" onclick="event.stopPropagation();window._slnFileDel(\x27'+k+'\x27,'+i+')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';}else{h+='<div style="position:relative;flex-shrink:0" onmouseenter="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x271\x27" onmouseleave="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x270\x27"><img src="'+data+'" style="width:200px;height:130px;object-fit:contain;border-radius:10px;cursor:pointer;background:rgba(0,0,0,.02)" onclick="event.stopPropagation();window._openSlnPreview(\x27'+k+'\x27)"><button class="dg-del-btn" style="position:absolute;top:4px;right:4px;opacity:0;transition:opacity .2s" onclick="event.stopPropagation();window._slnFileDel(\x27'+k+'\x27,'+i+')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';}}d.innerHTML=h;};
   /* ---- 方案设计统一预览 --- */
   window._openSlnPreview=function(k){_slnLoad(k,function(files){if(!files||!files.length)return;var lb=_buildSlnLightbox(k,files);document.body.appendChild(lb);function cleanup(){lb.remove();document.removeEventListener('keydown',onEsc);}var cb=lb.querySelector('#doc-lb-close-btn');if(cb)cb.onclick=cleanup;lb.addEventListener('click',function(e){var t=e.target;if(t.closest('.doc-lb-bar')||t.closest('.doc-lb-arrow')||t.closest('img')||t.closest('iframe')||t.closest('.doc-lb-dl-card')||t.closest('.doc-lb-pdf-wrap')||t.closest('.doc-lb-del-btn'))return;cleanup();});function onEsc(e){if(e.key==='Escape'){cleanup();}}document.addEventListener('keydown',onEsc);});};
@@ -1723,7 +1805,7 @@ document.querySelector('.modal-box').classList.add('glass');
   // Sync localStorage getter for design images (lightbox ref)
   window._designGetImgs=function(k){var r=localStorage.getItem(k);return r?JSON.parse(r):[];};
   // Design image delete — IndexedDB + localStorage + DOM
-  window._dd=function(idx){var k='design_img_'+idx;localStorage.removeItem(k);if(_prodDB){var t=_prodDB.transaction('imgs','readwrite');t.objectStore('imgs').delete(k);}var c=document.querySelectorAll('.design-gallery-item')[idx];if(c)_refreshDesignCard(c,idx,k,[]);};
+  window._dd=function(idx){var k='design_img_'+idx;localStorage.removeItem(k);if(_prodDB){var t=_prodDB.transaction('imgs','readwrite');t.objectStore('imgs').delete(k);}_syncCloudUrlsAfterDelete(k);var c=document.querySelectorAll('.design-gallery-item')[idx];if(c)_refreshDesignCard(c,idx,k,[]);};
   /* ---- Product Modal: long-press to edit description & metrics ---- */
   var _prodPressTimer = null, _prodPressTarget = null;
 

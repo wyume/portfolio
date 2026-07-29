@@ -347,9 +347,9 @@ html {
   40% { background-position:-80% 0; opacity:1; }
   40.1%, 100% { background-position:-80% 0; opacity:0; }
 }
-.hero-desc { font-size:13px; color:var(--text2); margin-bottom:0; line-height:1.7; font-weight:300; letter-spacing:.08em; position:relative; }
+.hero-desc { font-size:13px; color:var(--text2); margin-bottom:14px; line-height:1.7; font-weight:300; letter-spacing:.08em; position:relative; }
 .hero-tags { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
-.hero-tags span { display:inline-flex; align-items:center; gap:3px; font-size:11px; color:var(--text2); padding:4px 12px; border-radius:99px; background:rgba(0,85,255,.04); border:1px solid rgba(0,85,255,.08); font-weight:500; }
+.hero-tags span { display:inline-flex; align-items:center; gap:3px; font-size:11px; color:var(--text2); padding:4px 14px; border-radius:99px; background:rgba(255,255,255,.5); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); border:1px solid rgba(0,0,0,.06); font-weight:500; }
 
 /* Filter — sticky */
 .filter-bar {

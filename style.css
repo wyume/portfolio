@@ -311,7 +311,7 @@ html {
 
 /* ====== Hero ====== */
 .hero {
-  position:relative; z-index:1; padding:96px 24px 44px; text-align:center; max-width:860px; margin:0 auto;
+  position:relative; z-index:1; padding:110px 24px 28px; text-align:center; max-width:860px; margin:0 auto;
   overflow:hidden;
 }
 /* grid pattern */
@@ -347,7 +347,7 @@ html {
   40% { background-position:-80% 0; opacity:1; }
   40.1%, 100% { background-position:-80% 0; opacity:0; }
 }
-.hero-desc { font-size:13px; color:#384b5a; margin-bottom:14px; line-height:1.7; font-weight:300; letter-spacing:.08em; position:relative; }
+.hero-desc { font-size:13px; color:#384b5a; margin-bottom:8px; line-height:1.7; font-weight:300; letter-spacing:.08em; position:relative; }
 .hero-sep { font-size:22px; font-weight:700; color:rgba(0,0,0,.35); vertical-align: middle; line-height: 1; }
 .hero-tags { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
 .hero-tags span { display:inline-flex; align-items:center; gap:3px; font-size:11px; color:#3e617b; padding:4px 14px; border-radius:99px; background:rgb(31 55 80 / 7%); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border:1px solid rgb(88 125 195 / 17%); font-weight:500; }

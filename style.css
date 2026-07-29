@@ -614,7 +614,7 @@ li[data-product]:hover::before { background:var(--blue); }
 .hz-f-step::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, #6366F1, #06B6D4, #10B981); }
 .hz-f-icon { display:inline-flex; margin-bottom:5px; }
 .hz-f-step strong { display:block; font-size:12px; font-weight:600; color:#2D4965; margin-bottom:3px; }
-.hz-f-step p { font-size:11px; color:var(--text2); line-height:1.5; margin:0; }
+.hz-f-step p { font-size:9px; color:var(--text2); line-height:1.5; margin:0; }
 .hz-f-arrow { font-size:20px; color:rgba(99,102,241,.4); padding:0 4px; flex-shrink:0; animation:arrowPulse 1.5s ease-in-out infinite; }
 .hz-f-arrow:nth-child(2) { animation-delay:.3s; }
 .hz-f-arrow:nth-child(4) { animation-delay:.6s; }

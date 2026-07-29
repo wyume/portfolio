@@ -845,7 +845,7 @@ document.querySelector('.modal-box').classList.add('glass');
     /* Metrics with add/delete/edit */
     bodyHtml += '<div class="prod-metrics-wrap" data-prod-key="' + key + '" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px">';
     metrics.forEach(function(m, idx){
-      bodyHtml += '<span class="prod-metric-tag" draggable="true" data-metric-idx="' + idx + '" style="font-size:11px;font-weight:600;color:' + dotColor + ';padding:3px 10px;border-radius:99px;background:' + tagBg + ';border:1px solid ' + dotColor + '22;position:relative;cursor:grab" ondragstart="window._metricDragStart(event,' + idx + ')" ondragover="event.preventDefault()" ondrop="window._metricDrop(event,\x27' + key + '\x27,' + idx + ')" ondragend="this.style.opacity=\x271\x27">' + m + '<button class="prod-metric-del" onclick="event.stopPropagation();window._delProdMetric(\x27' + key + '\x27,' + idx + ')" style="display:none;position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#EF4444;color:#fff;border:none;cursor:pointer;font-size:10px;line-height:1;padding:0">&times;</button></span>';
+      bodyHtml += '<span class="prod-metric-tag" data-metric-idx="' + idx + '" style="font-size:11px;font-weight:600;color:' + dotColor + ';padding:3px 10px;border-radius:99px;background:' + tagBg + ';border:1px solid ' + dotColor + '22;position:relative;cursor:default">' + m + '<button class="prod-metric-del" onclick="event.stopPropagation();window._delProdMetric(\x27' + key + '\x27,' + idx + ')" style="display:none;position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#EF4444;color:#fff;border:none;cursor:pointer;font-size:10px;line-height:1;padding:0">&times;</button></span>';
     });
     bodyHtml += '<span class="prod-metric-add" data-prod-key="' + key + '" style="font-size:11px;font-weight:400;color:var(--text3);padding:3px 10px;border-radius:99px;background:transparent;border:1px solid rgba(0,0,0,.1);cursor:pointer;user-select:none">+ 添加</span>';
     bodyHtml += '</div>';
@@ -1938,37 +1938,13 @@ document.querySelector('.modal-box').classList.add('glass');
     if (wrap) _rebuildProdMetrics(wrap, key, customMetrics[key]);
   };
 
-  /* ---- Drag & Drop reorder metrics ---- */
-  window._metricDragSrc = -1;
-  window._metricDragStart = function(e, idx) {
-    window._metricDragSrc = idx;
-    e.dataTransfer.effectAllowed = 'move';
-    e.target.style.opacity = '0.4';
-  };
-  window._metricDrop = function(e, key, targetIdx) {
-    e.preventDefault();
-    var srcIdx = window._metricDragSrc;
-    if (srcIdx < 0 || srcIdx === targetIdx) return;
-    var customMetrics = {}; try { customMetrics = JSON.parse(localStorage.getItem('_custom_prod_metrics') || '{}'); } catch(ee) {}
-    var pd = productData[key];
-    var defaults = pd && pd.metrics ? pd.metrics : [];
-    if (!customMetrics[key]) customMetrics[key] = defaults.slice();
-    var arr = customMetrics[key];
-    var moved = arr.splice(srcIdx, 1)[0];
-    arr.splice(targetIdx, 0, moved);
-    _saveCustomData('_custom_prod_metrics', customMetrics);
-    var wrap = document.querySelector('.prod-metrics-wrap[data-prod-key="' + key + '"]');
-    if (wrap) _rebuildProdMetrics(wrap, key, arr);
-  };
-
   /* ---- Rebuild metrics row DOM ---- */
   function _rebuildProdMetrics(wrap, key, arr) {
     var addHtml = '<span class="prod-metric-add" data-prod-key="' + key + '" style="font-size:11px;font-weight:400;color:var(--text3);padding:3px 10px;border-radius:99px;background:transparent;border:1px solid rgba(0,0,0,.1);cursor:pointer;user-select:none">+ 添加</span>';
     if (!arr || !arr.length) { wrap.innerHTML = addHtml; return; }
     var h = '';
-    var tagStyle = _prodTagStyle(key);
     arr.forEach(function(m, idx) {
-      h += '<span class="prod-metric-tag" draggable="true" data-metric-idx="' + idx + '" style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;'+tagStyle+';position:relative;cursor:grab" ondragstart="window._metricDragStart(event,' + idx + ')" ondragover="event.preventDefault()" ondrop="window._metricDrop(event,\x27' + key + '\x27,' + idx + ')" ondragend="this.style.opacity=\x271\x27">' + m + '<button class="prod-metric-del" onclick="event.stopPropagation();window._delProdMetric(\x27' + key + '\x27,' + idx + ')" style="display:none;position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#EF4444;color:#fff;border:none;cursor:pointer;font-size:10px;line-height:1;padding:0">&times;</button></span>';
+      h += '<span class="prod-metric-tag" data-metric-idx="' + idx + '" style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;'+_prodTagStyle(key)+';position:relative;cursor:default">' + m + '<button class="prod-metric-del" onclick="event.stopPropagation();window._delProdMetric(\x27' + key + '\x27,' + idx + ')" style="display:none;position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#EF4444;color:#fff;border:none;cursor:pointer;font-size:10px;line-height:1;padding:0">&times;</button></span>';
     });
     wrap.innerHTML = h + addHtml;
   }

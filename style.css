@@ -922,15 +922,15 @@ li[data-product]:hover::before { background:var(--blue); }
 .mgmt-block-body { flex:1; min-width:0; }
 .mgmt-block-head {
   display:flex; align-items:baseline; gap:8px;
-  margin-bottom:4px; flex-wrap:nowrap;
+  margin-bottom:4px; flex-wrap:nowrap !important; overflow:visible;
 }
 .mgmt-block-head h4 {
   font-size:14px; font-weight:700; color:#283c54;
-  margin:0; white-space:nowrap;
+  margin:0; white-space:nowrap; flex-shrink:0;
 }
 .mgmt-block-tags {
-  font-size:9px; font-weight:500; color:var(--text3);
-  white-space:nowrap;
+  font-size:9px !important; font-weight:500; color:var(--text3);
+  white-space:nowrap; flex-shrink:0;
 }
 .mgmt-block p {
   font-size:12px; color:var(--text2); line-height:1.7;

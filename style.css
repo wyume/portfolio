@@ -362,7 +362,7 @@ html {
   box-shadow:0 2px 12px rgba(0,0,0,.05);
   left:50%; transform:translateX(-50%);
   transition:opacity .2s ease;
-  margin-bottom:8px;
+  margin-bottom:14px;
 }
 .fbtn {
   display:inline-flex; align-items:center; gap:6px;

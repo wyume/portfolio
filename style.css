@@ -286,7 +286,7 @@ html {
 
 /* scrolled nav state */
 .nav-scrolled { display:none; align-items:center; width:100%; gap:20px; flex:1; }
-.nav-title { font-weight:400; font-size:16px; color:#0F1419; letter-spacing:.04em; white-space:nowrap; width:220px; flex-shrink:0; }
+.nav-title { font-weight:400; font-size:18px; color:#0F1419; letter-spacing:.04em; white-space:nowrap; width:220px; flex-shrink:0; }
 .nav-title em { font-style:normal; font-weight:400;
   background:linear-gradient(135deg, var(--blue) 0%, var(--cyan) 80%);
   -webkit-background-clip:text; -webkit-text-fill-color:transparent;

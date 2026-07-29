@@ -929,7 +929,7 @@ li[data-product]:hover::before { background:var(--blue); }
   margin:0; white-space:nowrap; flex-shrink:0;
 }
 .mgmt-block-tags, .mgmt-block-tags > span {
-  font-size:9px !important; font-weight:500; color:var(--text3);
+  font-size:12px !important; font-weight:500; color:var(--text3);
   white-space:nowrap;
 }
 .mgmt-block p {

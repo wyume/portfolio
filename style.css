@@ -348,6 +348,7 @@ html {
   40.1%, 100% { background-position:-80% 0; opacity:0; }
 }
 .hero-desc { font-size:13px; color:var(--text2); margin-bottom:14px; line-height:1.7; font-weight:300; letter-spacing:.08em; position:relative; }
+.hero-sep { font-size:15px; font-weight:400; color:rgba(0,0,0,.18); margin:0 2px; }
 .hero-tags { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
 .hero-tags span { display:inline-flex; align-items:center; gap:3px; font-size:11px; color:#3e617b; padding:4px 14px; border-radius:99px; background:rgb(31 55 80 / 7%); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border:1px solid rgb(88 125 195 / 17%); font-weight:500; }
 

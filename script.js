@@ -366,10 +366,6 @@
     jingyin: {
       name: '警音小程序', cat: '反电信网络诈骗类', logo: 'images/警音.png', logoSize: 28,
       metrics: ['公安内部通讯', '实时语音告警', '多端同步', '警情响应 < 3 秒', '覆盖基层所队 100+', '日均调度 5000+ 次'], desc: '公安内部语音预警与通讯产品，提供实时语音告警、警情播报、调度通讯等功能。',
-      outputs: [
-        { label: '产品原型', detail: '语音告警触发配置、警情自动播报规则引擎、一键调度通讯界面设计' },
-        { label: '交互设计', detail: '高优先级告警的强提醒交互模式、多端同步通知机制、应急响应操作流程' }
-      ],
       imgs: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0VFRjJGRicvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzRGNDZFNScgb3BhY2l0eT0nLjcnPuitpumfs+Wwj+eoi+W6j+WOn+WeizwvdGV4dD48L3N2Zz4=']
     },
     // 区块链数字资产交易类

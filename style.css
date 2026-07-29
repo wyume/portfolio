@@ -1580,6 +1580,18 @@ h2[data-section-key],
   .hz-f-step p { font-size:9px; }
 }
 
+/* ====== 移动端强制保持桌面列数 ====== */
+@media (max-width: 1024px) {
+  .bento-row          { grid-template-columns: repeat(3, 1fr) !important; }
+  .bento-row.mgmt     { grid-template-columns: repeat(2, 1fr) !important; }
+  .doc-grid, .doc-visual-grid { grid-template-columns: repeat(5, 1fr) !important; }
+  .design-gallery     { grid-template-columns: repeat(4, 1fr) !important; }
+  .skill-cloud        { grid-template-columns: repeat(4, 1fr) !important; }
+  .footer-grid        { grid-template-columns: 1fr 1fr !important; }
+  .card.main          { grid-template-columns: 1fr 1fr !important; }
+  .doc-grid-2col      { grid-template-columns: repeat(4, 1fr) !important; }
+}
+
 /* ====== Landscape Phone / Short Screens ====== */
 @media (max-height: 500px) {
   #auth-gate { align-items: flex-start; padding-top: 20px; }

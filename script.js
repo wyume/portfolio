@@ -364,7 +364,7 @@
       imgs: ['images/sjgf-01.png', 'images/sjgf-02.png', 'images/sjgf-03.png', 'images/sjgf-04.png']
     },
     jingyin: {
-      name: '警音小程序', cat: '反电信网络诈骗类', logo: 'images/警音.png', logoSize: 24,
+      name: '警音小程序', cat: '反电信网络诈骗类', logo: 'images/警音.png', logoSize: 28,
       metrics: ['公安内部通讯', '实时语音告警', '多端同步', '警情响应 < 3 秒', '覆盖基层所队 100+', '日均调度 5000+ 次'], desc: '公安内部语音预警与通讯产品，提供实时语音告警、警情播报、调度通讯等功能。',
       outputs: [
         { label: '产品原型', detail: '语音告警触发配置、警情自动播报规则引擎、一键调度通讯界面设计' },

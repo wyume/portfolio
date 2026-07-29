@@ -1474,7 +1474,7 @@ h2[data-section-key],
 /* output list (替代截图) */
 
 /* ====== Responsive ====== */
-@media (max-width:1024px) {
+@media (max-width:980px) {
   .footer-grid { grid-template-columns:1fr 1fr; }
   .doc-grid, .doc-visual-grid { grid-template-columns:repeat(3,1fr); }
   .bento-row { grid-template-columns:repeat(2,1fr); }

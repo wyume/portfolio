@@ -23,7 +23,7 @@ body {
   font-family: 'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFont,sans-serif;
   background: #F8FAFC; color: var(--text);
   line-height: 1.55; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto;
-  overflow-x: hidden;
+  min-width: 1024px;
 }
 
 /* ====== 鲜艳光球 ====== */

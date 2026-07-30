@@ -828,8 +828,9 @@ document.querySelector('.modal-box').classList.add('glass');
     /* Load custom overrides from localStorage */
     var customDescs = {}; try { customDescs = JSON.parse(localStorage.getItem('_custom_prod_descs') || '{}'); } catch(ee) {}
     var customMetrics = {}; try { customMetrics = JSON.parse(localStorage.getItem('_custom_prod_metrics') || '{}'); } catch(ee) {}
-    var desc = (customDescs.hasOwnProperty(key)) ? customDescs[key] : pd.desc;
-    if (pd.outputs && pd.outputs.length) { desc += ' ' + pd.outputs.map(function(o){return o.detail}).join('；'); }
+    var hasCustom = customDescs.hasOwnProperty(key);
+    var desc = hasCustom ? customDescs[key] : pd.desc;
+    if (!hasCustom && pd.outputs && pd.outputs.length) { desc += ' ' + pd.outputs.map(function(o){return o.detail}).join('；'); }
     var metrics = (customMetrics.hasOwnProperty(key)) ? customMetrics[key].slice() : (pd.metrics ? pd.metrics.slice() : []);
 
     var dotColor = pd.cat === '反电信网络诈骗类' ? '#0055FF' : pd.cat === '区块链数字资产交易类' ? '#00A3E0' : pd.cat === '互联网金融类' ? '#00B853' : pd.cat === '金融支付类' ? '#7B3DFF' : '#F22020';

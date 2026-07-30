@@ -371,27 +371,17 @@
     // 区块链数字资产交易类
     zsliam: {
       name: '中数链数字版权交易系统', cat: '区块链数字资产交易类', logo:'images/zsliam-logo.png',
-      metrics: ['国家级版权联盟链', '接入 3+ 文创平台', '全链路闭环', '版权登记量 10 万+', '新华社/中国网战略合作', '获国家版权局认可'], desc: '基于区块链的数字版权登记、交易与流转平台，提供版权存证、智能合约交易、版权溯源等核心能力。',
-      outputs: [
-        { label: '产品原型', detail: '版权登记/交易/溯源三大核心流程的 Axure 高保真原型，含用户端与管理端' },
-        { label: '区块链方案', detail: '智能合约设计、链上存证方案、数字资产确权流程、交易撮合引擎设计' }
-      ],
+      metrics: ['国家级版权联盟链', '接入 3+ 文创平台', '全链路闭环', '版权登记量 10 万+', '新华社/中国网战略合作', '获国家版权局认可'], desc: '作为国家级版权交易保护联盟链超级节点，联合中国网、上海文交所等机构，面向版权方、发行方及文创平台提供版权登记、权属存证与交易流转一站式链上服务。搭建"版权/IP方—发行方—中数链—国版链"四方业务交互模式，覆盖从登记确权到发行流转的全链路闭环，兼容空投、0元购、二级交易、盲盒、合成等数藏玩法。',
       imgs: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0U1RjZGQicvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzAwQTNFMCcgb3BhY2l0eT0nLjcnPuS4reaVsOmTvuS6pOaYk+W5s+WPsDwvdGV4dD48L3N2Zz4=', 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0UwRjdGQScvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzAwOUZENCcgb3BhY2l0eT0nLjcnPueJiOadg+S6pOaYk+a1geeoizwvdGV4dD48L3N2Zz4=']
     },
     guoban: {
       name: '国版数创', cat: '区块链数字资产交易类', logo: 'images/国版数创logo.png',
-      metrics: ['数字资产发行', '二级市场', '智能分账', '首发售罄率 100%', '入驻创作者 500+', '版税结算零差错'], desc: '国家级数字版权创新平台，聚焦版权资产的数字化发行与交易流转。',
-      outputs: [
-        { label: '平台方案', detail: '版权资产数字化发行流程、二级市场交易机制、版税自动分账设计' }
-      ],
+      metrics: ['数字资产发行', '二级市场', '智能分账', '首发售罄率 100%', '入驻创作者 500+', '版税结算零差错'], desc: '国家级数字版权创新平台交易端，依托国版链实现版权资产的数字化发行与二级市场流转。支持版权方入驻、资产发行上链、用户购买交易与版税自动分账，将版权价值从登记确权延伸至市场化流通。',
       imgs: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0U1RjZGQicvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzAwQTNFMCcgb3BhY2l0eT0nLjcnPuWbveeJiOaVsOWIm+W5s+WPsDwvdGV4dD48L3N2Zz4=']
     },
     'zsl-browser': {
       name: '中数链浏览器', cat: '区块链数字资产交易类', logo: 'images/zsliam-logo.png',
-      metrics: ['链上可视化', '合约验证', '实时追踪', '日均查询 10 万+', '支持 3 条主流公链', '查询响应 < 1 秒'], desc: '区块链浏览器产品，支持交易查询、区块浏览、地址监控、智能合约验证等功能。',
-      outputs: [
-        { label: '产品设计', detail: '区块链数据可视化方案、交易追溯界面、智能合约代码开源验证交互' }
-      ],
+      metrics: ['链上可视化', '合约验证', '实时追踪', '日均查询 10 万+', '支持 3 条主流公链', '查询响应 < 1 秒'], desc: '区块链数据查询与链上核验工具，兼容旗下可信节点与服务商文创平台。将链上存证信息与版权业务打通，提供数字资产溯源、交易记录查询、智能合约验证等能力，为版权确权与交易透明度提供可验证的链上依据。',
       imgs: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0UwRjdGQScvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzAwOUZENCcgb3BhY2l0eT0nLjcnPuS4reaVsOmTvua1j+iniOWZqDwvdGV4dD48L3N2Zz4=']
     },
     bitker: {

@@ -1,16 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6366F1"/>
-      <stop offset="100%" stop-color="#0D9488"/>
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
     </linearGradient>
-    <linearGradient id="w" x1="0%" y1="0%" x2="0%" y2="100%">
+    <linearGradient id="w" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="rgba(255,255,255,.95)"/>
-      <stop offset="100%" stop-color="rgba(255,255,255,.65)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,.6)"/>
     </linearGradient>
   </defs>
   <rect width="120" height="120" rx="28" fill="url(#bg)"/>
-  <!-- 单一大块面性图形：向上流动的丝带/条幅 -->
-  <path d="M28,82 Q28,54 60,54 Q92,54 92,38 L92,56 Q92,68 60,68 Q28,68 28,82 Z" fill="url(#w)"/>
-  <path d="M28,82 L28,90 Q60,76 92,56 L92,64 Q60,84 28,90 Z" fill="rgba(255,255,255,.35)"/>
+  <!-- 层叠圆角片 -->
+  <rect x="42" y="26" width="60" height="16" rx="8" fill="url(#w)"/>
+  <rect x="34" y="46" width="60" height="16" rx="8" fill="url(#w)" opacity=".85"/>
+  <rect x="26" y="66" width="60" height="16" rx="8" fill="url(#w)" opacity=".65"/>
+  <rect x="18" y="86" width="52" height="16" rx="8" fill="url(#w)" opacity=".45"/>
 </svg>

@@ -26,7 +26,7 @@
       '_custom_sln_card_descs', '_custom_mgmt_titles', '_custom_mgmt_descs',
       '_custom_mgmt_steps', '_custom_doc_titles', '_custom_doc_items',
       '_custom_doc_descs', '_custom_design_cats', '_custom_design_items',
-      '_design_desc', '_cloud_file_urls'
+      '_design_desc', '_cloud_file_urls', '_custom_hero_title'
     ];
 
     // 第一步：从云端下载并合并到本地
@@ -1358,6 +1358,57 @@ document.querySelector('.modal-box').classList.add('glass');
     var onUp = function() { clearTimeout(timer); document.removeEventListener('mouseup', onUp); };
     document.addEventListener('mouseup', onUp);
   });
+
+  /* ---- Hero title long-press edit ---- */
+  var CUSTOM_HERO_TITLE_KEY = '_custom_hero_title';
+  (function() {
+    var raw = localStorage.getItem(CUSTOM_HERO_TITLE_KEY);
+    if (raw) {
+      var val = raw.trim();
+      if (val) {
+        var dotIdx = val.indexOf('·');
+        if (dotIdx > -1) {
+          document.querySelector('.hero h1').innerHTML = val.slice(0, dotIdx).trim() + ' · <em>' + val.slice(dotIdx + 1).trim() + '</em>';
+        } else {
+          document.querySelector('.hero h1').textContent = val;
+        }
+      }
+    }
+    var h1 = document.querySelector('.hero h1');
+    if (!h1) return;
+    var timer;
+    h1.addEventListener('mousedown', function(e) {
+      if (document.body.classList.contains('edit-locked')) return;
+      if (h1.querySelector('input')) return;
+      var oldHTML = h1.innerHTML;
+      timer = setTimeout(function() {
+        var input = document.createElement('input');
+        input.type = 'text'; input.value = h1.textContent.trim();
+        input.style.cssText = 'font-size:28px;font-weight:700;color:#0F1419;border:1px solid #6366F1;border-radius:8px;padding:2px 8px;width:100%;max-width:360px;box-sizing:border-box;background:rgba(255,255,255,.9);outline:none;font-family:inherit;text-align:center;';
+        h1.textContent = ''; h1.appendChild(input);
+        input.focus(); input.select();
+        function save() {
+          var newVal = input.value.trim();
+          if (newVal) {
+            localStorage.setItem(CUSTOM_HERO_TITLE_KEY, newVal);
+            _saveCustomData(CUSTOM_HERO_TITLE_KEY, newVal);
+            var dotIdx = newVal.indexOf('·');
+            if (dotIdx > -1) {
+              h1.innerHTML = newVal.slice(0, dotIdx).trim() + ' · <em>' + newVal.slice(dotIdx + 1).trim() + '</em>';
+            } else {
+              h1.textContent = newVal;
+            }
+          } else {
+            h1.innerHTML = oldHTML;
+          }
+        }
+        input.addEventListener('blur', save);
+        input.addEventListener('keydown', function(ev) { if (ev.key === 'Enter') input.blur(); if (ev.key === 'Escape') { input.value = h1.textContent.trim(); input.blur(); } });
+      }, 500);
+      var onUp = function() { clearTimeout(timer); document.removeEventListener('mouseup', onUp); };
+      document.addEventListener('mouseup', onUp);
+    });
+  })();
 
   /* ---- Design Product Cards — long-press to edit category title / product name ---- */
   var CUSTOM_DESIGN_CATS_KEY = '_custom_design_cats';

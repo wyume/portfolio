@@ -6,12 +6,8 @@
     </linearGradient>
   </defs>
   <rect width="120" height="120" rx="24" fill="url(#bg)"/>
-  <!-- POS机具 + 向外拓展 -->
-  <rect x="44" y="46" width="32" height="22" rx="5" fill="rgba(255,255,255,.9)"/>
-  <rect x="50" y="50" width="20" height="8" rx="2" fill="#7C3AED" opacity=".6"/>
-  <line x1="56" y1="62" x2="64" y2="62" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round"/>
-  <!-- 拓展信号三层 -->
-  <circle cx="60" cy="57" r="42" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/>
-  <circle cx="60" cy="57" r="34" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="2.5"/>
-  <circle cx="60" cy="57" r="26" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2"/>
+  <!-- 大块几何图形 -->
+  <circle cx="60" cy="52" r="22" fill="rgba(255,255,255,.9)"/>
+  <rect x="38" y="60" width="44" height="8" rx="4" fill="rgba(255,255,255,.7)"/>
+  <rect x="44" y="74" width="32" height="8" rx="4" fill="rgba(255,255,255,.5)"/>
 </svg>

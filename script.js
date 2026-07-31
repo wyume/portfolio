@@ -1304,7 +1304,7 @@ document.querySelector('.modal-box').classList.add('glass');
   try { var st = localStorage.getItem(CUSTOM_SEC_TITLES_KEY); if (st) customSecTitles = JSON.parse(st); } catch(e) {}
 
   function applySecTitles() {
-    var defaults = { design: '代表产品', solution: '方案设计', doc: '文档撰写', mgmt: '项目管理' };
+    var defaults = { design: '产品选集', solution: '方案设计', doc: '文档撰写', mgmt: '项目管理' };
     /* Section h2 */
     document.querySelectorAll('h2[data-section-key]').forEach(function(h2) {
       var k = h2.getAttribute('data-section-key');

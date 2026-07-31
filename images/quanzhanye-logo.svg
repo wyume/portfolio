@@ -11,8 +11,7 @@
     </linearGradient>
   </defs>
   <rect width="120" height="120" rx="28" fill="url(#bg)"/>
-  <!-- Z 字形：展业首字母，现代几何体 -->
-  <path d="M36,40 H84 V52 H56 V58 H84 V70 H36 V58 H64 V52 H36 Z" fill="url(#mark)"/>
-  <!-- 右上角小方块：商户/终端暗示 -->
-  <rect x="84" y="34" width="10" height="10" rx="3" fill="rgba(255,255,255,.55)"/>
+  <!-- Z 字形放大 -->
+  <path d="M28,34 H92 V50 H60 V60 H92 V76 H28 V60 H60 V50 H28 Z" fill="url(#mark)"/>
+  <rect x="92" y="28" width="12" height="12" rx="4" fill="rgba(255,255,255,.5)"/>
 </svg>

@@ -26,7 +26,7 @@
       '_custom_sln_card_descs', '_custom_mgmt_titles', '_custom_mgmt_descs',
       '_custom_mgmt_steps', '_custom_doc_titles', '_custom_doc_items',
       '_custom_doc_descs', '_custom_design_cats', '_custom_design_items',
-      '_design_desc', '_cloud_file_urls', '_custom_hero_title'
+      '_design_desc', '_cloud_file_urls', '_custom_hero_title', '_custom_hero_desc'
     ];
 
     // 第一步：从云端下载并合并到本地
@@ -1404,6 +1404,42 @@ document.querySelector('.modal-box').classList.add('glass');
         }
         input.addEventListener('blur', save);
         input.addEventListener('keydown', function(ev) { if (ev.key === 'Enter') input.blur(); if (ev.key === 'Escape') { input.value = h1.textContent.trim(); input.blur(); } });
+      }, 500);
+      var onUp = function() { clearTimeout(timer); document.removeEventListener('mouseup', onUp); };
+      document.addEventListener('mouseup', onUp);
+    });
+  })();
+
+  /* ---- Hero desc long-press edit ---- */
+  var CUSTOM_HERO_DESC_KEY = '_custom_hero_desc';
+  (function() {
+    var raw = localStorage.getItem(CUSTOM_HERO_DESC_KEY);
+    if (raw) { var val = raw.trim(); if (val) document.querySelector('.hero-desc').textContent = val; }
+    var desc = document.querySelector('.hero-desc');
+    if (!desc) return;
+    var timer;
+    desc.addEventListener('mousedown', function(e) {
+      if (document.body.classList.contains('edit-locked')) return;
+      if (desc.querySelector('input, textarea')) return;
+      var oldVal = desc.textContent.trim();
+      timer = setTimeout(function() {
+        var input = document.createElement('input');
+        input.type = 'text'; input.value = oldVal;
+        input.style.cssText = 'font-size:13px;color:#384b5a;border:1px solid #6366F1;border-radius:6px;padding:4px 8px;width:100%;box-sizing:border-box;background:rgba(255,255,255,.9);outline:none;font-family:inherit;text-align:center;letter-spacing:.08em;';
+        desc.textContent = ''; desc.appendChild(input);
+        input.focus(); input.select();
+        function save() {
+          var newVal = input.value.trim();
+          if (newVal) {
+            localStorage.setItem(CUSTOM_HERO_DESC_KEY, newVal);
+            _saveCustomData(CUSTOM_HERO_DESC_KEY, newVal);
+            desc.textContent = newVal;
+          } else {
+            desc.textContent = oldVal;
+          }
+        }
+        input.addEventListener('blur', save);
+        input.addEventListener('keydown', function(ev) { if (ev.key === 'Enter') input.blur(); if (ev.key === 'Escape') { input.value = oldVal; input.blur(); } });
       }, 500);
       var onUp = function() { clearTimeout(timer); document.removeEventListener('mouseup', onUp); };
       document.addEventListener('mouseup', onUp);

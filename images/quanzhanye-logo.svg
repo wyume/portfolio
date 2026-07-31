@@ -1,15 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#2563EB"/>
-      <stop offset="100%" stop-color="#1E40AF"/>
-    </linearGradient>
-    <linearGradient id="w" x1="0%" y1="0%" x2="100%" y2="100%">
+    <radialGradient id="bg" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#93C5FD"/>
+      <stop offset="40%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </radialGradient>
+    <linearGradient id="mark" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#fff"/>
-      <stop offset="100%" stop-color="rgba(255,255,255,.65)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,.7)"/>
     </linearGradient>
   </defs>
   <rect width="120" height="120" rx="28" fill="url(#bg)"/>
-  <!-- 简洁的向右上箭头 -->
-  <path d="M36,78 L36,62 L80,62 L80,46 L96,60 L80,74 L80,58 L36,58 Z" fill="url(#w)" opacity=".9"/>
+  <!-- Z 字形：展业首字母，现代几何体 -->
+  <path d="M36,40 H84 V52 H56 V58 H84 V70 H36 V58 H64 V52 H36 Z" fill="url(#mark)"/>
+  <!-- 右上角小方块：商户/终端暗示 -->
+  <rect x="84" y="34" width="10" height="10" rx="3" fill="rgba(255,255,255,.55)"/>
 </svg>

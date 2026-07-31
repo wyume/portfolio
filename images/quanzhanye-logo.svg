@@ -1,12 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#4F46E5"/>
-      <stop offset="100%" stop-color="#0891B2"/>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#0D9488"/>
+    </linearGradient>
+    <linearGradient id="w" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,.95)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,.65)"/>
     </linearGradient>
   </defs>
   <rect width="120" height="120" rx="28" fill="url(#bg)"/>
-  <!-- 现代抽象面性图形：两个交错圆角方块 -->
-  <rect x="30" y="28" width="38" height="38" rx="10" fill="rgba(255,255,255,.88)"/>
-  <rect x="52" y="54" width="38" height="38" rx="10" fill="rgba(255,255,255,.55)"/>
+  <!-- 单一大块面性图形：向上流动的丝带/条幅 -->
+  <path d="M28,82 Q28,54 60,54 Q92,54 92,38 L92,56 Q92,68 60,68 Q28,68 28,82 Z" fill="url(#w)"/>
+  <path d="M28,82 L28,90 Q60,76 92,56 L92,64 Q60,84 28,90 Z" fill="rgba(255,255,255,.35)"/>
 </svg>

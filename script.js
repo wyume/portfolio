@@ -823,8 +823,8 @@ document.querySelector('.modal-box').classList.add('glass');
     if (!hasCustom && pd.outputs && pd.outputs.length) { desc += ' ' + pd.outputs.map(function(o){return o.detail}).join('；'); }
     var metrics = (customMetrics.hasOwnProperty(key)) ? customMetrics[key].slice() : (pd.metrics ? pd.metrics.slice() : []);
 
-    var dotColor = '#4F46E5';
-    var tagBg = 'rgba(79,70,229,.08)';
+    var dotColor = '#0055FF';
+    var tagBg = 'rgba(0,85,255,.08)';
     var titleHtml = '<div style="display:flex;align-items:center;gap:12px;">';
     if (pd.logo) { var logoSize = pd.logoSize || 32; var logoWrap = pd.logoBg ? 'background:#fff;padding:4px;box-shadow:0 1px 3px rgba(0,0,0,.04);' : ''; titleHtml += '<span style="flex-shrink:0;display:flex;align-items:center;justify-content:center;width:' + logoSize + 'px;height:' + logoSize + 'px;border-radius:7px;' + logoWrap + '"><img src="' + pd.logo + '" style="width:100%;height:100%;object-fit:contain;"></span>'; }
     titleHtml += '<h3 style="margin:0;">' + (customDesignItems[key] || pd.name) + '</h3></div>';
@@ -1849,7 +1849,7 @@ document.querySelector('.modal-box').classList.add('glass');
   }
 
   function _prodTagStyle(key){
-    return 'color:#4F46E5;background:rgba(79,70,229,.08);border-color:rgba(79,70,229,.15)';
+    return 'color:#0055FF;background:rgba(0,85,255,.08);border-color:rgba(0,85,255,.15)';
   }
   /* ---- Edit product metric tag ---- */
   function _startProdTagEdit(el) {

@@ -7,10 +7,6 @@
     </radialGradient>
   </defs>
   <rect width="120" height="120" rx="28" fill="url(#bg)"/>
-  <!-- 板正对称的Z -->
-  <g fill="#fff">
-    <rect x="30" y="36" width="60" height="14" rx="3"/>
-    <rect x="30" y="70" width="60" height="14" rx="3"/>
-    <polygon points="90,36 90,50 44,84 44,70"/>
-  </g>
+  <!-- 板正Z：上横杠+斜杠+下横杠宽度一致 -->
+  <polygon points="30,36 90,36 90,52 52,84 30,84 30,68 68,52 68,36" fill="#fff"/>
 </svg>

@@ -6,10 +6,10 @@
     </linearGradient>
   </defs>
   <rect width="120" height="120" rx="24" fill="url(#g)"/>
-  <g transform="translate(60,60)">
-    <!-- 向上增长柱形 -->
-    <rect x="-36" y="-4" width="16" height="30" rx="5" fill="rgba(255,255,255,.6)"/>
-    <rect x="-8" y="-14" width="16" height="40" rx="5" fill="rgba(255,255,255,.85)"/>
-    <rect x="20" y="6" width="16" height="20" rx="5" fill="rgba(255,255,255,.4)"/>
+  <!-- 商户+箭头 -->
+  <g transform="translate(60,56)" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="-22" y="-22" width="28" height="28" rx="6"/>
+    <line x1="12" y1="-10" x2="22" y2="-20"/>
+    <polyline points="14,-20 22,-20 22,-12" fill="#fff" stroke-width="6"/>
   </g>
 </svg>

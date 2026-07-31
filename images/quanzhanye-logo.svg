@@ -1,17 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#2563EB"/>
-      <stop offset="50%" stop-color="#4F46E5"/>
-      <stop offset="100%" stop-color="#06B6D4"/>
+    <linearGradient id="bg" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#0891B2"/>
     </linearGradient>
   </defs>
   <rect width="120" height="120" rx="28" fill="url(#bg)"/>
-  <!-- 简洁的支付/展业标记 -->
-  <g fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="38" y="36" width="44" height="48" rx="10"/>
-    <line x1="48" y1="48" x2="72" y2="48"/>
-    <line x1="48" y1="58" x2="66" y2="58"/>
-    <line x1="48" y1="68" x2="60" y2="68"/>
-  </g>
+  <!-- 现代抽象面性图形：两个交错圆角方块 -->
+  <rect x="30" y="28" width="38" height="38" rx="10" fill="rgba(255,255,255,.88)"/>
+  <rect x="52" y="54" width="38" height="38" rx="10" fill="rgba(255,255,255,.55)"/>
 </svg>

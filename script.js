@@ -1367,11 +1367,15 @@ document.querySelector('.modal-box').classList.add('glass');
       var val = raw.trim();
       if (val) {
         var dotIdx = val.indexOf('·');
+        var heroHTML;
         if (dotIdx > -1) {
-          document.querySelector('.hero h1').innerHTML = val.slice(0, dotIdx).trim() + ' · <em>' + val.slice(dotIdx + 1).trim() + '</em>';
+          heroHTML = val.slice(0, dotIdx).trim() + ' · <em>' + val.slice(dotIdx + 1).trim() + '</em>';
         } else {
-          document.querySelector('.hero h1').textContent = val;
+          heroHTML = val;
         }
+        document.querySelector('.hero h1').innerHTML = heroHTML;
+        var navTitle = document.querySelector('.nav-title');
+        if (navTitle) navTitle.innerHTML = heroHTML;
       }
     }
     var h1 = document.querySelector('.hero h1');
@@ -1398,6 +1402,9 @@ document.querySelector('.modal-box').classList.add('glass');
             } else {
               h1.textContent = newVal;
             }
+            // 同步顶部导航
+            var navTitle = document.querySelector('.nav-title');
+            if (navTitle) navTitle.innerHTML = h1.innerHTML;
           } else {
             h1.innerHTML = oldHTML;
           }

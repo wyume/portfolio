@@ -1365,6 +1365,7 @@ document.querySelector('.modal-box').classList.add('glass');
     var raw = localStorage.getItem(CUSTOM_HERO_TITLE_KEY);
     if (raw) {
       var val = raw.trim();
+      try { var parsed = JSON.parse(val); if (typeof parsed === 'string') val = parsed; } catch(e) {}
       if (val) {
         var dotIdx = val.indexOf('·');
         var heroHTML;
@@ -1421,7 +1422,7 @@ document.querySelector('.modal-box').classList.add('glass');
   var CUSTOM_HERO_DESC_KEY = '_custom_hero_desc';
   (function() {
     var raw = localStorage.getItem(CUSTOM_HERO_DESC_KEY);
-    if (raw) { var val = raw.trim(); if (val) document.querySelector('.hero-desc').textContent = val; }
+    if (raw) { var val = raw.trim(); try { var parsed = JSON.parse(val); if (typeof parsed === 'string') val = parsed; } catch(e) {} if (val) document.querySelector('.hero-desc').textContent = val; }
     var desc = document.querySelector('.hero-desc');
     if (!desc) return;
     var timer;

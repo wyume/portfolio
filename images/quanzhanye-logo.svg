@@ -2,15 +2,12 @@
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#7C3AED"/>
-      <stop offset="100%" stop-color="#5B21B6"/>
-    </linearGradient>
-    <linearGradient id="shape" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="rgba(255,255,255,.3)"/>
-      <stop offset="50%" stop-color="rgba(255,255,255,.9)"/>
-      <stop offset="100%" stop-color="rgba(255,255,255,.5)"/>
+      <stop offset="100%" stop-color="#4C1D95"/>
     </linearGradient>
   </defs>
   <rect width="120" height="120" rx="24" fill="url(#bg)"/>
-  <!-- 整体渐变向上生长形 -->
-  <path d="M30,82 Q30,54 60,44 Q90,34 90,44 L90,82 Z" fill="url(#shape)"/>
+  <rect x="34" y="44" width="52" height="36" rx="6" fill="rgba(255,255,255,.15)" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+  <rect x="44" y="54" width="32" height="12" rx="2" fill="rgba(255,255,255,.7)"/>
+  <line x1="56" y1="70" x2="56" y2="76" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="52" y1="80" x2="68" y2="80" stroke="rgba(255,255,255,.3)" stroke-width="2" stroke-linecap="round"/>
 </svg>

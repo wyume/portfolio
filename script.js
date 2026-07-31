@@ -823,8 +823,8 @@ document.querySelector('.modal-box').classList.add('glass');
     if (!hasCustom && pd.outputs && pd.outputs.length) { desc += ' ' + pd.outputs.map(function(o){return o.detail}).join('；'); }
     var metrics = (customMetrics.hasOwnProperty(key)) ? customMetrics[key].slice() : (pd.metrics ? pd.metrics.slice() : []);
 
-    var dotColor = pd.cat === '反电信网络诈骗类' ? '#0055FF' : pd.cat === '区块链数字资产交易类' ? '#00A3E0' : pd.cat === '互联网金融类' ? '#00B853' : pd.cat === '金融支付类' ? '#7B3DFF' : '#F22020';
-    var tagBg = pd.cat === '反电信网络诈骗类' ? 'rgba(0,85,255,.08)' : pd.cat === '区块链数字资产交易类' ? 'rgba(0,163,224,.08)' : pd.cat === '互联网金融类' ? 'rgba(0,184,83,.08)' : pd.cat === '金融支付类' ? 'rgba(123,61,255,.08)' : 'rgba(242,32,32,.08)';
+    var dotColor = '#4F46E5';
+    var tagBg = 'rgba(79,70,229,.08)';
     var titleHtml = '<div style="display:flex;align-items:center;gap:12px;">';
     if (pd.logo) { var logoSize = pd.logoSize || 32; var logoWrap = pd.logoBg ? 'background:#fff;padding:4px;box-shadow:0 1px 3px rgba(0,0,0,.04);' : ''; titleHtml += '<span style="flex-shrink:0;display:flex;align-items:center;justify-content:center;width:' + logoSize + 'px;height:' + logoSize + 'px;border-radius:7px;' + logoWrap + '"><img src="' + pd.logo + '" style="width:100%;height:100%;object-fit:contain;"></span>'; }
     titleHtml += '<h3 style="margin:0;">' + (customDesignItems[key] || pd.name) + '</h3></div>';
@@ -1849,10 +1849,7 @@ document.querySelector('.modal-box').classList.add('glass');
   }
 
   function _prodTagStyle(key){
-    var pd=productData[key];if(!pd)return 'color:#0055FF;background:rgba(0,85,255,.08);border-color:rgba(0,85,255,.15)';
-    var c=pd.cat==='反电信网络诈骗类'?'#0055FF':pd.cat==='区块链数字资产交易类'?'#00A3E0':pd.cat==='互联网金融类'?'#00B853':pd.cat==='金融支付类'?'#7B3DFF':'#FF7700';
-    var b=pd.cat==='反电信网络诈骗类'?'rgba(0,85,255,.08)':pd.cat==='区块链数字资产交易类'?'rgba(0,163,224,.08)':pd.cat==='互联网金融类'?'rgba(0,184,83,.08)':pd.cat==='金融支付类'?'rgba(123,61,255,.08)':'rgba(255,119,0,.08)';
-    return 'color:'+c+';background:'+b+';border-color:'+c+'22';
+    return 'color:#4F46E5;background:rgba(79,70,229,.08);border-color:rgba(79,70,229,.15)';
   }
   /* ---- Edit product metric tag ---- */
   function _startProdTagEdit(el) {

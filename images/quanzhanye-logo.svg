@@ -5,19 +5,12 @@
       <stop offset="40%" stop-color="#3B82F6"/>
       <stop offset="100%" stop-color="#1D4ED8"/>
     </radialGradient>
-    <linearGradient id="t" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fff"/>
-      <stop offset="100%" stop-color="rgba(255,255,255,.7)"/>
-    </linearGradient>
-    <linearGradient id="b" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="rgba(255,255,255,.55)"/>
-      <stop offset="100%" stop-color="#fff"/>
-    </linearGradient>
   </defs>
   <rect width="120" height="120" rx="28" fill="url(#bg)"/>
-  <!-- Z 形：上下两横错位交错 -->
-  <rect x="28" y="34" width="58" height="14" rx="7" fill="url(#t)"/>
-  <rect x="34" y="72" width="64" height="14" rx="7" fill="url(#b)"/>
-  <!-- 斜线连接 -->
-  <line x1="86" y1="41" x2="34" y2="79" stroke="#fff" stroke-width="14" stroke-linecap="round" opacity=".8"/>
+  <!-- 板正对称的Z -->
+  <g fill="#fff">
+    <rect x="30" y="36" width="60" height="14" rx="3"/>
+    <rect x="30" y="70" width="60" height="14" rx="3"/>
+    <polygon points="90,36 90,50 44,84 44,70"/>
+  </g>
 </svg>

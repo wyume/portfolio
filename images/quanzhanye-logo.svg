@@ -1,18 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3B82F6"/>
-      <stop offset="100%" stop-color="#06B6D4"/>
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1E40AF"/>
     </linearGradient>
     <linearGradient id="w" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="rgba(255,255,255,.95)"/>
-      <stop offset="100%" stop-color="rgba(255,255,255,.6)"/>
+      <stop offset="0%" stop-color="#fff"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,.65)"/>
     </linearGradient>
   </defs>
   <rect width="120" height="120" rx="28" fill="url(#bg)"/>
-  <!-- 层叠圆角片 -->
-  <rect x="42" y="26" width="60" height="16" rx="8" fill="url(#w)"/>
-  <rect x="34" y="46" width="60" height="16" rx="8" fill="url(#w)" opacity=".85"/>
-  <rect x="26" y="66" width="60" height="16" rx="8" fill="url(#w)" opacity=".65"/>
-  <rect x="18" y="86" width="52" height="16" rx="8" fill="url(#w)" opacity=".45"/>
+  <!-- 简洁的向右上箭头 -->
+  <path d="M36,78 L36,62 L80,62 L80,46 L96,60 L80,74 L80,58 L36,58 Z" fill="url(#w)" opacity=".9"/>
 </svg>

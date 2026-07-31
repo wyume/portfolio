@@ -1,11 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
-  <rect width="120" height="120" rx="24" fill="#7C3AED"/>
-  <!-- 向外扩散的四向箭头 -->
-  <g fill="#fff">
-    <polygon points="60,16 52,30 68,30"/>
-    <polygon points="60,104 52,90 68,90"/>
-    <polygon points="16,60 30,52 30,68"/>
-    <polygon points="104,60 90,52 90,68"/>
-    <circle cx="60" cy="60" r="10"/>
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#A78BFA"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="24" fill="url(#g)"/>
+  <g transform="translate(60,60)">
+    <!-- 向上增长柱形 -->
+    <rect x="-36" y="-4" width="16" height="30" rx="5" fill="rgba(255,255,255,.6)"/>
+    <rect x="-8" y="-14" width="16" height="40" rx="5" fill="rgba(255,255,255,.85)"/>
+    <rect x="20" y="6" width="16" height="20" rx="5" fill="rgba(255,255,255,.4)"/>
   </g>
 </svg>

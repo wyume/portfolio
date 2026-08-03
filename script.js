@@ -192,6 +192,87 @@
     }).catch(function() { callback(null); });
   }
 
+  /* 一键迁移：将本地 IndexedDB 中的图片/文件推送到 Supabase 云端 */
+  window._migrateAll = function() {
+    var SUPABASE_URL = 'https://gvnzxuldnbdrsvclvuul.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_dTms1JmEP3yG9MoNI32y-Q_GI9bUjAg';
+    var HEADERS = {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    };
+
+    function post(key, value) {
+      var payload = { key: key, value: value, updated_at: new Date().toISOString() };
+      // 先查是否存在
+      return fetch(SUPABASE_URL + '/rest/v1/portfolio_content?key=eq.' + encodeURIComponent(key) + '&select=id&limit=1',
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
+      ).then(function(r) { return r.json(); }).then(function(rows) {
+        var exists = rows && rows.length > 0;
+        var url = exists
+          ? SUPABASE_URL + '/rest/v1/portfolio_content?key=eq.' + encodeURIComponent(key)
+          : SUPABASE_URL + '/rest/v1/portfolio_content';
+        var method = exists ? 'PATCH' : 'POST';
+        return fetch(url, { method: method, headers: HEADERS, body: JSON.stringify(payload) });
+      });
+    }
+
+    console.log('🚀 开始迁移本地图片到云端...\n');
+    var DB_NAMES = ['ProdImagesDB', 'ProdDB'];
+    var totalKeys = 0, totalItems = 0, success = 0, failed = 0;
+
+    function migrateDB(dbName) {
+      return new Promise(function(resolve) {
+        var req = indexedDB.open(dbName);
+        req.onerror = function() { console.log('⚠️ ' + dbName + ' 不存在，跳过'); resolve(); };
+        req.onsuccess = function(e) {
+          var db = e.target.result;
+          var stores = Array.from(db.objectStoreNames);
+          console.log('📦 ' + dbName + ': stores =', stores);
+          var promises = [];
+          stores.forEach(function(store) {
+            var t = db.transaction(store, 'readonly');
+            var keysReq = t.objectStore(store).getAllKeys();
+            keysReq.onsuccess = function() {
+              var keys = keysReq.result || [];
+              console.log('  📂 "' + store + '": ' + keys.length + ' 个键');
+              keys.forEach(function(key) {
+                var dataReq = t.objectStore(store).get(key);
+                dataReq.onsuccess = function() {
+                  var data = dataReq.result;
+                  if (!data || !data.length) { console.log('    ⏭️ ' + key + ' (空)'); return; }
+                  totalKeys++; totalItems += data.length;
+                  post('_files_' + key, data).then(function(r) {
+                    if (r.ok) {
+                      console.log('    ✅ ' + key + ' (' + data.length + ' 项, ~' + Math.round(JSON.stringify(data).length / 1024) + 'KB)');
+                      success++;
+                    } else {
+                      console.error('    ❌ ' + key + ': HTTP ' + r.status);
+                      failed++;
+                    }
+                  }).catch(function(err) {
+                    console.error('    ❌ ' + key + ': ' + err.message);
+                    failed++;
+                  });
+                };
+              });
+            };
+          });
+          setTimeout(function() { db.close(); resolve(); }, 3000);
+        };
+      });
+    }
+
+    migrateDB('ProdImagesDB').then(function() {
+      return migrateDB('ProdDB');
+    }).then(function() {
+      console.log('\n📊 完成！总键: ' + totalKeys + ' | 文件: ' + totalItems + ' | ✅' + success + ' ❌' + failed);
+      if (failed === 0 && totalKeys > 0) console.log('✨ 现在打开 https://wyume.github.io/portfolio/ 测试');
+      if (totalKeys === 0) console.log('⚠️ 没找到数据，这个浏览器可能没有上传过图片');
+    });
+  };
+
   /** 将云端文件 URL 持久化到 localStorage + portfolio_content 表，新浏览器打开时可加载 */
   function _saveCloudFileUrl(key, url) {
     var SUPABASE_URL = 'https://gvnzxuldnbdrsvclvuul.supabase.co';

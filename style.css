@@ -599,6 +599,14 @@ li[data-product]:hover::before { background:var(--blue); }
 }
 .card-body { padding:20px 24px; display:flex; flex-direction:column; justify-content:center; }
 .card.side .card-body { padding:0; }
+
+/* 方案卡片 Logo */
+.sln-card-head { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+.sln-logo { width:30px; height:30px; border-radius:7px; flex-shrink:0; }
+.sln-logo-wrap { width:30px; height:30px; border-radius:7px; flex-shrink:0; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+.sln-logo-sm { width:24px; height:24px; object-fit:contain; }
+.sln-logo-xs { width:20px; height:20px; object-fit:contain; }
+
 .card-chip {
   display:inline-block; width:fit-content;
   font-size:12px; font-weight:500; letter-spacing:.04em;

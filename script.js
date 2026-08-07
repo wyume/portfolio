@@ -26,7 +26,8 @@
       '_custom_sln_card_descs', '_custom_mgmt_titles', '_custom_mgmt_descs',
       '_custom_mgmt_steps', '_custom_doc_titles', '_custom_doc_items',
       '_custom_doc_descs', '_custom_design_cats', '_custom_design_items',
-      '_design_desc', '_cloud_file_urls', '_custom_hero_title', '_custom_hero_desc'
+      '_design_desc', '_design_added_products', '_design_deleted_products',
+      '_cloud_file_urls', '_custom_hero_title', '_custom_hero_desc'
     ];
 
     // 第一步：从云端下载并合并到本地
@@ -390,11 +391,11 @@
     arch: {
       tag: '方案设计', tagBg: 'rgba(0,163,224,.08)', tagColor: '#00A3E0',
       title: '省级国反分布式', logo: 'images/gjfz-logo.png', logoBg: false,
-      desc: '基于国家反诈中心App，为各省市构建标准化反诈方案，赋能地方公安数据应用与能力拓展。',
+      desc: '国家反诈中心 App 面向全国通用场景上线后，各省市公安在实际使用中遇到三个问题——本地反诈数据无法接入、预警劝阻流程需要适配本地警务机制、宣传内容要贴合当地诈骗手法。直接用通用版无法落地，各省各自建又重复投入。',
       sections: [
-        { h: '方案架构', b: '基于国家反诈中心App，构建省-市-县三级联动的分布式反诈服务平台。定义数据通道、消息队列、同步机制与安全传输规范，实现跨层级数据共享与协同处置。' },
-        { h: '核心能力', b: '涵盖预警劝阻、风险核验、线索举报、联动处置、宣传教育五大模块的本地化适配方案。制定BCP数据包规范与RESTful API接口标准，保障系统间的高效互通。' },
-        { h: '交付标准', b: '形成可复制的省级项目交付标准，包括技术方案模板、招投标文件模板、实施计划框架，已在多个省市成功落地。' }
+        { h: '决策考虑', b: '对比省独立建设、中央统一扩展、分布式架构三种方案，选型依据：成本、响应速度、本地灵活性、数据自主权。最终采用"中央基座 + 省级定制"的分布式方案。' },
+        { h: '实际做法', b: '制定省-市-县三级联动的分布式方案，定义数据通道、消息队列、同步机制与安全传输规范，输出标准化技术方案模板、招投标文件模板、实施计划框架。' },
+        { h: '落地情况', b: '5 个以上省份完成交付，形成可复制的省级项目交付标准，招投标一次通过率 90%+。' }
       ],
       imgs: ['images/sjgf-01.png', 'images/sjgf-02.png', 'images/sjgf-03.png', 'images/sjgf-04.png']
     },
@@ -426,23 +427,23 @@
     },
     summary: {
       tag: '方案设计', tagBg: 'rgba(0,163,224,.08)', tagColor: '#00A3E0',
-      title: '中数链 + 国版数创', logo: 'images/zsliam-logo.png',
-      desc: '国家级版权交易保护联盟链超级节点，联合中国网、上海文交所，构建"版权确权-存证-发行-交易"全链路。',
+      title: '中数链 + 国版数创', logo: 'images/zsliam-logo.png', logoBg: false,
+      desc: '版权方和文创平台在数字资产发行时面临三个难点——版权归属缺乏可信存证、发行流转缺乏标准化流程、二级交易缺乏链上溯源能力，各方角色之间缺乏一套清晰的协作规则。',
       sections: [
-        { h: '业务模式', b: '制定"版权/IP方-发行方-中数链-国版链"四方业务交互模式，覆盖从版权登记确权到数字资产发行流转的全链路业务流程。定义超级节点、可信节点、服务商等多角色协作规则。' },
-        { h: '核心能力', b: '适配空投、0元购、二次交易、盲盒、合成等各类数字藏品玩法。完成国版数创交易端及中数链浏览器产品设计，提供数字资产链上溯源与核验服务。' },
-        { h: '落地成果', b: '已接入元潮互娱、上元文创、任意门科技等多家文创平台，形成合规闭环的版权交易业务体系与商业化服务能力。' }
+        { h: '决策考虑', b: '制定"版权/IP方—发行方—中数链—国版链"四方业务交互流程，定义超级节点、可信节点、服务商多角色协作规则，覆盖从确权到流转的全链路。' },
+        { h: '实际做法', b: '完成中数链版权交易系统及国版数创交易端设计，支持空投、0元购、二次交易、盲盒、合成等数字藏品玩法。同步设计中数链浏览器，提供链上溯源与合约核验。' },
+        { h: '落地情况', b: '已接入元潮互娱、上元文创、任意门科技等文创平台，版权登记量 10 万+，首发售罄率 100%。' }
       ],
       imgs: ['images/zsliam-01.png', 'images/zsliam-02.png']
     },
     xinsheng: {
       tag: '方案设计', tagBg: 'rgba(0,163,224,.08)', tagColor: '#00A3E0',
       title: '信生代 + 钱包小贷', logo: 'images/xinshengdai-logo.jpg',
-      desc: '采用双App模式重构信用卡代偿业务，通过业务隔离实现持牌放贷与代偿场景的风险隔离。',
+      desc: '信用卡代偿业务中，用户需要借钱还款，但放贷必须持牌。如果代偿和放贷混在同一业务流程中，监管认定为无牌经营信贷。同时也不能让用户来回切换，体验不能断。',
       sections: [
-        { h: '方案架构', b: '在行业监管趋严背景下，采用双App模式重构信用卡代偿业务。通过业务隔离与流程拆分，实现持牌放贷（钱包小贷）与代偿场景（信生代）的业务关联及风险切割。' },
-        { h: '风控设计', b: '引入百行征信、人行征信等核心数据源，基于客户信用资质、借贷历史、逾期多头、司法风险等标签，构建用户分层与准入审核体系，为额度授信与风控策略提供数据支撑。' },
-        { h: '合规要点', b: '优化小贷、代偿及消费业务流程，明确功能边界与交互逻辑，保障双App在监管框架下的合规运营。' }
+        { h: '决策考虑', b: '对比代偿和借贷独立入口、代偿内嵌借贷功能、前端统一入口 + 后台业务隔离三种做法，选型依据：监管合规、用户体验、数据打通可行性。最终采用第三种。' },
+        { h: '实际做法', b: '信生代 App 前端统一承载，内部嵌套钱包小贷功能模块，用户层面无缝衔接；后台数据层实现代偿业务与持牌放贷业务的风险切割。引入百行征信、人行征信、同盾等数据源，基于信用资质、借贷历史、逾期多头等标签构建用户分层和准入体系。' },
+        { h: '合规要点', b: '前端嵌套 + 后台隔离的架构确保代偿与放贷业务边界清晰，满足监管对持牌经营的要求；征信数据源（百行/人行/同盾）的合规接入与用户授权流程设计，保障数据使用合法合规。' }
       ],
       imgs: ['images/xinshengdai-01.png', 'images/qianbaoxiaodai-01.png']
     }
@@ -547,7 +548,7 @@
       imgs: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0YzRUVGRicvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzdDM0FFRCcgb3BhY2l0eT0nLjcnPuWFqOawkeWxleS4mkFwcDwvdGV4dD48L3N2Zz4=']
     },
     weifenxiao: {
-      name: '微分销平台', cat: '金融支付类',
+      name: '微分销平台', cat: '金融支付类', logo: 'images/weifenxiao-logo.svg',
       metrics: ['多级分销', '自动结算', '团队管理', '分销商 3000+', '月佣金结算破百万', '裂变转化率 35%+'], desc: '面向商户的分销管理平台，支持多级分销、佣金结算、团队管理等功能。',
       outputs: [
         { label: '分销体系', detail: '多级分销层级设计、佣金比例配置、分润结算流程、团队业绩看板' }
@@ -581,7 +582,7 @@
       imgs: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0ZGRjVFNScvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nI0ZGNzcwMCcgb3BhY2l0eT0nLjcnPueGiueMq+S5sOaJi0FwcDwvdGV4dD48L3N2Zz4=', 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0ZGRjhFRCcvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nI0Y1N0MwMCcgb3BhY2l0eT0nLjcnPuekvuS6pOijguWPmOa1geeoizwvdGV4dD48L3N2Zz4=']
     },
     octopus: {
-      name: '八爪鱼平台', cat: '社交电商类',
+      name: '八爪鱼平台', cat: '社交电商类', logo: 'images/八爪鱼logo.png',
       metrics: ['多平台聚合', '智能定价', '一键分发', '对接渠道 20+', '商品 SKU 百万级', '分销效率提升 50%'], desc: '多源商品聚合与分销平台，支持商品采集、智能定价、多渠道分发、订单管理等核心能力。',
       outputs: [
         { label: '平台架构', detail: '多源商品采集引擎→统一商品库→智能定价策略→多渠道一键分发→订单归集管理' },
@@ -590,7 +591,7 @@
       imgs: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0ZGRjVFNScvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nI0ZGNzcwMCcgb3BhY2l0eT0nLjcnPuWFq+eIqumxvOW5s+WPsDwvdGV4dD48L3N2Zz4=', 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0ZGRjhFRCcvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nI0Y1N0MwMCcgb3BhY2l0eT0nLjcnPui/kOiQpeWQjuWPsDwvdGV4dD48L3N2Zz4=']
     },
     feiyu: {
-      name: '飞鱼合伙人 App', cat: '社交电商类',
+      name: '飞鱼合伙人 App', cat: '社交电商类', logo: 'images/飞鱼logo.png',
       metrics: ['合伙人模式', '分销裂变', '佣金激励', '合伙人 1000+', '月佣金破 500 万', '团队裂变 5 级+'], desc: '社交电商合伙人平台，以合伙人/代理商模式为核心，支持多级分销、团队管理、佣金结算与裂变增长。',
       outputs: [
         { label: '合伙人体系', detail: '合伙人等级/权益/晋升机制设计，团队裂变与下级绑定逻辑，佣金计算与提现流程' },
@@ -823,18 +824,20 @@
         return;
       }
 
-      var logoHtml = d.logo ? (d.logoBg === false ? '<img src="' + d.logo + '" style="width:28px;height:28px;border-radius:6px;object-fit:contain;flex-shrink:0">' : '<span style="width:28px;height:28px;border-radius:6px;flex-shrink:0;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.04)"><img src="' + d.logo + '" style="width:22px;height:22px;object-fit:contain"></span>') : '';
-      var headerHtml2 = '<div style="display:flex;align-items:center;gap:10px">' + logoHtml + '<h3 style="margin:0">' + d.title + '</h3></div>';
+      var logoHtml = d.logo ? (d.logoBg === false ? '<img src="' + d.logo + '" style="width:32px;height:32px;border-radius:8px;object-fit:contain;flex-shrink:0">' : '<span style="width:32px;height:32px;border-radius:8px;flex-shrink:0;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.04);padding:4px;box-sizing:border-box"><img src="' + d.logo + '" style="width:24px;height:24px;object-fit:contain"></span>') : '';
+      /* Load custom title if available */
+      var slnTitles = {}; try { slnTitles = JSON.parse(localStorage.getItem('_custom_sln_titles') || '{}'); } catch(ee) {}
+      var displayTitle = slnTitles[key] || d.title;
+      var headerHtml2 = '<div style="display:flex;align-items:center;gap:10px">' + logoHtml + '<h3 style="margin:0">' + displayTitle + '</h3></div>';
       var bodyHtml2 = '';
       /* Load custom solution data */
       var slnCustom = {}; try { slnCustom = JSON.parse(localStorage.getItem('_custom_sln_data') || '{}'); } catch(ee) {}
-      var slnData = slnCustom[key] || { desc: d.desc, sections: (d.sections||[]).map(function(s){return {h:s.h, b:s.b};}) };
-      if (slnData.desc) bodyHtml2 += '<p class="sln-desc-text" data-sln-key="' + key + '" style="color:var(--text2);font-size:12px;margin:0 0 10px 0;line-height:1.55;padding:8px 14px;background:rgba(0,85,255,.02);border:1px solid rgba(0,0,0,.04);border-radius:6px;">' + slnData.desc + '</p>';
+      var slnData = slnCustom[key] || { sections: (d.sections||[]).map(function(s){return {h:s.h, b:s.b};}) };
       bodyHtml2 += '<div class="sln-sections-wrap" data-sln-key="' + key + '">';
       (slnData.sections||[]).forEach(function (s, idx) {
-        bodyHtml2 += '<div class="msec sln-section" data-section-idx="' + idx + '" style="margin-bottom:12px"><h4 class="sln-sec-title">' + s.h + '</h4><p class="sln-sec-body">' + s.b + '</p><button class="sln-sec-del" onclick="event.stopPropagation();window._delSlnSection(\x27' + key + '\x27,' + idx + ')" style="display:none;position:absolute;top:0;right:0;width:18px;height:18px;border-radius:50%;background:#EF4444;color:#fff;border:none;cursor:pointer;font-size:10px;line-height:1;padding:0">&times;</button></div>';
+        bodyHtml2 += '<div class="msec sln-section" data-section-idx="' + idx + '" style="margin-bottom:0"><h4 class="sln-sec-title">' + s.h + '</h4><p class="sln-sec-body">' + s.b + '</p><button class="sln-sec-del" onclick="event.stopPropagation();window._delSlnSection(\x27' + key + '\x27,' + idx + ')" style="display:none;position:absolute;top:0;right:0;width:18px;height:18px;border-radius:50%;background:#EF4444;color:#fff;border:none;cursor:pointer;font-size:10px;line-height:1;padding:0">&times;</button></div>';
       });
-      bodyHtml2 += '<span class="sln-sec-add" data-sln-key="' + key + '" style="display:inline-block;font-size:11px;font-weight:400;color:var(--text3);padding:2px 8px;border-radius:20px;background:transparent;border:1px solid rgba(0,0,0,.1);cursor:pointer;margin-bottom:14px">+ 添加</span>';
+      bodyHtml2 += '<span class="sln-sec-add" data-sln-key="' + key + '" style="display:inline-block;font-size:11px;font-weight:400;color:var(--text3);padding:2px 8px;border-radius:20px;background:transparent;border:1px solid rgba(0,0,0,.1);cursor:pointer;margin-bottom:4px">+ 添加</span>';
       bodyHtml2 += '</div>';
 
       var slnKey = 'sln_file_' + key;
@@ -873,8 +876,8 @@
         }
         imgHtml += '</div>';
         imgHtml += '</div>';
-        
-document.querySelector('.modal-box').classList.add('glass');
+
+document.querySelector('.modal-box').classList.add('glass','sln-modal');
         document.getElementById('modalHeaderContent').innerHTML = headerHtml2;
         document.getElementById('modal-body').innerHTML = bodyHtml2 + imgHtml;
         document.getElementById('modal').classList.add('on');
@@ -889,11 +892,15 @@ document.querySelector('.modal-box').classList.add('glass');
         catch(ee) { return (d.imgs || []).map(function(x){return {type:'image',data:x}}); }
       };
 
-      /* Load: new key → old key fallback */
+      /* Show modal instantly, then load files async */
+      var _slnGen = ++_modalGen;
+      renderSlnModal([]);
       _prodDBLoad(slnKey, function(dbFiles) {
+        if (_slnGen !== _modalGen || !document.getElementById('modal').classList.contains('on')) return;
         if (dbFiles && dbFiles.length) { renderSlnModal(dbFiles); return; }
         var oldKey = 'sln_img_' + key;
         _prodDBLoad(oldKey, function(oldData) {
+          if (_slnGen !== _modalGen || !document.getElementById('modal').classList.contains('on')) return;
           if (oldData && oldData.length) {
             renderSlnModal(oldData);
           } else {
@@ -932,7 +939,7 @@ document.querySelector('.modal-box').classList.add('glass');
     var dotColor = '#0055FF';
     var tagBg = 'rgba(0,85,255,.08)';
     var titleHtml = '<div style="display:flex;align-items:center;gap:12px;">';
-    if (pd.logo) { var logoSize = pd.logoSize || 32; var logoWrap = pd.logoBg ? 'background:#fff;padding:4px;box-shadow:0 1px 3px rgba(0,0,0,.04);' : ''; titleHtml += '<span style="flex-shrink:0;display:flex;align-items:center;justify-content:center;width:' + logoSize + 'px;height:' + logoSize + 'px;border-radius:7px;' + logoWrap + '"><img src="' + pd.logo + '" style="width:100%;height:100%;object-fit:contain;"></span>'; }
+    if (pd.logo) { var logoSize = pd.logoSize || 32; var logoWrap = pd.logoBg ? 'background:#fff;padding:4px;box-shadow:0 1px 3px rgba(0,0,0,.04);' : ''; titleHtml += '<span style="flex-shrink:0;display:flex;align-items:center;justify-content:center;width:' + logoSize + 'px;height:' + logoSize + 'px;border-radius:8px;' + logoWrap + '"><img src="' + pd.logo + '" style="width:100%;height:100%;object-fit:contain;"></span>'; }
     titleHtml += '<h3 style="margin:0;">' + (customDesignItems[key] || pd.name) + '</h3></div>';
     var bodyHtml = '<p class="prod-desc-text" data-prod-key="' + key + '" style="color:var(--text2);font-size:12px;margin:0 0 14px 0;line-height:1.55;padding:8px 14px;background:rgba(0,85,255,.02);border:1px solid rgba(0,0,0,.04);border-radius:6px;">' + desc + '</p>';
     /* Metrics with add/delete/edit */
@@ -945,46 +952,51 @@ document.querySelector('.modal-box').classList.add('glass');
     /* Store key on bodyHtml wrapper for later reference */
     bodyHtml = '<div data-prod-key="' + key + '">' + bodyHtml;
     var productKey = 'prod_imgs_' + key;
-    // Render modal with given images array
-    function renderProductModal(currentImgs) {
+    /* Show modal instantly, then load images async */
+    // Build title + body immediately
+    var imagesPlaceholder = '<div class="msec"><h4 style="display:flex;align-items:center;justify-content:space-between;font-size:14px">产品展示 <label class="img-edit-toggle" title="上传图片" style="cursor:pointer;display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--text3);font-weight:400;padding:2px 8px;border-radius:20px;border:1px solid rgba(0,0,0,.1)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg> 上传<input type="file" accept="image/*,.pdf,.docx,.doc,.ppt,.pptx" multiple style="display:none" onchange="window._prodUpload(event,\x27' + productKey + '\x27)"></label></h4><div class="img-scroll" id="prod-scroll-' + key + '" style="display:none;gap:8px;overflow-x:auto;padding:8px 0;width:100%"></div></div>';
+    var fullBody = bodyHtml + imagesPlaceholder + '</div>';
+    var mb3 = document.querySelector('.modal-box');
+    mb3.classList.add('glass'); mb3.classList.add('prod-modal');
+    document.getElementById('modalHeaderContent').innerHTML = titleHtml;
+    document.getElementById('modal-body').innerHTML = fullBody;
+    _injectScrollArrows();
+    document.getElementById('modal').classList.add('on');
+    document.getElementById('modal').scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+
+    /* Async load images and update the scroll area */
+    function updateImages(currentImgs) {
+      var scrollDiv = document.getElementById('prod-scroll-' + key);
+      if (!scrollDiv) return;
       var hasUploads = currentImgs && currentImgs.length > 0;
-      var imagesHtml = '<div class="msec"><h4 style="display:flex;align-items:center;justify-content:space-between;font-size:14px">产品展示 <label class="img-edit-toggle" title="上传图片" style="cursor:pointer;display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--text3);font-weight:400;padding:2px 8px;border-radius:20px;border:1px solid rgba(0,0,0,.1)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg> 上传<input type="file" accept="image/*,.pdf,.docx,.doc,.ppt,.pptx" multiple style="display:none" onchange="window._prodUpload(event,\x27' + productKey + '\x27)"></label></h4><div class="img-scroll" id="prod-scroll-' + key + '" style="display:' + (hasUploads ? 'flex' : 'none') + ';gap:8px;overflow-x:auto;padding:8px 0;width:100%">';
+      scrollDiv.style.display = hasUploads ? 'flex' : 'none';
       if (hasUploads) {
-        currentImgs.forEach(function(img, idx){
-          imagesHtml += '<div style="position:relative;flex-shrink:0" onmouseenter="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x271\x27" onmouseleave="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x270\x27"><img src="' + img + '" alt="" loading="lazy" style="width:200px;height:130px;object-fit:contain;border-radius:10px;cursor:pointer;background:rgba(0,0,0,.02)" onclick="event.stopPropagation();openLightbox(this.src,' + JSON.stringify(currentImgs).replace(/"/g,'&quot;') + ')" onerror="this.style.display=\x27none\x27"><button class="dg-del-btn" style="position:absolute;top:4px;right:4px;z-index:10;opacity:0;transition:opacity .2s" onclick="event.stopPropagation();window._prodDelImg(\x27' + productKey + '\x27,' + idx + ')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';
+        var imgsHtml = '';
+        currentImgs.forEach(function(img, idx) {
+          imgsHtml += '<div style="position:relative;flex-shrink:0" onmouseenter="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x271\x27" onmouseleave="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x270\x27"><img src="' + img + '" alt="" loading="lazy" style="width:200px;height:130px;object-fit:contain;border-radius:10px;cursor:pointer;background:rgba(0,0,0,.02)" onclick="event.stopPropagation();openLightbox(this.src,' + JSON.stringify(currentImgs).replace(/"/g,'&quot;') + ')" onerror="this.style.display=\x27none\x27"><button class="dg-del-btn" style="position:absolute;top:4px;right:4px;z-index:10;opacity:0;transition:opacity .2s" onclick="event.stopPropagation();window._prodDelImg(\x27' + productKey + '\x27,' + idx + ')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';
         });
+        scrollDiv.innerHTML = imgsHtml;
       }
-      imagesHtml += '</div></div>';
-      var mb3=document.querySelector('.modal-box');mb3.classList.add('glass');mb3.classList.add('prod-modal');
-      document.getElementById('modalHeaderContent').innerHTML = titleHtml;
-      document.getElementById('modal-body').innerHTML = bodyHtml + imagesHtml + '</div>';
-      _injectScrollArrows();
-      document.getElementById('modal').classList.add('on');
-      document.getElementById('modal').scrollTop = 0;
-      document.body.style.overflow = 'hidden';
     }
-    // Try IndexedDB first → sessionStorage → localStorage (cloud sync fallback)
     _prodDBLoad(productKey, function(dbImgs) {
-      if (dbImgs && dbImgs.length) {
-        renderProductModal(dbImgs);
-      } else {
-        var imgs = [];
-        var ssRaw = sessionStorage.getItem(productKey);
-        if (ssRaw) { try { imgs = JSON.parse(ssRaw); } catch(ee) {} }
-        if (!imgs.length) {
-          var lsRaw = localStorage.getItem(productKey);
-          if (lsRaw) {
-            try {
-              var parsed = JSON.parse(lsRaw);
-              if (Array.isArray(parsed) && parsed.length && parsed[0] !== '__IDB__') {
-                imgs = parsed;
-                _prodDBSave(productKey, imgs);
-              }
-            } catch(ee) {}
-          }
+      if (dbImgs && dbImgs.length) { updateImages(dbImgs); return; }
+      var imgs = [];
+      var ssRaw = sessionStorage.getItem(productKey);
+      if (ssRaw) { try { imgs = JSON.parse(ssRaw); } catch(ee) {} }
+      if (!imgs.length) {
+        var lsRaw = localStorage.getItem(productKey);
+        if (lsRaw) {
+          try {
+            var parsed = JSON.parse(lsRaw);
+            if (Array.isArray(parsed) && parsed.length && parsed[0] !== '__IDB__') {
+              imgs = parsed;
+              _prodDBSave(productKey, imgs);
+            }
+          } catch(ee) {}
         }
-        renderProductModal(imgs);
       }
+      updateImages(imgs);
     });
   });
 
@@ -1631,6 +1643,10 @@ document.querySelector('.modal-box').classList.add('glass');
         else { delete customDesignItems[key]; }
         _saveCustomData(CUSTOM_DESIGN_ITEMS_KEY, customDesignItems)
         el.textContent = newVal || oldVal;
+        /* Re-inject delete button removed by textContent assignment */
+        setTimeout(function() {
+          if (window._refreshDesignCardButtons) window._refreshDesignCardButtons();
+        }, 100);
       }
       _designPressTarget = null;
     }
@@ -1643,6 +1659,449 @@ document.querySelector('.modal-box').classList.add('glass');
   }
 
   /* ==============================
+     Product Add/Delete — Design Cards
+     ============================== */
+  (function() {
+    var ADDED_KEY = '_design_added_products';
+    var DELETED_KEY = '_design_deleted_products';
+    var DEL_PASSCODE = '18616742788';
+
+    var addedProducts = {};
+    var deletedProducts = {};
+    try { addedProducts = JSON.parse(localStorage.getItem(ADDED_KEY) || '{}'); } catch(e) {}
+    try { deletedProducts = JSON.parse(localStorage.getItem(DELETED_KEY) || '{}'); } catch(e) {}
+
+    function saveState() {
+      _saveCustomData(ADDED_KEY, addedProducts);
+      _saveCustomData(DELETED_KEY, deletedProducts);
+    }
+
+    /* ================================================================
+       Delete Confirmation Modal (glass-morphism, like permissions)
+       ================================================================ */
+    var delModalOverlay = null;
+    var delPending = null; /* { catName, prodKey, li } */
+
+    function _ensureDelModal() {
+      if (delModalOverlay) return;
+      delModalOverlay = document.createElement('div');
+      delModalOverlay.className = 'perm-overlay';
+      delModalOverlay.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(15,20,25,.30);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .25s ease;';
+      delModalOverlay.innerHTML =
+        '<div class="perm-box" style="background:rgba(255,255,255,.75);backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);border:1px solid rgba(255,255,255,.8);border-radius:20px;padding:28px 28px 22px;width:340px;max-width:92vw;box-shadow:0 28px 64px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.8);position:relative;transform:translateY(12px) scale(.97);transition:transform .3s cubic-bezier(.34,0,.18,1);">' +
+          '<div class="perm-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
+            '<h3 class="perm-title" id="_delModalTitle" style="margin:0;font-size:14px;font-weight:600;color:var(--text);">删除产品</h3>' +
+            '<button class="perm-x _del-modal-x">&times;</button>' +
+          '</div>' +
+          '<p id="_delModalProdName" style="font-size:12px;color:var(--text2);margin:0 0 8px 0;line-height:1.5;"></p>' +
+          '<div class="perm-row perm-row-pw" style="position:relative;margin-bottom:4px;display:block;">' +
+            '<input type="password" class="perm-input _del-pw-input" placeholder="请输入管理密码" autocomplete="off" style="width:100%;padding:13px 38px 13px 12px;border:1px solid rgba(0,0,0,.1);border-radius:8px;font-size:13px;font-family:inherit;color:var(--text);background:rgba(255,255,255,.6);outline:none;box-sizing:border-box;">' +
+            '<button class="perm-eye _del-eye-btn" type="button" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:transparent;border:none;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center;">' +
+              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>' +
+            '</button>' +
+          '</div>' +
+          '<p class="perm-hint _del-hint" style="font-size:11px;color:var(--text3);text-align:center;margin:4px 0 0 0;min-height:16px;"></p>' +
+          '<div class="perm-actions" style="display:flex;justify-content:center;gap:10px;margin-top:8px;">' +
+            '<button class="_del-btn-cancel" style="min-width:80px;padding:11px 20px;border-radius:99px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;border:1px solid rgba(0,0,0,.1);background:rgba(255,255,255,.6);color:var(--text2);">取消</button>' +
+            '<button class="_del-btn-confirm" style="min-width:80px;padding:11px 20px;border-radius:99px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;background:#EF4444;color:#fff;">确认删除</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(delModalOverlay);
+
+      var pwInput = delModalOverlay.querySelector('._del-pw-input');
+      var eyeBtn = delModalOverlay.querySelector('._del-eye-btn');
+      var EYE_OFF = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+      var EYE_ON  = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+
+      eyeBtn.addEventListener('click', function() {
+        var isPass = pwInput.type === 'password';
+        pwInput.type = isPass ? 'text' : 'password';
+        eyeBtn.querySelector('svg').innerHTML = isPass ? EYE_ON : EYE_OFF;
+      });
+
+      /* Hover effects — cancel & confirm buttons (close button uses .perm-x CSS) */
+      var closeXBtn = delModalOverlay.querySelector('._del-modal-x');
+      var cancelBtnEl = delModalOverlay.querySelector('._del-btn-cancel');
+      var confirmBtnEl = delModalOverlay.querySelector('._del-btn-confirm');
+
+      cancelBtnEl.addEventListener('mouseenter', function() { cancelBtnEl.style.background = 'rgba(0,0,0,.05)'; });
+      cancelBtnEl.addEventListener('mouseleave', function() { cancelBtnEl.style.background = 'rgba(255,255,255,.6)'; });
+
+      confirmBtnEl.addEventListener('mouseenter', function() { confirmBtnEl.style.background = '#DC2626'; });
+      confirmBtnEl.addEventListener('mouseleave', function() { confirmBtnEl.style.background = '#EF4444'; });
+
+      /* Cancel */
+      cancelBtnEl.addEventListener('click', function() { _closeDelModal(); });
+      /* X */
+      closeXBtn.addEventListener('click', function() { _closeDelModal(); });
+      /* Click backdrop */
+      delModalOverlay.addEventListener('click', function(e) { if (e.target === delModalOverlay) _closeDelModal(); });
+
+      /* Confirm — require password */
+      delModalOverlay.querySelector('._del-btn-confirm').addEventListener('click', function() {
+        var hint = delModalOverlay.querySelector('._del-hint');
+        if (pwInput.value.trim() !== DEL_PASSCODE) {
+          hint.textContent = '密码错误，请重试';
+          hint.style.color = '#EF4444';
+          return;
+        }
+        if (!delPending) { _closeDelModal(); return; }
+        var p = delPending;
+        _closeDelModal();
+        if (!deletedProducts[p.catName]) deletedProducts[p.catName] = [];
+        if (deletedProducts[p.catName].indexOf(p.prodKey) === -1) {
+          deletedProducts[p.catName].push(p.prodKey);
+        }
+        if (addedProducts[p.catName]) {
+          addedProducts[p.catName] = addedProducts[p.catName].filter(function(x) { return x.key !== p.prodKey; });
+        }
+        saveState();
+        p.li.remove();
+        /* Toast notification */
+        var toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = '<span class="toast-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,4 3.5,6.5 9,1"/></svg></span>已删除';
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.classList.add('show'); }, 10);
+        setTimeout(function() { toast.classList.remove('show'); setTimeout(function() { toast.remove(); }, 300); }, 1200);
+      });
+
+      /* Keyboard: Enter to confirm, Esc to close */
+      pwInput.addEventListener('keydown', function(ev) {
+        if (ev.key === 'Enter') { delModalOverlay.querySelector('._del-btn-confirm').click(); }
+        if (ev.key === 'Escape') { _closeDelModal(); }
+      });
+    }
+
+    function _openDelModal(catName, prodKey, li) {
+      _ensureDelModal();
+      delPending = { catName: catName, prodKey: prodKey, li: li };
+      var prodName = (li.textContent || '').replace(/×/g, '').trim();
+      delModalOverlay.querySelector('#_delModalProdName').textContent = '确定要删除「' + prodName + '」吗？';
+      delModalOverlay.querySelector('._del-pw-input').value = '';
+      delModalOverlay.querySelector('._del-pw-input').type = 'password';
+      delModalOverlay.querySelector('._del-hint').textContent = '';
+      delModalOverlay.style.opacity = '1';
+      delModalOverlay.style.pointerEvents = 'all';
+      var box = delModalOverlay.querySelector('.perm-box');
+      box.style.transform = 'translateY(0) scale(1)';
+      setTimeout(function() { delModalOverlay.querySelector('._del-pw-input').focus(); }, 350);
+    }
+
+    function _closeDelModal() {
+      if (!delModalOverlay) return;
+      delModalOverlay.style.opacity = '0';
+      delModalOverlay.style.pointerEvents = 'none';
+      var box = delModalOverlay.querySelector('.perm-box');
+      box.style.transform = 'translateY(12px) scale(.97)';
+      delPending = null;
+    }
+
+    /* ================================================================
+       Custom Product Modal (full-featured, like regular product modal)
+       ================================================================ */
+    function _openCustomProdModal(key, name) {
+      /* Load custom overrides */
+      var customDescs = {}; try { customDescs = JSON.parse(localStorage.getItem('_custom_prod_descs') || '{}'); } catch(ee) {}
+      var customMetrics = {}; try { customMetrics = JSON.parse(localStorage.getItem('_custom_prod_metrics') || '{}'); } catch(ee) {}
+      var desc = customDescs[key] || '描述';
+      var metrics = (customMetrics.hasOwnProperty(key)) ? customMetrics[key].slice() : [];
+
+      var dotColor = '#0055FF';
+      var tagBg = 'rgba(0,85,255,.08)';
+
+      /* Title — custom product, no logo */
+      var titleHtml = '<div style="display:flex;align-items:center;gap:12px;"><h3 style="margin:0;">' + name + '</h3></div>';
+
+      /* Body */
+      var bodyHtml = '<p class="prod-desc-text" data-prod-key="' + key + '" style="color:var(--text2);font-size:12px;margin:0 0 14px 0;line-height:1.55;padding:8px 14px;background:rgba(0,85,255,.02);border:1px solid rgba(0,0,0,.04);border-radius:6px;">' + desc + '</p>';
+
+      /* Metrics */
+      bodyHtml += '<div class="prod-metrics-wrap" data-prod-key="' + key + '" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px">';
+      metrics.forEach(function(m, idx) {
+        bodyHtml += '<span class="prod-metric-tag" data-metric-idx="' + idx + '" style="font-size:11px;font-weight:600;color:' + dotColor + ';padding:3px 10px;border-radius:99px;background:' + tagBg + ';border:1px solid ' + dotColor + '22;position:relative;cursor:default">' + m + '<button class="prod-metric-del" onclick="event.stopPropagation();window._delProdMetric(\x27' + key + '\x27,' + idx + ')" style="display:none;position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#EF4444;color:#fff;border:none;cursor:pointer;font-size:10px;line-height:1;padding:0">&times;</button></span>';
+      });
+      bodyHtml += '<span class="prod-metric-add" data-prod-key="' + key + '" style="font-size:11px;font-weight:400;color:var(--text3);padding:3px 10px;border-radius:99px;background:transparent;border:1px solid rgba(0,0,0,.1);cursor:pointer;user-select:none">+ 添加</span>';
+      bodyHtml += '</div>';
+      bodyHtml = '<div data-prod-key="' + key + '">' + bodyHtml;
+
+      var productKey = 'prod_imgs_' + key;
+
+      /* Show modal instantly, then load images async */
+      var imagesPlaceholder = '<div class="msec"><h4 style="display:flex;align-items:center;justify-content:space-between;font-size:14px">产品展示 <label class="img-edit-toggle" title="上传图片" style="cursor:pointer;display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--text3);font-weight:400;padding:2px 8px;border-radius:20px;border:1px solid rgba(0,0,0,.1)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg> 上传<input type="file" accept="image/*,.pdf,.docx,.doc,.ppt,.pptx" multiple style="display:none" onchange="window._prodUpload(event,\x27' + productKey + '\x27)"></label></h4><div class="img-scroll" id="prod-scroll-' + key + '" style="display:none;gap:8px;overflow-x:auto;padding:8px 0;width:100%"></div></div>';
+      var fullBody = bodyHtml + imagesPlaceholder + '</div>';
+      var mb = document.querySelector('.modal-box');
+      mb.classList.add('glass'); mb.classList.add('prod-modal');
+      document.getElementById('modalHeaderContent').innerHTML = titleHtml;
+      document.getElementById('modal-body').innerHTML = fullBody;
+      _injectScrollArrows();
+      document.getElementById('modal').classList.add('on');
+      document.getElementById('modal').scrollTop = 0;
+      document.body.style.overflow = 'hidden';
+
+      function updateImages(currentImgs) {
+        var scrollDiv = document.getElementById('prod-scroll-' + key);
+        if (!scrollDiv) return;
+        var hasUploads = currentImgs && currentImgs.length > 0;
+        scrollDiv.style.display = hasUploads ? 'flex' : 'none';
+        if (hasUploads) {
+          var imgsHtml = '';
+          currentImgs.forEach(function(img, idx) {
+            imgsHtml += '<div style="position:relative;flex-shrink:0" onmouseenter="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x271\x27" onmouseleave="var b=this.querySelector(\x27.dg-del-btn\x27);if(b)b.style.opacity=\x270\x27"><img src="' + img + '" alt="" loading="lazy" style="width:200px;height:130px;object-fit:contain;border-radius:10px;cursor:pointer;background:rgba(0,0,0,.02)" onclick="event.stopPropagation();openLightbox(this.src,' + JSON.stringify(currentImgs).replace(/"/g,'&quot;') + ')" onerror="this.style.display=\x27none\x27"><button class="dg-del-btn" style="position:absolute;top:4px;right:4px;z-index:10;opacity:0;transition:opacity .2s" onclick="event.stopPropagation();window._prodDelImg(\x27' + productKey + '\x27,' + idx + ')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';
+          });
+          scrollDiv.innerHTML = imgsHtml;
+        }
+      }
+      _prodDBLoad(productKey, function(dbImgs) {
+        if (dbImgs && dbImgs.length) { updateImages(dbImgs); return; }
+        var imgs = [];
+        var ssRaw = sessionStorage.getItem(productKey);
+        if (ssRaw) { try { imgs = JSON.parse(ssRaw); } catch(ee) {} }
+        if (!imgs.length) {
+          var lsRaw = localStorage.getItem(productKey);
+          if (lsRaw) {
+            try {
+              var parsed = JSON.parse(lsRaw);
+              if (Array.isArray(parsed) && parsed.length && parsed[0] !== '__IDB__') { imgs = parsed; _prodDBSave(productKey, imgs); }
+            } catch(ee) {}
+          }
+        }
+        updateImages(imgs);
+      });
+    }
+
+    /* ================================================================
+       Inject add/delete UI into a single card
+       ================================================================ */
+    function _setupDesignCard(card) {
+      var catH4 = card.querySelector('h4[data-design-cat]');
+      if (!catH4) return;
+      var catName = catH4.getAttribute('data-design-cat');
+
+      /* ---- Delete buttons on existing <li> elements ---- */
+      card.querySelectorAll('li[data-product]').forEach(function(li) {
+        if (li.querySelector('._design-prod-del')) return;
+
+        li.style.position = 'relative';
+        li.style.paddingRight = '20px';
+        li.style.overflow = 'visible';
+
+        var delBtn = document.createElement('button');
+        delBtn.className = '_design-prod-del';
+        delBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="pointer-events:none;display:block"><line x1="5" y1="5" x2="9" y2="9"/><line x1="9" y1="5" x2="5" y2="9"/></svg>';
+        delBtn.title = '删除产品';
+        delBtn.style.cssText = 'display:none;position:absolute;right:0;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#EF4444;color:#fff;border:none;cursor:pointer;padding:0;opacity:0;transition:opacity .15s;z-index:1;';
+
+        delBtn.addEventListener('click', function(e) {
+          e.stopPropagation(); e.preventDefault();
+          if (document.body.classList.contains('edit-locked')) return;
+          var prodKey = li.getAttribute('data-product');
+          _openDelModal(catName, prodKey, li);
+        });
+
+        li.addEventListener('mouseenter', function() {
+          if (!document.body.classList.contains('edit-locked')) {
+            delBtn.style.display = 'block'; delBtn.style.opacity = '1';
+          }
+        });
+        li.addEventListener('mouseleave', function() {
+          delBtn.style.opacity = '0';
+          setTimeout(function() { if (delBtn.style.opacity === '0') delBtn.style.display = 'none'; }, 150);
+        });
+
+        li.appendChild(delBtn);
+      });
+
+      /* ---- "+" add button — matches file upload button style ---- */
+      if (!card.querySelector('._design-card-add-btn')) {
+        var addBtn = document.createElement('span');
+        addBtn.className = '_design-card-add-btn';
+        addBtn.title = '添加产品';
+        addBtn.style.cssText = 'position:absolute;top:8px;right:8px;display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.2);color:#fff;cursor:pointer;border:none;padding:0;z-index:2;transition:opacity .15s;opacity:0;';
+        addBtn.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="pointer-events:none;display:block"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+
+        if (document.body.classList.contains('edit-locked')) {
+          addBtn.style.display = 'none';
+        }
+
+        addBtn.addEventListener('mouseenter', function() {
+          if (!document.body.classList.contains('edit-locked')) {
+            addBtn.style.background = 'rgba(59,130,246,.8)';
+          }
+        });
+        addBtn.addEventListener('mouseleave', function() {
+          addBtn.style.background = 'rgba(0,0,0,.2)';
+        });
+
+        addBtn.addEventListener('click', function(e) {
+          e.stopPropagation(); e.preventDefault();
+          if (document.body.classList.contains('edit-locked')) return;
+
+          var ul = card.querySelector('ul');
+          if (!ul) return;
+
+          /* Create input row <li> */
+          var inputLi = document.createElement('li');
+          inputLi.className = '_design-new-input-li';
+          inputLi.style.cssText = 'display:flex;align-items:center;gap:6px;padding:4px 0;overflow:visible;';
+
+          var input = document.createElement('input');
+          input.type = 'text';
+          input.placeholder = '产品名称';
+          input.style.cssText = 'flex:1;font-size:11.5px;color:var(--text2);border:1px solid #6366F1;border-radius:4px;padding:4px 8px;background:rgba(255,255,255,.9);outline:none;min-width:0;';
+
+          var cancelBtn = document.createElement('button');
+          cancelBtn.innerHTML = '&times;';
+          cancelBtn.title = '取消';
+          cancelBtn.style.cssText = 'flex-shrink:0;width:14px;height:14px;border-radius:50%;background:#EF4444;color:#fff;border:none;cursor:pointer;font-size:9px;line-height:1;padding:0;';
+
+          inputLi.appendChild(input);
+          inputLi.appendChild(cancelBtn);
+          ul.appendChild(inputLi);
+          input.focus();
+
+          function doConfirm() {
+            var name = input.value.trim();
+            inputLi.remove();
+
+            if (!name) return;
+
+            var key = 'custom_' + Date.now();
+            if (!addedProducts[catName]) addedProducts[catName] = [];
+            addedProducts[catName].push({ key: key, name: name });
+            saveState();
+
+            /* Create the new product <li> in DOM */
+            var newLi = document.createElement('li');
+            newLi.setAttribute('data-product', key);
+            newLi.textContent = name;
+            newLi.style.cssText = 'position:relative;padding-right:20px;overflow:visible;';
+            ul.appendChild(newLi);
+
+            /* Set up delete button */
+            _setupDesignCard(card);
+          }
+
+          function doCancel() { inputLi.remove(); }
+
+          input.addEventListener('blur', function() { setTimeout(doConfirm, 150); });
+          input.addEventListener('keydown', function(ev) {
+            if (ev.key === 'Enter') { input.blur(); }
+            if (ev.key === 'Escape') { doCancel(); }
+          });
+          cancelBtn.addEventListener('click', function(ev2) {
+            ev2.stopPropagation();
+            doCancel();
+          });
+        });
+
+        card.appendChild(addBtn);
+
+        /* Card hover — show/hide add button */
+        card.addEventListener('mouseenter', function() {
+          if (!document.body.classList.contains('edit-locked')) {
+            addBtn.style.opacity = '1';
+          }
+        });
+        card.addEventListener('mouseleave', function() {
+          addBtn.style.opacity = '0';
+        });
+      }
+    }
+
+    /* ---- Apply on page load ---- */
+    /* 1. Hide deleted original products */
+    Object.keys(deletedProducts).forEach(function(catName) {
+      (deletedProducts[catName] || []).forEach(function(key) {
+        var li = document.querySelector('#design .doc-card li[data-product="' + key + '"]');
+        if (li) li.remove();
+      });
+    });
+
+    /* 2. Render added products */
+    Object.keys(addedProducts).forEach(function(catName) {
+      var addedList = addedProducts[catName] || [];
+      if (!addedList.length) return;
+      var catH4 = document.querySelector('#design .doc-card h4[data-design-cat="' + catName.replace(/"/g, '\\"') + '"]');
+      if (!catH4) return;
+      var ul = catH4.closest('.doc-card').querySelector('ul');
+      if (!ul) return;
+      var existingKeys = new Set();
+      ul.querySelectorAll('li[data-product]').forEach(function(li) { existingKeys.add(li.getAttribute('data-product')); });
+      var customItems = {};
+      try { customItems = JSON.parse(localStorage.getItem('_custom_design_items') || '{}'); } catch(e) {}
+      addedList.forEach(function(prod) {
+        if (existingKeys.has(prod.key)) return;
+        var li = document.createElement('li');
+        li.setAttribute('data-product', prod.key);
+        li.textContent = customItems[prod.key] || prod.name;
+        li.style.cssText = 'position:relative;padding-right:20px;overflow:visible;';
+        ul.appendChild(li);
+      });
+    });
+
+    /* 3. Set up all cards (delete buttons + add button) */
+    document.querySelectorAll('#design .doc-card').forEach(_setupDesignCard);
+
+    /* ---- Permission state observer ---- */
+    function updateAllPermUI() {
+      var locked = document.body.classList.contains('edit-locked');
+      if (locked) {
+        document.querySelectorAll('#design ._design-card-add-btn').forEach(function(b) {
+          b.style.opacity = '0';
+        });
+      }
+      if (locked) {
+        document.querySelectorAll('#design ._design-prod-del').forEach(function(b) {
+          b.style.display = 'none'; b.style.opacity = '0';
+        });
+      }
+    }
+
+    var permObs = new MutationObserver(function(mutations) {
+      mutations.forEach(function(m) {
+        if (m.type === 'attributes' && m.attributeName === 'class') {
+          updateAllPermUI();
+        }
+      });
+    });
+    permObs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+    /* ---- Handle clicks on custom products — open full modal ---- */
+    document.querySelector('#design').addEventListener('click', function(e) {
+      var li = e.target.closest('li[data-product]');
+      if (!li) return;
+      var key = li.dataset.product;
+      if (productData[key]) return; /* existing handler for known products */
+      /* Check if it's a custom product */
+      var customName = null;
+      Object.keys(addedProducts).forEach(function(cat) {
+        var found = (addedProducts[cat] || []).filter(function(p) { return p.key === key; });
+        if (found.length) customName = found[0].name;
+      });
+      if (!customName) return; /* not a custom product, let other handlers deal with it */
+
+      var card = li.closest('.doc-card');
+      if (card && card._skipClick) { card._skipClick = false; return; }
+      if (card && card.querySelector('input, textarea')) return;
+      e.stopPropagation();
+
+      /* Use custom name from _custom_design_items if available */
+      try {
+        var ci = JSON.parse(localStorage.getItem('_custom_design_items') || '{}');
+        if (ci[key]) customName = ci[key];
+      } catch(ee) {}
+
+      _openCustomProdModal(key, customName);
+    });
+
+    /* Expose for startDesignEdit compatibility */
+    window._refreshDesignCardButtons = function() {
+      document.querySelectorAll('#design .doc-card').forEach(_setupDesignCard);
+    };
+  })();
+
+  /* ==============================
      Modal — Document Cards (visual + old)
      ============================== */
   document.querySelectorAll('#doc .doc-visual-card').forEach(function (card) {
@@ -1650,6 +2109,7 @@ document.querySelector('.modal-box').classList.add('glass');
     var _modalTimer = null;
 
     function _openModal() {
+      var gen = ++_modalGen;
       var h4 = card.querySelector('h4');
       if (!h4) return;
       var dataKey = h4.getAttribute('data-doc-title');
@@ -1698,11 +2158,13 @@ document.querySelector('.modal-box').classList.add('glass');
         document.getElementById('modal').scrollTop = 0;
         document.body.style.overflow = 'hidden';
       }
+      render();
       dd.items.forEach(function (it, i) {
         var dk = 'docimg_' + i + '_' + dataKey.replace(/\s/g, '_');
         _docLoad(dk, function (imgs) {
+          if (gen !== _modalGen) return; /* stale callback */
           results[i] = imgs; pending++;
-          if (pending >= dd.items.length) render();
+          if (pending >= dd.items.length && document.getElementById('modal').classList.contains('on')) render();
         });
       });
     }
@@ -1718,7 +2180,7 @@ document.querySelector('.modal-box').classList.add('glass');
   });
 
 
-  function close() { modal.classList.remove('on'); document.body.style.overflow = ''; var mb=document.querySelector('.modal-box');if(mb){mb.classList.remove('glass');mb.classList.remove('mgmt-modal');mb.classList.remove('prod-modal');} modalHeaderContent.innerHTML=''; modalBody.innerHTML=''; modalBody.style.overflow = ''; }
+  function close() { modal.classList.remove('on'); document.body.style.overflow = ''; var mb=document.querySelector('.modal-box');if(mb){mb.classList.remove('glass');mb.classList.remove('mgmt-modal');mb.classList.remove('prod-modal');mb.classList.remove('sln-modal');} modalHeaderContent.innerHTML=''; modalBody.innerHTML=''; modalBody.style.overflow = ''; }
   modalX.addEventListener('click', close);
   modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
@@ -1726,6 +2188,8 @@ document.querySelector('.modal-box').classList.add('glass');
   /* ==============================
      Hover Preview — inject preview div into product cards
      ============================== */
+  var _modalGen = 0;
+
   var previewImages = {
     // 反电信网络诈骗
     gjfz: 'images/gjfz-preview.jpg',
@@ -2167,7 +2631,7 @@ document.querySelector('.modal-box').classList.add('glass');
   var _slnEditTimer=null, _slnEditTarget=null;
   document.getElementById('modal-body').addEventListener('mousedown', function(e) {
     if (document.body.classList.contains('edit-locked')) return;
-    var el = e.target.closest('.sln-desc-text, .sln-sec-title, .sln-sec-body, .mgmt-step-title, .mgmt-step-body, .mgmt-tag-seg');
+    var el = e.target.closest('.sln-desc-text, .sln-sec-title, .sln-sec-body, .mgmt-step-title, .mgmt-step-body, .mgmt-block-tags');
     if (!el) return;
     _slnEditTarget = el;
     _slnEditTimer = setTimeout(function() {
@@ -2198,28 +2662,34 @@ document.querySelector('.modal-box').classList.add('glass');
     if (el.querySelector('input, textarea')) return;
     /* Doc modal description */
     /* Mgmt tag segment */
-    if (el.classList.contains('mgmt-tag-seg')) {
-      var tKey = el.getAttribute('data-mgmt-key');
-      var tStepIdx = parseInt(el.getAttribute('data-step-idx'));
-      var tSegIdx = parseInt(el.getAttribute('data-tag-seg'));
-      var tOldVal = el.textContent.trim();
+    /* Mgmt tag line — edit as a whole */
+    if (el.classList.contains('mgmt-block-tags')) {
+      var tKey = el.parentElement.querySelector('.mgmt-step-title').getAttribute('data-mgmt-key');
+      var tStepIdx = parseInt(el.parentElement.querySelector('.mgmt-step-title').getAttribute('data-step-idx'));
+      var tOldVal = el.textContent.replace(/\s*·\s*/g, ' · ').trim();
       var tInput = document.createElement('input');
       tInput.type = 'text'; tInput.value = tOldVal;
-      tInput.style.cssText = 'font-size:10px;font-weight:500;color:var(--text3);border:1px solid #6366F1;border-radius:4px;padding:1px 4px;width:80px;box-sizing:border-box;background:rgba(255,255,255,.9);outline:none;font-family:inherit;';
+      tInput.style.cssText = 'font-size:12px;font-weight:500;color:var(--text3);border:1px solid #6366F1;border-radius:4px;padding:2px 6px;width:100%;box-sizing:border-box;background:rgba(255,255,255,.9);outline:none;font-family:inherit;';
       el.textContent = ''; el.appendChild(tInput);
       tInput.focus(); tInput.select();
-      function saveTag() {
+      function saveTagLine() {
         var newVal = tInput.value.trim();
         var steps = {}; try { steps = JSON.parse(localStorage.getItem('_custom_mgmt_steps') || '{}'); } catch(ee) {}
         if (!steps[tKey]) { steps[tKey] = JSON.parse(JSON.stringify(data[tKey].steps)); }
-        var parts = (steps[tKey][tStepIdx].sub||'').split(' · ');
-        parts[tSegIdx] = newVal || tOldVal;
-        steps[tKey][tStepIdx].sub = parts.join(' · ');
-        _saveCustomData('_custom_mgmt_steps', steps)
-        el.textContent = newVal || tOldVal;
+        steps[tKey][tStepIdx].sub = newVal || tOldVal;
+        _saveCustomData('_custom_mgmt_steps', steps);
+        /* Rebuild the tag spans */
+        var parts = (newVal || tOldVal).split('·');
+        el.innerHTML = '';
+        parts.forEach(function(p, i) {
+          if (i > 0) el.appendChild(document.createTextNode(' · '));
+          var sp = document.createElement('span');
+          sp.textContent = p.trim();
+          el.appendChild(sp);
+        });
         _slnEditTarget = null;
       }
-      tInput.addEventListener('blur', saveTag);
+      tInput.addEventListener('blur', saveTagLine);
       tInput.addEventListener('keydown', function(ev) { if (ev.key === 'Enter') tInput.blur(); if (ev.key === 'Escape') { tInput.value = tOldVal; tInput.blur(); } });
       return;
     }
@@ -2366,9 +2836,9 @@ document.querySelector('.modal-box').classList.add('glass');
     if (!wrap) return;
     var h = '';
     (slnData.sections||[]).forEach(function(s, idx) {
-      h += '<div class="msec sln-section" data-section-idx="' + idx + '" style="margin-bottom:12px"><h4 class="sln-sec-title">' + s.h + '</h4><p class="sln-sec-body">' + s.b + '</p><button class="sln-sec-del" onclick="event.stopPropagation();window._delSlnSection(\x27' + key + '\x27,' + idx + ')" style="display:none;position:absolute;top:0;right:0;width:18px;height:18px;border-radius:50%;background:#EF4444;color:#fff;border:none;cursor:pointer;font-size:10px;line-height:1;padding:0">&times;</button></div>';
+      h += '<div class="msec sln-section" data-section-idx="' + idx + '" style="margin-bottom:0"><h4 class="sln-sec-title">' + s.h + '</h4><p class="sln-sec-body">' + s.b + '</p><button class="sln-sec-del" onclick="event.stopPropagation();window._delSlnSection(\x27' + key + '\x27,' + idx + ')" style="display:none;position:absolute;top:0;right:0;width:18px;height:18px;border-radius:50%;background:#EF4444;color:#fff;border:none;cursor:pointer;font-size:10px;line-height:1;padding:0">&times;</button></div>';
     });
-    h += '<span class="sln-sec-add" data-sln-key="' + key + '" style="display:inline-block;font-size:11px;font-weight:400;color:var(--text3);padding:2px 8px;border-radius:20px;background:transparent;border:1px solid rgba(0,0,0,.1);cursor:pointer;margin-bottom:14px">+ 添加</span>';
+    h += '<span class="sln-sec-add" data-sln-key="' + key + '" style="display:inline-block;font-size:11px;font-weight:400;color:var(--text3);padding:2px 8px;border-radius:20px;background:transparent;border:1px solid rgba(0,0,0,.1);cursor:pointer;margin-bottom:4px">+ 添加</span>';
     wrap.innerHTML = h;
   }
 
@@ -2376,8 +2846,21 @@ document.querySelector('.modal-box').classList.add('glass');
   (function(){var dl=document.querySelector('.design-portfolio-link');if(!dl)return;dl.addEventListener('click',function(e){e.stopPropagation();var designDesc=(function(){try{var v=JSON.parse(localStorage.getItem('_design_desc')||'');return v||'';}catch(e){return'';}})()||'在埃森哲任职期间，先后服务百威、永辉、达能、罗森等国内外客户，负责项目覆盖全终端类型，这段经历积累了跨端设计能力和国际化项目交付经验，也为后续产品转型奠定了从视觉到业务的完整视角。';var th='<h3>代表设计</h3><p class=\"modal-desc\" data-design-desc-key=\"design\">'+designDesc+'</p>';
     var results=[];var pending=0;
     function render(){var bh='<div class=\"design-gallery\">';_di.forEach(function(it,idx){var arr=results[idx]||[];var hu=arr.length>0;var cover=it.im[0];bh+='<div class=\"design-gallery-item\"'+(hu?' onclick=\"event.stopPropagation();openLightbox(\x27'+arr[0]+'\x27,\x27'+JSON.stringify(arr).replace(/\"/g,'&quot;')+'\x27,\x27design_img_'+idx+'\x27,'+idx+')\" style=\"cursor:pointer\"':' style=\"cursor:default\"')+'><div class=\"dg-img-wrap\"><img src=\"'+cover+'\" alt=\"'+it.p+'\" loading=\"lazy\" onerror=\"imgFallback(this)\">';if(hu)bh+='<span class=\"design-badge\" style=\"position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:5;background:rgba(0,0,0,.25);color:#fff;font-size:10px;padding:2px 8px;border-radius:12px;pointer-events:none\">'+arr.length+'张</span>';bh+='<div class=\"dg-actions\"><label class=\"dg-act-btn\" title=\"上传\" onclick=\"event.stopPropagation()\"><input type=\"file\" accept=\"image/*\" multiple style=\"display:none\" onchange=\"window._du(event,'+idx+')\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"pointer-events:none\"><line x1=\"12\" y1=\"19\" x2=\"12\" y2=\"5\"/><polyline points=\"5 12 12 5 19 12\"/></svg></label>';if(hu)bh+='<button class=\"dg-act-btn dg-del-btn\" title=\"清除\" onclick=\"event.stopPropagation();window._dd('+idx+')\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><polyline points=\"3 6 5 6 21 6\"/><path d=\"M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2\"/></svg></button>';bh+='</div></div><div class=\"dg-info\"><strong>'+it.p+' · '+it.t+'</strong></div></div>';});bh+='</div>';document.querySelector('.modal-box').classList.add('glass');document.getElementById('modalHeaderContent').innerHTML=th;document.getElementById('modal-body').innerHTML=bh;var modal=document.getElementById('modal');modal.classList.add('on');modal.scrollTop=0;document.body.style.overflow='hidden';}
-    _di.forEach(function(it,idx){_designLoad('design_img_'+idx,function(imgs){results[idx]=imgs;pending++;if(pending>=_di.length)render();});});
+    var _desGen=++_modalGen;render();_di.forEach(function(it,idx){_designLoad('design_img_'+idx,function(imgs){if(_desGen!==_modalGen)return;results[idx]=imgs;pending++;if(pending>=_di.length&&document.getElementById('modal').classList.contains('on'))render();});});
   });})();
+
+  /* ==============================
+     Back to Top Button
+     ============================== */
+  var btt = document.getElementById('backToTop');
+  if (btt) {
+    window.addEventListener('scroll', function() {
+      btt.classList.toggle('visible', window.scrollY > 400);
+    });
+    btt.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 
   /* ==============================
      Permissions System

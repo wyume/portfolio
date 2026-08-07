@@ -7,8 +7,7 @@
     </radialGradient>
   </defs>
   <rect width="120" height="120" rx="28" fill="url(#bg)"/>
-  <!-- 稍窄版POS，整体上移 -->
-  <rect x="32" y="30" width="56" height="56" rx="8" fill="#fff" opacity=".92"/>
-  <rect x="38" y="38" width="44" height="22" rx="3" fill="#1D4ED8" opacity=".18"/>
-  <rect x="38" y="67" width="44" height="13" rx="3" fill="#1D4ED8" opacity=".1"/>
+  <rect x="30" y="28" width="60" height="60" rx="8" fill="#fff" opacity=".92"/>
+  <rect x="36" y="36" width="48" height="24" rx="3" fill="#1D4ED8" opacity=".18"/>
+  <rect x="36" y="66" width="48" height="14" rx="3" fill="#1D4ED8" opacity=".1"/>
 </svg>

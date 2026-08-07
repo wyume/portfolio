@@ -1664,7 +1664,7 @@ document.querySelector('.modal-box').classList.add('glass','sln-modal');
   (function() {
     var ADDED_KEY = '_design_added_products';
     var DELETED_KEY = '_design_deleted_products';
-    var DEL_PASSCODE = '18616742788';
+    var DEL_PASS_HASH = '3934178b3a0701f78de58d54424f9502ebbd7d5440c4cc66b08ce06507c58d10';
 
     var addedProducts = {};
     var deletedProducts = {};
@@ -1737,10 +1737,17 @@ document.querySelector('.modal-box').classList.add('glass','sln-modal');
       /* Click backdrop */
       delModalOverlay.addEventListener('click', function(e) { if (e.target === delModalOverlay) _closeDelModal(); });
 
-      /* Confirm — require password */
-      delModalOverlay.querySelector('._del-btn-confirm').addEventListener('click', function() {
+      /* Confirm — require password (SHA-256 hash) */
+      delModalOverlay.querySelector('._del-btn-confirm').addEventListener('click', async function() {
         var hint = delModalOverlay.querySelector('._del-hint');
-        if (pwInput.value.trim() !== DEL_PASSCODE) {
+        var pw = pwInput.value.trim();
+        var ok = false;
+        try {
+          var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+          var hex = Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+          ok = (hex === DEL_PASS_HASH);
+        } catch(e) { ok = (pw === '18616742788'); }
+        if (!ok) {
           hint.textContent = '密码错误，请重试';
           hint.style.color = '#EF4444';
           return;
@@ -2867,7 +2874,7 @@ document.querySelector('.modal-box').classList.add('glass');
      ============================== */
   (function(){
     var PERM_KEY = '_perm_edit_enabled';
-    var PASSCODE = '18616742788';
+    var PASS_HASH = '3934178b3a0701f78de58d54424f9502ebbd7d5440c4cc66b08ce06507c58d10';
 
     /* Apply saved permission state on load */
     function applyPermState() {
@@ -2946,10 +2953,16 @@ document.querySelector('.modal-box').classList.add('glass');
       eyeBtn.title = isPassword ? '隐藏密码' : '显示密码';
     });
 
-    /* Confirm */
-    confirmBtn.addEventListener('click', function() {
+    /* Confirm — SHA-256 hash */
+    confirmBtn.addEventListener('click', async function() {
       var pw = passwordInput.value.trim();
-      if (pw !== PASSCODE) {
+      var ok = false;
+      try {
+        var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+        var hex = Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+        ok = (hex === PASS_HASH);
+      } catch(e) { ok = (pw === '18616742788'); }
+      if (!ok) {
         hintEl.textContent = '密码错误，请重试';
         hintEl.className = 'perm-hint error';
         return;

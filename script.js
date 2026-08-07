@@ -246,7 +246,7 @@
                   totalKeys++; totalItems += data.length;
                   post('_files_' + key, data).then(function(r) {
                     if (r.ok) {
-                      console.log('    ✅ ' + key + ' (' + data.length + ' 项, ~' + Math.round(JSON.stringify(data).length / 1024) + 'KB)');
+                      console.log('    ' + key + ' (' + data.length + ' 项, ~' + Math.round(JSON.stringify(data).length / 1024) + 'KB)');
                       success++;
                     } else {
                       console.error('    ❌ ' + key + ': HTTP ' + r.status);

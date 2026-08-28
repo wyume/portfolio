@@ -778,6 +778,25 @@
   var modalBody = document.getElementById('modal-body');
   var modalX = document.querySelector('.modal-x');
 
+  /* ---- 项目管理弹窗开关（默认开） ---- */
+  (function() {
+    var SW_KEY = '_mgmt_modal_switch';
+    var sw = {}; try { sw = JSON.parse(localStorage.getItem(SW_KEY) || '{}'); } catch(ee) {}
+    document.querySelectorAll('.mgmt-modal-toggle').forEach(function(btn) {
+      var key = btn.getAttribute('data-mgmt-toggle');
+      if (sw.hasOwnProperty(key)) btn.setAttribute('data-on', sw[key] ? '1' : '0');
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation(); e.preventDefault();
+        var isOn = btn.getAttribute('data-on') === '1';
+        var newOn = !isOn;
+        btn.setAttribute('data-on', newOn ? '1' : '0');
+        var s2 = {}; try { s2 = JSON.parse(localStorage.getItem(SW_KEY) || '{}'); } catch(ee) {}
+        s2[key] = newOn;
+        try { localStorage.setItem(SW_KEY, JSON.stringify(s2)); } catch(ee) {}
+      });
+    });
+  })();
+
   document.querySelectorAll('.card[data-project]').forEach(function (card) {
     card.addEventListener('click', function (e) {
       if (card._skipClick) { card._skipClick = false; return; }
@@ -790,6 +809,9 @@
 
       /* mgmt / team — three separate step cards */
       if (key === 'mgmt' || key === 'team') {
+        /* 弹窗开关：关则不展示弹窗 */
+        var _sw = {}; try { _sw = JSON.parse(localStorage.getItem('_mgmt_modal_switch') || '{}'); } catch(ee) {}
+        if (_sw[key] === false) return;
         /* Load custom mgmt steps */
         var mgmtSteps = d.steps;
         try { var ms = JSON.parse(localStorage.getItem('_custom_mgmt_steps') || '{}'); if (ms[key]) mgmtSteps = ms[key]; } catch(ee) {}

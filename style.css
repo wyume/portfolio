@@ -870,6 +870,28 @@ li[data-product]:hover::before { background:var(--blue); }
   font-size:13px; font-weight:600; color:var(--text);
 }
 
+/* ---- 项目管理卡片弹窗开关 ---- */
+.mgmt-card { position:relative; }
+.mgmt-modal-toggle {
+  position:absolute; top:14px; right:14px; z-index:2;
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:0; margin:0; border:none; background:transparent;
+  cursor:pointer; user-select:none; -webkit-user-select:none;
+}
+.mgmt-modal-toggle .mt-track {
+  position:relative; width:36px; height:22px; border-radius:11px;
+  background:#D1D5DB; transition:background .25s ease;
+  flex-shrink:0; display:block;
+}
+.mgmt-modal-toggle[data-on="1"] .mt-track { background:#10B981; }
+.mgmt-modal-toggle .mt-thumb {
+  position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%;
+  background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.15);
+  transition:transform .25s cubic-bezier(.34,0,.18,1); display:block;
+}
+.mgmt-modal-toggle[data-on="1"] .mt-thumb { transform:translateX(14px); }
+.edit-locked .mgmt-modal-toggle { display:none; }
+
 
 .perm-input {
   width:100%; padding:13px 38px 13px 12px;

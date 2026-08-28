@@ -457,43 +457,43 @@
     gjfz: {
       name: '国家反诈中心 App', cat: '反电信网络诈骗类', logo:'images/gjfz-logo.png',
       desc: '为构建一体化全域反诈防护体系，公安部五局牵头建设并面向全国推广的政务反诈官方平台。依托预警劝阻、风险核验、线索举报、联动处置、宣传教育等核心能力，全面强化全民反诈意识与防护水平。',
-      metrics: ['覆盖用户 3 亿+', '案件采集 ≤20 分钟', '全国多省市落地', '日均预警拦截 50 万+', 'App Store 工具榜 Top 10', '部局年度优秀项目'],
+      metrics: ['全国推广应用', '覆盖用户 6.5亿+', '累计预警量3亿+', '部局年度优秀项目', 'App Store 工具榜 Top 10'],
       imgs: ['images/gjfz-01.png', 'images/gjfz-02.png', 'images/gjfz-03.png', 'images/gjfz-04.png', 'images/gjfz-05.png']
     },
     qmfz: {
       name: '全民反诈 App', cat: '反电信网络诈骗类', logo: 'images/全民反诈logo.png', logoBg: false,
-      metrics: ['北京地区专属', '7 大核心功能', '预警触达率 90%+', '北京常住人口覆盖 60%+', '拦截诈骗资金超千万', '市局领导批示推广'], desc: '为夯实首都反诈防线，建设平安首都的治理格局，与北京市公安局联合打造，面向北京地区群众的专属反诈防护工具，以诈骗预警、一键上报、到所报案、身份验真、号码标注、群组反诈等多项实用功能，全方位提升全民防诈、识诈、反诈能力。',
+      metrics: ['覆盖北京常住人口 83%', '累计诈骗预警1000万+', '预警触达率 90%+', '处理群众报案20万+', '追赃挽损数年均过亿'], desc: '为夯实首都反诈防线，建设平安首都的治理格局，与北京市公安局联合打造，面向北京地区群众的专属反诈防护工具，以诈骗预警、一键上报、到所报案、身份验真、号码标注、群组反诈等多项实用功能，全方位提升全民防诈、识诈、反诈能力。',
       imgs: ['images/qmfz-01.png', 'images/qmfz-02.png']
     },
     sjgf: {
       name: '省级国反分布式系统', cat: '反电信网络诈骗类', logo: 'images/gjfz-logo.png',
-      metrics: ['5+ 省交付', '标准化方案模板', '部地数据协同', '项目复用率 80%+', '覆盖人口超 2 亿', '省厅验收通过率 100%'], desc: '以"国家反诈中心App"为基座，为各省市公安机关构建并落地标准化、定制化的本地化反诈方案与反诈服务平台，赋能地方公安对反诈数据、能力的充分应用与拓展延伸。',
+      metrics: ['部地数据与能力协同', '多地公安交付落地', '标准化复用率达 80%', '覆盖用户 1 亿+', '验收通过率 100%'], desc: '以"国家反诈中心App"为基座，为各省市公安机关构建并落地标准化、定制化的本地化反诈方案与反诈服务平台，赋能地方公安对反诈数据、能力的充分应用与拓展延伸。',
       imgs: ['images/sjgf-01.png', 'images/sjgf-02.png', 'images/sjgf-03.png', 'images/sjgf-04.png']
     },
     jingyin: {
       name: '警音小程序', cat: '反电信网络诈骗类', logo: 'images/警音.png', logoSize: 28,
-      metrics: ['公安内部通讯', '实时语音告警', '多端同步', '警情响应 < 3 秒', '覆盖基层所队 100+', '日均调度 5000+ 次'], desc: '公安内部语音预警与通讯产品，提供实时语音告警、警情播报、调度通讯等功能。',
+      metrics: ['全辖区覆盖', '视频化宣传', '私域裂变管理', '降低警力成本', '宣传防范责任制'], desc: '公安内部语音预警与通讯产品，提供实时语音告警、警情播报、调度通讯等功能。',
       imgs: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0VFRjJGRicvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzRGNDZFNScgb3BhY2l0eT0nLjcnPuitpumfs+Wwj+eoi+W6j+WOn+WeizwvdGV4dD48L3N2Zz4=']
     },
     // 区块链数字资产交易类
     zsliam: {
       name: '中数链数字版权交易系统', cat: '区块链数字资产交易类', logo:'images/zsliam-logo.png',
-      metrics: ['国家级版权联盟链', '接入 3+ 文创平台', '全链路闭环', '版权登记量 10 万+', '新华社/中国网战略合作', '获国家版权局认可'], desc: '作为国家级版权交易保护联盟链超级节点，联合中国网、上海文交所等机构，面向版权方、发行方及文创平台提供版权登记、权属存证与交易流转一站式链上服务。搭建"版权/IP方—发行方—中数链—国版链"四方业务交互模式，覆盖从登记确权到发行流转的全链路闭环，兼容空投、0元购、二级交易、盲盒、合成等数藏玩法。',
+      metrics: ['新华网、中国网等机构战略合作', '国版链超级节点', '版权登记量 1千+', '发行交易量百万+', '链上资产实时追踪'], desc: '作为国家级版权交易保护联盟链超级节点，联合中国网、上海文交所等机构，面向版权方、发行方及文创平台提供版权登记、权属存证与交易流转一站式链上服务。搭建"版权/IP方—发行方—中数链—国版链"四方业务交互模式，覆盖从登记确权到发行流转的全链路闭环，兼容空投、0元购、二级交易、盲盒、合成等数藏玩法。',
       imgs: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0U1RjZGQicvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzAwQTNFMCcgb3BhY2l0eT0nLjcnPuS4reaVsOmTvuS6pOaYk+W5s+WPsDwvdGV4dD48L3N2Zz4=', 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0UwRjdGQScvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzAwOUZENCcgb3BhY2l0eT0nLjcnPueJiOadg+S6pOaYk+a1geeoizwvdGV4dD48L3N2Zz4=']
     },
     guoban: {
       name: '国版数创', cat: '区块链数字资产交易类', logo: 'images/国版数创logo.png',
-      metrics: ['数字资产发行', '二级市场', '智能分账', '首发售罄率 100%', '入驻创作者 500+', '版税结算零差错'], desc: '国家级数字版权创新平台交易端，依托国版链实现版权资产的数字化发行与二级市场流转。支持版权方入驻、资产发行上链、用户购买交易与版税自动分账，将版权价值从登记确权延伸至市场化流通。',
+      metrics: ['国版链官方认证', '中国网审核监管', '全场景数藏玩法', '首发售罄率 100%', '累计交易量20万+'], desc: '国家级数字版权创新平台交易端，依托国版链实现版权资产的数字化发行与二级市场流转。支持版权方入驻、资产发行上链、用户购买交易与版税自动分账，将版权价值从登记确权延伸至市场化流通。',
       imgs: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0U1RjZGQicvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzAwQTNFMCcgb3BhY2l0eT0nLjcnPuWbveeJiOaVsOWIm+W5s+WPsDwvdGV4dD48L3N2Zz4=']
     },
     'zsl-browser': {
       name: '中数链浏览器', cat: '区块链数字资产交易类', logo: 'images/zsliam-logo.png',
-      metrics: ['链上可视化', '合约验证', '实时追踪', '日均查询 10 万+', '支持 3 条主流公链', '查询响应 < 1 秒'], desc: '区块链数据查询与链上核验工具，兼容旗下可信节点与服务商文创平台。将链上存证信息与版权业务打通，提供数字资产溯源、交易记录查询、智能合约验证等能力，为版权确权与交易透明度提供可验证的链上依据。',
+      metrics: ['链上资产实时追踪', '多维链上信息溯源', '资产权属透明', '日均查询量5千+', '查询响应<1 秒'], desc: '区块链数据查询与链上核验工具，兼容旗下可信节点与服务商文创平台。将链上存证信息与版权业务打通，提供数字资产溯源、交易记录查询、智能合约验证等能力，为版权确权与交易透明度提供可验证的链上依据。',
       imgs: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0UwRjdGQScvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzAwOUZENCcgb3BhY2l0eT0nLjcnPuS4reaVsOmTvua1j+iniOWZqDwvdGV4dD48L3N2Zz4=']
     },
     bitker: {
       name: 'BITKER 数字资产交易平台', cat: '区块链数字资产交易类', logo: 'images/币客.png', logoSize: 26,
-      metrics: ['多币种支持', '全球多语言', '现货+合约交易', '日均交易额 $1 亿+', '100+ 交易对', '系统可用性 99.9%', '覆盖 50+ 国家'], desc: '全球化的数字资产交易平台，支持多币种交易、法币兑换、资产管理等功能。',
+      metrics: ['场外+现货双模式', '主流公链全覆盖', '100+ 交易对', '平台币发行（BKB）', '累计交易额破亿'], desc: '全球化的数字资产交易平台，支持多币种交易、法币兑换、资产管理等功能。',
       outputs: [
         { label: '交易系统设计', detail: '现货/合约交易界面、K线图表交互、订单簿与深度图设计、多语言国际化方案' }
       ],
@@ -502,7 +502,7 @@
     // 互联网金融类
     hudaiwang: {
       name: '互贷网理财', cat: '互联网金融类', logo: 'images/互贷网理财logo.png',
-      metrics: ['资金存管银行对接', '年均交易额 10 亿+', '用户 50 万+', '累计撮合资金破百亿', '平台合规备案通过', '用户复投率 70%+'], desc: '聚焦普惠金融领域，依托线下真实借贷资产，提供多元化理财及债权转让服务，实现资金撮合、资产匹配与本息回款全流程线上化运营。',
+      metrics: ['新网银行资金存管', '累计交易额20亿+', '累计注册用户20万+', '用户复投率 70%+', '存量业务已清'], desc: '聚焦普惠金融领域，依托线下真实借贷资产，提供多元化理财及债权转让服务，实现资金撮合、资产匹配与本息回款全流程线上化运营。',
       outputs: [
         { label: '全端产品管理', detail: '全生命周期管理，从需求→研发→质控→上线运营全流程推进' },
         { label: '资金存管对接', detail: '理财端与新网银行资金存管系统对接方案设计，保障平台监管合规' },
@@ -512,7 +512,7 @@
     },
     gnxd: {
       name: '天天速贷 App', cat: '互联网金融类', logo: 'images/天天速贷logo.png',
-      metrics: ['多机构聚合', '智能产品匹配', '合规流程', '对接金融机构 30+', '授信通过率提升 25%', '月均撮合金额破亿'], desc: '金融信息服务平台，聚合银行/消金/小贷机构资源，提供个人信贷撮合与智能匹配服务。',
+      metrics: ['累计服务用户10万+', '授信通过率约30%', '首贷还款率90%+', '逾期率（M1<3%  M2<1%）', '复贷率60%+'], desc: '金融信息服务平台，聚合银行/消金/小贷机构资源，提供个人信贷撮合与智能匹配服务。',
       outputs: [
         { label: '合规设计', detail: '结合金融监管要求与用户需求，完成信贷产品全流程梳理，保障合规落地' },
         { label: '多产品迭代', detail: '多款消金产品设计与持续迭代，涵盖授信评估、产品匹配、会员权益等核心模块' }
@@ -521,7 +521,7 @@
     },
     gwxd: {
       name: '金享会 App', cat: '互联网金融类', logo: 'images/金享会logo.png',
-      metrics: ['授信风控', '产品矩阵', '会员权益', '风险逾期率 < 2%', '会员转化率 40%+', '接入征信数据源 5+'], desc: '面向个人用户的助贷撮合服务，提供授信评估、产品匹配、会员权益等核心功能。',
+      metrics: ['服务用户数万+', '用户分层授信', '平均匹配时效<3分钟', '撮合成功率85%+', '会员转化率 25%+'], desc: '面向个人用户的助贷撮合服务，提供授信评估、产品匹配、会员权益等核心功能。',
       outputs: [
         { label: '产品矩阵', detail: '结合金融监管与用户需求，完成助贷产品全流程设计与合规落地' },
         { label: '风控数据', detail: '引入百行、人行征信等数据源，基于信用资质/借贷历史/逾期多头等标签，为风控策略提供数据支撑' }
@@ -530,7 +530,7 @@
     },
     popcash: {
       name: 'PopCashLoan、LendingMax', cat: '互联网金融类',
-      metrics: ['海外本地化', '全流程管理', '已上线试运行', '印度市场用户 10 万+', '放款审批 < 5 分钟', '回款率 85%+'], desc: '面向印度及海外市场的小额信贷产品线，涵盖"贷前-贷中-贷后"全流程管理，已上线试运行。',
+      metrics: [], desc: '面向印度及海外市场的小额信贷产品线，涵盖"贷前-贷中-贷后"全流程管理，已上线试运行。',
       outputs: [
         { label: '市场调研', detail: '印度及东南亚信贷市场监管政策与竞品调研，梳理当地用户信用评估习惯与风控要点' },
         { label: '产品设计', detail: '移动端借款与助贷产品设计，覆盖授信、审批、还款等核心模块，适配多语言多币种需求' },
@@ -541,7 +541,7 @@
     // 金融支付类
     quanzhanye: {
       name: '全民展业 App', cat: '金融支付类', logo: 'images/quanzhanye-logo.svg',
-      metrics: ['银行卡收单', '实时查询', '业绩看板', '入驻商户 5000+', '日均交易 10 万+ 笔', '系统稳定运行 3 年+'], desc: '面向商户的展业工具，支持银行卡收单、商户管理、交易查询、业绩统计等功能。',
+      metrics: [], desc: '面向商户的展业工具，支持银行卡收单、商户管理、交易查询、业绩统计等功能。',
       outputs: [
         { label: '商户端设计', detail: '商户入驻/终端绑定/交易查询/结算对账/业绩看板五大模块原型设计' }
       ],
@@ -549,7 +549,7 @@
     },
     weifenxiao: {
       name: '微分销平台', cat: '金融支付类', logo: 'images/weifenxiao-logo.svg',
-      metrics: ['多级分销', '自动结算', '团队管理', '分销商 3000+', '月佣金结算破百万', '裂变转化率 35%+'], desc: '面向商户的分销管理平台，支持多级分销、佣金结算、团队管理等功能。',
+      metrics: [], desc: '面向商户的分销管理平台，支持多级分销、佣金结算、团队管理等功能。',
       outputs: [
         { label: '分销体系', detail: '多级分销层级设计、佣金比例配置、分润结算流程、团队业绩看板' }
       ],
@@ -573,7 +573,7 @@
     // 社交电商类
     panda: {
       name: '熊猫买手 App', cat: '社交电商类', logo: 'images/熊猫买手logo.png',
-      metrics: ['社交裂变', '二级分销', '社群运营', '买手入驻 2000+', '月 GMV 突破千万', '用户裂变率 300%+'], desc: '社交电商买手平台，结合社交裂变与电商交易，提供商品推荐、佣金分润、社群运营等功能。',
+      metrics: ['私域社交裂变', '多品类货源覆盖', '发展店主25万+', '接入服务商4000+', '累计GMV 9亿+'], desc: '社交电商买手平台，结合社交裂变与电商交易，提供商品推荐、佣金分润、社群运营等功能。',
       outputs: [
         { label: '社交裂变设计', detail: '邀请返佣机制、二级分销体系、社群红包/拼团/秒杀等裂变玩法设计' },
         { label: '买手端原型', detail: '商品采集→内容编辑→发布推广→佣金结算，买手全流程操作界面设计' }
@@ -582,7 +582,7 @@
     },
     octopus: {
       name: '八爪鱼平台', cat: '社交电商类', logo: 'images/八爪鱼logo.png',
-      metrics: ['多平台聚合', '智能定价', '一键分发', '对接渠道 20+', '商品 SKU 百万级', '分销效率提升 50%'], desc: '多源商品聚合与分销平台，支持商品采集、智能定价、多渠道分发、订单管理等核心能力。',
+      metrics: [], desc: '多源商品聚合与分销平台，支持商品采集、智能定价、多渠道分发、订单管理等核心能力。',
       outputs: [
         { label: '平台架构', detail: '多源商品采集引擎→统一商品库→智能定价策略→多渠道一键分发→订单归集管理' },
         { label: '运营后台', detail: '商品管理/渠道管理/价格策略/订单路由/数据报表，运营后台全套原型设计' }
@@ -591,7 +591,7 @@
     },
     feiyu: {
       name: '飞鱼合伙人 App', cat: '社交电商类', logo: 'images/飞鱼logo.png',
-      metrics: ['合伙人模式', '分销裂变', '佣金激励', '合伙人 1000+', '月佣金破 500 万', '团队裂变 5 级+'], desc: '社交电商合伙人平台，以合伙人/代理商模式为核心，支持多级分销、团队管理、佣金结算与裂变增长。',
+      metrics: [], desc: '社交电商合伙人平台，以合伙人/代理商模式为核心，支持多级分销、团队管理、佣金结算与裂变增长。',
       outputs: [
         { label: '合伙人体系', detail: '合伙人等级/权益/晋升机制设计，团队裂变与下级绑定逻辑，佣金计算与提现流程' },
         { label: '运营管理后台', detail: '合伙人审核/业绩看板/佣金配置/活动管理/数据报表，全套运营后台设计' }

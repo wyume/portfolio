@@ -47,18 +47,27 @@
     if (!_online) return Promise.resolve();
 
     var payload = { key: key, value: value, updated_at: new Date().toISOString() };
-    // 先尝试 PATCH（更新已存在的行）
-    return fetch(
-      apiURL('/rest/v1/' + TABLE + '?key=eq.' + encodeURIComponent(key)),
-      { method: 'PATCH', headers: apiHeaders({ 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }), body: JSON.stringify(payload) }
-    ).then(function (r) {
-      if (r.ok) return;
-      // 行可能不存在，尝试 POST（插入）
+
+    function attempt() {
+      // 先尝试 PATCH（更新已存在的行）
       return fetch(
-        apiURL('/rest/v1/' + TABLE),
-        { method: 'POST', headers: apiHeaders({ 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }), body: JSON.stringify(payload) }
-      );
-    }).catch(function () { /* 静默失败，localStorage 已有备份 */ });
+        apiURL('/rest/v1/' + TABLE + '?key=eq.' + encodeURIComponent(key)),
+        { method: 'PATCH', headers: apiHeaders({ 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }), body: JSON.stringify(payload) }
+      ).then(function (r) {
+        if (r.ok) return true;
+        // 行可能不存在，尝试 POST（插入）
+        return fetch(
+          apiURL('/rest/v1/' + TABLE),
+          { method: 'POST', headers: apiHeaders({ 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }), body: JSON.stringify(payload) }
+        ).then(function (r2) {
+          if (!r2.ok) throw new Error('HTTP ' + r2.status);
+          return true;
+        });
+      });
+    }
+
+    // 失败重试 2 次，最终仍失败才 reject（让调用方能感知失败，不再静默）
+    return attempt().catch(function () { return attempt(); }).catch(function () { return attempt(); });
   }
 
   function loadContent(key) {

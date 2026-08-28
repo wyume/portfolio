@@ -178,8 +178,13 @@
      Key 格式: _files_<原始storageKey>  如 _files_prod_imgs_gjfz
      ============================================================ */
   function _cloudFileSave(key, dataArray) {
-    if (!window.DS || !window.DS.isOnline()) return;
-    window.DS.saveContent('_files_' + key, dataArray).catch(function(){});
+    if (!window.DS || !window.DS.isOnline()) { console.warn('[Cloud] 离线，跳过同步 ' + key); return; }
+    var sizeKB = Math.round(JSON.stringify(dataArray).length / 1024);
+    window.DS.saveContent('_files_' + key, dataArray).then(function() {
+      console.log('[Cloud] ✅ 已同步 ' + key + ' (' + sizeKB + 'KB)');
+    }).catch(function(err) {
+      console.error('[Cloud] ❌ 同步失败 ' + key + ' (' + sizeKB + 'KB): ' + (err && err.message ? err.message : err));
+    });
   }
 
   function _cloudFileLoad(key, callback) {

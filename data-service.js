@@ -49,20 +49,27 @@
     var payload = { key: key, value: value, updated_at: new Date().toISOString() };
 
     function attempt() {
-      // 先尝试 PATCH（更新已存在的行）
+      // 先查是否存在，避免 PATCH 不存在的行返回 204 却被当作成功（导致数据没插入）
       return fetch(
-        apiURL('/rest/v1/' + TABLE + '?key=eq.' + encodeURIComponent(key)),
-        { method: 'PATCH', headers: apiHeaders({ 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }), body: JSON.stringify(payload) }
+        apiURL('/rest/v1/' + TABLE + '?key=eq.' + encodeURIComponent(key) + '&select=id&limit=1'),
+        { headers: apiHeaders() }
       ).then(function (r) {
-        if (r.ok) return true;
-        // 行可能不存在，尝试 POST（插入）
-        return fetch(
-          apiURL('/rest/v1/' + TABLE),
-          { method: 'POST', headers: apiHeaders({ 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }), body: JSON.stringify(payload) }
-        ).then(function (r2) {
-          if (!r2.ok) throw new Error('HTTP ' + r2.status);
-          return true;
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      }).then(function (rows) {
+        var exists = rows && rows.length > 0;
+        var url = exists
+          ? apiURL('/rest/v1/' + TABLE + '?key=eq.' + encodeURIComponent(key))
+          : apiURL('/rest/v1/' + TABLE);
+        var method = exists ? 'PATCH' : 'POST';
+        return fetch(url, {
+          method: method,
+          headers: apiHeaders({ 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }),
+          body: JSON.stringify(payload)
         });
+      }).then(function (r2) {
+        if (!r2.ok) throw new Error('HTTP ' + r2.status);
+        return true;
       });
     }
 

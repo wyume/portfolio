@@ -891,6 +891,9 @@ li[data-product]:hover::before { background:var(--blue); }
 }
 .mgmt-modal-toggle[data-on="1"] .mt-thumb { transform:translateX(14px); }
 .edit-locked .mgmt-modal-toggle { display:none; }
+.mgmt-card.modal-off { cursor:default; }
+.mgmt-card.modal-off .mgmt-title-text,
+.mgmt-card.modal-off .mgmt-desc-text { cursor:default; }
 
 
 .perm-input {

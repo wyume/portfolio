@@ -782,14 +782,22 @@
   (function() {
     var SW_KEY = '_mgmt_modal_switch';
     var sw = {}; try { sw = JSON.parse(localStorage.getItem(SW_KEY) || '{}'); } catch(ee) {}
+    function setCardCursor(btn, on) {
+      var card = btn.closest('.mgmt-card');
+      if (!card) return;
+      if (on) card.classList.remove('modal-off');
+      else card.classList.add('modal-off');
+    }
     document.querySelectorAll('.mgmt-modal-toggle').forEach(function(btn) {
       var key = btn.getAttribute('data-mgmt-toggle');
       if (sw.hasOwnProperty(key)) btn.setAttribute('data-on', sw[key] ? '1' : '0');
+      setCardCursor(btn, sw[key] !== false);
       btn.addEventListener('click', function(e) {
         e.stopPropagation(); e.preventDefault();
         var isOn = btn.getAttribute('data-on') === '1';
         var newOn = !isOn;
         btn.setAttribute('data-on', newOn ? '1' : '0');
+        setCardCursor(btn, newOn);
         var s2 = {}; try { s2 = JSON.parse(localStorage.getItem(SW_KEY) || '{}'); } catch(ee) {}
         s2[key] = newOn;
         try { localStorage.setItem(SW_KEY, JSON.stringify(s2)); } catch(ee) {}

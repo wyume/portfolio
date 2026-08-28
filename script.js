@@ -557,10 +557,9 @@
     },
     xinshengdai: {
       name: '信生代 App', cat: '金融支付类', logo: 'images/xinshengdai-logo.jpg', logoBg: true,
-      metrics: ['账单管理', '多卡管理', '实时计费', '服务用户 20 万+', '账单处理率 98%+', '用户月留存 85%+'], desc: '信用卡账务管理平台，提供账单管理、费率计算、消费信贷等金融工具。',
-      outputs: [
-        { label: '核心流程', detail: '信用卡绑定→账单导入→还款计划生成→执行扣款→结果通知，全流程闭环设计' }
-      ],
+      metrics: [],
+      desc: '面向信用卡用户，提供多卡账单管理与还款规划等账务服务。以「前端统一 + 后台隔离」的架构，整合持牌信贷与消费场景，实现业务隔离，用户无需跨应用即可完成从账单管理到还款的全流程。',
+      outputs: [],
       imgs: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2MDAnIGhlaWdodD0nNDAwJz48cmVjdCB3aWR0aD0nNjAwJyBoZWlnaHQ9JzQwMCcgZmlsbD0nI0YzRUVGRicvPjx0ZXh0IHg9JzUwJTI1JyB5PSc1MCUyNScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdJbnRlcixOb3RvIFNhbnMgU0Msc2Fucy1zZXJpZicgZm9udC1zaXplPSc1MCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzdDM0FFRCcgb3BhY2l0eT0nLjcnPuS/oeeUn+S7o0FwcDwvdGV4dD48L3N2Zz4=']
     },
     qianbaoxiaodai: {

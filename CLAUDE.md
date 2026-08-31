@@ -1,5 +1,24 @@
 # Portfolio（改进版）— 作品集项目文档
 
+## 2026-08-31 更新日志
+
+### 方案缩略图文件类型图标切换
+- **背景**：方案案例文件最终都导出为 PDF 上传（便于弹窗内嵌预览），但缩略图希望按原始类型显示 Word/PPT 图标，而非一律显示 PDF
+- **实现**：文件对象新增 `origType` 字段（`pdf`/`word`/`ppt`），渲染时优先用它决定图标；点图标循环 PDF→Word→PPT
+- **持久化**：`origType` 随 `_files_sln_file_*` 同步 Supabase，跨浏览器一致
+- **权限控制**：`_slnFileTypeCycle` 加 edit-locked 守卫；锁定后图标纯展示（无 title 提示、无手型光标、点击穿透到缩略图预览）
+- **样式**：图标直接可点切换，去掉蓝色圆角徽标，鼠标悬停有 title 提示
+
+### 文档撰写类型选择器按钮字母
+- 长按文档名进入编辑时，类型按钮字母从「W E P P i」改为「W E F P i」——PDF 用 F，避免与 PPT 的 P 重复
+
+### 文件变更
+| 文件 | 变更 |
+|------|------|
+| `script.js` | 方案图标类型切换（renderSlnModal / _slnFileRebuild / _slnFileTypeCycle）、文档类型按钮 PDF→F |
+| `style.css` | 新增 `.edit-locked .sln-type-btn` 光标默认 |
+| `CLAUDE.md` | 更新日志 |
+
 ## 2026-08-28 更新日志
 
 ### 方案案例文案中性化（省级国反 / 中数链 / 信生代）

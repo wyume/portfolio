@@ -1001,6 +1001,7 @@ h2[data-section-key],
 .edit-locked .prod-metric-del,
 .edit-locked .prod-metric-add { display:none !important; }
 .edit-locked .prod-metric-tag:hover .prod-metric-del { display:none !important; }
+.edit-locked .sln-type-btn { cursor: default !important; }
 .prod-metric-tag:hover .prod-metric-del { display:inline-flex !important; align-items:center; justify-content:center; }
 
 /* ====== Back to Top (floating) ====== */

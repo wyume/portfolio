@@ -2511,7 +2511,7 @@ document.querySelector('.modal-box').classList.add('glass');
 
   var _di=[{p:'百威 ABI',t:'Mobile / TV',im:['images/budweiser-logo.png']},{p:'永辉超市',t:'PC',im:['images/yonghui-logo.png']},{p:'达能水业',t:'Mobile',im:['images/danone-logo.png']},{p:'日本罗森',t:'PC',im:['images/lawson-logo.png']}];
   // Load design images: localStorage first (instant), IndexedDB with timeout fallback
-  function _designLoad(k,cb){var done=false;function resolve(a){if(!done){done=true;cb(a);}}var r=localStorage.getItem(k);if(r){try{var a=JSON.parse(r);a=a.filter(function(x){return typeof x==='string'&&x.indexOf('data:')===0;});if(a.length)return resolve(a);}catch(e){}}_prodDBLoad(k,function(db){if(db&&db.length){db=db.filter(function(x){return typeof x==='string'&&x.indexOf('data:')===0;});resolve(db);return;}_cloudFileLoad(k,function(cd){if(cd){var _cs=JSON.stringify(cd);if(_cs.length<3000000){try{localStorage.setItem(k,_cs);}catch(e){}}else{try{localStorage.setItem(k,'["__IDB__"]');}catch(e){}}_prodDBSave(k,cd);resolve(cd);}else{resolve([]);}});});setTimeout(function(){resolve([]);},2000);}
+  function _designLoad(k,cb){var done=false;function resolve(a){if(!done){done=true;cb(a);}}var r=localStorage.getItem(k);if(r){try{var a=JSON.parse(r);a=a.filter(function(x){return typeof x==='string'&&x.indexOf('data:')===0;});if(a.length)return resolve(a);}catch(e){}}_prodDBLoad(k,function(db){if(db&&db.length){db=db.filter(function(x){return typeof x==='string'&&x.indexOf('data:')===0;});resolve(db);return;}_cloudFileLoad(k,function(cd){if(cd){try{localStorage.setItem(k,'["__IDB__"]');}catch(e){}_prodDBSave(k,cd);resolve(cd);}else{resolve([]);}});});setTimeout(function(){resolve([]);},2000);}
   // Design image upload — canvas compression + progress ring + IndexedDB
   window._du=function(e,idx){var f=e.target.files;if(!f.length)return;var k='design_img_'+idx;
     var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center';
@@ -2520,7 +2520,7 @@ document.querySelector('.modal-box').classList.add('glass');
     rg.appendChild(inn);ov.appendChild(rg);document.body.appendChild(ov);
     function upd(p){inn.textContent=p+'%';rg.style.background='conic-gradient(#10B981 '+p*3.6+'deg,transparent 0deg)';}
     _designLoad(k,function(a){var t=f.length;var dn=0;
-      function finish(){var _s=JSON.stringify(a);if(_s.length<3000000){try{localStorage.setItem(k,_s);}catch(e){}}else{try{localStorage.setItem(k,'["__IDB__"]');}catch(e){}}_prodDBSave(k,a);_cloudFileSave(k,a);
+      function finish(){try{localStorage.setItem(k,'["__IDB__"]');}catch(e){}_prodDBSave(k,a);_cloudFileSave(k,a);
         setTimeout(function(){ov.innerHTML='<div style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:10000;background:rgba(255,255,255,.55);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.4);border-radius:30px;padding:8px 18px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.6);font-size:12px;color:var(--text)"><span style="display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#10B981;color:#fff;font-size:11px;flex-shrink:0">&#10003;</span><span>上传成功，共 <b>'+a.length+'</b> 张</span></div>';},100);
         setTimeout(function(){ov.remove();},2000);
         var c=document.querySelectorAll('.design-gallery-item')[idx];if(c)_refreshDesignCard(c,idx,k,a);

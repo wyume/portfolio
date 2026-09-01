@@ -1,5 +1,71 @@
 # Portfolio（改进版）— 作品集项目文档
 
+## 2026-09-01 更新日志
+
+### 设计图片云同步去重 + 删除同步 + 取消自动刷新
+- **问题**：设计图片（代表/往期设计）出现「上传 5 张变 7 张」「删除的图片刷新后又回来」「刷新后网页又自动刷新一次」
+- **根因**：图片同时走了三套云同步，互相打架——①`_cloudFileSave` 存 base64 到 `_files_<key>`；②`_uploadToCloud`+`_saveCloudFileUrl` 上传 Supabase Storage 并把 URL 写进 `_cloud_file_urls`；③`_syncFilesFromCloud` 再拉取 Storage URL 合并回本地。②③会把 Storage URL 混进 base64 数组造成重复；删除时只改本地不同步云端，删掉的图又从云端回来；两处 `location.reload()` 导致刷新后再自动刷新
+- **修复**：
+  1. `_du` 去掉 `_uploadToCloud`（设计图只走 base64 一套同步）
+  2. `_designLoad` 读取时过滤掉 Storage URL（只保留 `data:` base64），修复已有重复数据
+  3. 弹窗单张删除补 `_syncCloudUrlsAfterDelete` + `_cloudFileSave`，删除同步到云端
+  4. `_syncFilesFromCloud` 排除 `design` 分类（不再拉取设计图 Storage URL）
+  5. 移除两处 `location.reload()`，不再自动刷新
+- **注意**：已有被污染的数据需重新上传一次才会彻底干净（新逻辑读取时会自动过滤 URL，下次增删会自动写回干净数据）
+
+### 文件变更
+| 文件 | 变更 |
+|------|------|
+| `script.js` | `_du` 去 `_uploadToCloud`；`_designLoad` 过滤 URL；删除同步云端；`_syncFilesFromCloud` 排除 design；移除 2 处 reload |
+| `index.html` | `script.js?v=0901m` |
+| `CLAUDE.md` | 更新日志 |
+
+### 占位文案清理 + 性能优化
+- 移除 JSON-LD 中 `alumniOf`（学校）占位「请补充学校名称」——未填写过的教育信息不再出现在代码里
+- 修复密码小人 `updateFig()` 被调用两次导致的**双 RAF 动画循环**（`index.html` 内联脚本），删掉重复调用，仅保留一处启动
+
+### 文件变更
+| 文件 | 变更 |
+|------|------|
+| `index.html` | JSON-LD 删 `alumniOf` 占位；内联脚本删重复 `updateFig()` |
+| `CLAUDE.md` | 更新日志 |
+
+## 2026-09-01 更新日志
+
+### 代表设计图片上传卡死修复
+- **问题**：代表设计弹窗选择图片后，上传进度到 100% 就卡住，无法完成；整屏进度遮罩挡住所有点击，删除也无法操作
+- **根因**：`_du` 的 `finish()` 里 `localStorage.setItem(k,JSON.stringify(a))` 没有 try/catch。代表设计图片以 base64 存 localStorage，图片较大或累积多张超过 localStorage 配额（约 5MB）时 `setItem` 抛 `QuotaExceededError`，中断 `finish()`，导致 toast、`ov.remove()`、卡片刷新全部跳过，进度圈永久卡在 100%
+- **修复**：
+  1. `_du` 的 `finish()` 中 `localStorage.setItem` 加 try/catch（与 `_prodUpload`/`_slnUpload` 一致），写失败由 IndexedDB 兜底，不再中断后续 UI 反馈
+  2. `_refreshDesignCard` 点击回调改为直接用内存数组 `a` 打开 lightbox（不再读 `_designGetImgs` 的 localStorage），避免大图写 localStorage 失败后点击卡片无预览
+- **说明**：图片持久化仍走 IndexedDB + localStorage 双写，跨浏览器/刷新由 `_designLoad` 的 IndexedDB 回退保证
+
+### 文件变更
+| 文件 | 变更 |
+|------|------|
+| `script.js` | `_du` finish 的 localStorage 写入加 try/catch；`_refreshDesignCard` onclick 改用内存数组 |
+| `index.html` | script.js 版本号 `?v=0828b` → `?v=0901` |
+| `CLAUDE.md` | 更新日志 |
+
+### 往期设计预览 — 横图/竖图/长图三态
+- **最终方案**：往期设计预览按宽高比分三态——横图（百威）`86vw`、圆角 16px；普通竖图（永辉第二张）`max-height:80vh` 刚好一屏、圆角 4px；长图（高/宽 > 2）`max-width:60vw` 纵向滚动、圆角 4px
+- **实现**：
+  1. `.lightbox` 基础样式保持自适应（产品选集预览不受影响）
+  2. `.lb-design` 容器 `flex-direction:column; align-items:center; justify-content:flex-start; overflow-y:auto; padding:0 0 24px`
+  3. 图片 `onload` 判定：先 `visibility:hidden` 隐藏，判定宽高比后加 `lb-tall`（高>宽）或 `lb-long`（高/宽>2）类再显示，消除「先一屏再放大」闪烁
+  4. 顶部栏 `.doc-lb-bar` 改 `position:sticky; top:0` 固定；`showLightbox` 复用 DOM；删除底部 `lb-counter` 页码（保留左上角 `doc-lb-count`）
+  5. `removeArrowButtons` 不再删 `.doc-lb-del-btn`（否则复用 DOM 切图时顶栏删除按钮被删掉）；长图 `.lb-long` 隐藏滚动条（`scrollbar-width:none` + `::-webkit-scrollbar{display:none}`）
+  5. `_du` 上传压缩：PNG 源保留 PNG（无损），其余 JPEG 0.95
+- **说明**：横图 86vw 一屏、竖图 88vh 一屏、长图 60vw 滚动；产品选集预览未加 `lb-design`，保持原样
+
+### 文件变更
+| 文件 | 变更 |
+|------|------|
+| `style.css` | 普通图 88vh；新增 `lb-tall` 圆角 8px；长图 60vw/圆角 4px |
+| `script.js` | 图片加载期隐藏 + 三态判定；删除底部页码；`_du` PNG 无损 |
+| `index.html` | `style.css?t=20260901j`、`script.js?v=0901k` |
+| `CLAUDE.md` | 更新日志 |
+
 ## 2026-08-31 更新日志
 
 ### 方案缩略图文件类型图标切换

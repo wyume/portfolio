@@ -151,7 +151,7 @@
         );
       });
       return Promise.all(uploads).then(function() {
-        if (hasUpdate) setTimeout(function() { location.reload(); }, 300);
+        // 已移除自动刷新（避免用户手动刷新后又被强制刷新一次）
       });
     });
   }
@@ -1052,58 +1052,84 @@ document.querySelector('.modal-box').classList.add('glass','sln-modal');
   };
 
   function showLightbox() {
-    var existing = document.querySelector('.lightbox');
-    if (existing) existing.remove();
     removeArrowButtons();
 
-    var lb = document.createElement('div'); lb.className = 'lightbox';
+    var lb = document.querySelector('.lightbox');
+    if (!lb) {
+      lb = document.createElement('div');
+      lb.addEventListener('click', function(e) { if (e.target === lb) { lb.remove(); removeArrowButtons(); } });
+      document.body.appendChild(lb);
+    }
+    lb.className = 'lightbox' + (lightboxDelKey ? ' lb-design' : '');
+    lb.scrollTop = 0;
 
-    /* 代表设计预览：顶部导航栏 */
+    /* 往期设计预览：顶部导航栏 */
     if (lightboxDelKey) {
-      var bar = document.createElement('div'); bar.className = 'doc-lb-bar'; bar.style.zIndex = '1002';
-      var barL = document.createElement('div'); barL.className = 'doc-lb-bar-left';
-      var cardName = '';
-      if (lightboxDelCardIdx >= 0) {
-        var cardEl = document.querySelectorAll('.design-gallery-item')[lightboxDelCardIdx];
-        if (cardEl) { var strong = cardEl.querySelector('.dg-info strong'); if (strong) cardName = strong.textContent.trim(); }
-      }
-      barL.innerHTML = '<span class="doc-lb-name">' + (cardName || '代表设计') + '</span><span class="doc-lb-count">' + (lightboxImages.length > 0 ? (lightboxIndex+1) + ' / ' + lightboxImages.length : '0 / 0') + '</span>';
-      bar.appendChild(barL);
-      var barR = document.createElement('div'); barR.style.cssText = 'display:flex;align-items:center;gap:8px';
-      /* 删除按钮 */
-      if (!document.body.classList.contains('edit-locked')) {
+      var bar = lb.querySelector('.doc-lb-bar');
+      if (!bar) {
+        bar = document.createElement('div'); bar.className = 'doc-lb-bar'; bar.style.zIndex = '1002';
+        var barL = document.createElement('div'); barL.className = 'doc-lb-bar-left';
+        var cardName = '';
+        if (lightboxDelCardIdx >= 0) {
+          var cardEl = document.querySelectorAll('.design-gallery-item')[lightboxDelCardIdx];
+          if (cardEl) { var strong = cardEl.querySelector('.dg-info strong'); if (strong) cardName = strong.textContent.trim(); }
+        }
+        barL.innerHTML = '<span class="doc-lb-name">' + (cardName || '往期设计') + '</span><span class="doc-lb-count"></span>';
+        bar.appendChild(barL);
+        var barR = document.createElement('div'); barR.style.cssText = 'display:flex;align-items:center;gap:8px';
         var delBtn = document.createElement('button'); delBtn.className = 'doc-lb-del-btn'; delBtn.title = '删除当前图片';
         delBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>';
-        delBtn.onclick = function(e) { e.stopPropagation();
-          if (lightboxImages.length <= 1) { localStorage.removeItem(lightboxDelKey); if (_prodDB) { var t2=_prodDB.transaction('imgs','readwrite'); t2.objectStore('imgs').delete(lightboxDelKey); } var c3=document.querySelectorAll('.design-gallery-item')[lightboxDelCardIdx]; if(c3)_refreshDesignCard(c3,lightboxDelCardIdx,lightboxDelKey,[]); lb.remove(); removeArrowButtons(); return; }
-          lightboxImages.splice(lightboxIndex,1); localStorage.setItem(lightboxDelKey,JSON.stringify(lightboxImages)); _prodDBSave(lightboxDelKey,lightboxImages); var c4=document.querySelectorAll('.design-gallery-item')[lightboxDelCardIdx]; if(c4)_refreshDesignCard(c4,lightboxDelCardIdx,lightboxDelKey,lightboxImages); if(lightboxIndex>=lightboxImages.length)lightboxIndex=lightboxImages.length-1; showLightbox();
-        };
         barR.appendChild(delBtn);
+        var cb3 = document.createElement('button'); cb3.className = 'doc-lb-close'; cb3.innerHTML = '&times;';
+        cb3.onclick = function(e) { e.stopPropagation(); lb.remove(); removeArrowButtons(); };
+        barR.appendChild(cb3); bar.appendChild(barR);
+        lb.insertBefore(bar, lb.firstChild);
       }
-      var cb3 = document.createElement('button'); cb3.className = 'doc-lb-close'; cb3.innerHTML = '&times;';
-      cb3.onclick = function(e) { e.stopPropagation(); lb.remove(); removeArrowButtons(); };
-      barR.appendChild(cb3); bar.appendChild(barR); lb.appendChild(bar);
+      var countEl = bar.querySelector('.doc-lb-count');
+      if (countEl) countEl.textContent = lightboxImages.length > 0 ? (lightboxIndex+1) + ' / ' + lightboxImages.length : '0 / 0';
+      var delBtn = bar.querySelector('.doc-lb-del-btn');
+      if (delBtn) {
+        delBtn.style.display = document.body.classList.contains('edit-locked') ? 'none' : 'flex';
+        delBtn.onclick = function(e) { e.stopPropagation();
+          if (lightboxImages.length <= 1) { localStorage.removeItem(lightboxDelKey); if (_prodDB) { var t2=_prodDB.transaction('imgs','readwrite'); t2.objectStore('imgs').delete(lightboxDelKey); } _syncCloudUrlsAfterDelete(lightboxDelKey); _cloudFileSave(lightboxDelKey,[]); var c3=document.querySelectorAll('.design-gallery-item')[lightboxDelCardIdx]; if(c3)_refreshDesignCard(c3,lightboxDelCardIdx,lightboxDelKey,[]); lb.remove(); removeArrowButtons(); return; }
+          lightboxImages.splice(lightboxIndex,1); localStorage.setItem(lightboxDelKey,JSON.stringify(lightboxImages)); _prodDBSave(lightboxDelKey,lightboxImages); _syncCloudUrlsAfterDelete(lightboxDelKey); _cloudFileSave(lightboxDelKey,lightboxImages); var c4=document.querySelectorAll('.design-gallery-item')[lightboxDelCardIdx]; if(c4)_refreshDesignCard(c4,lightboxDelCardIdx,lightboxDelKey,lightboxImages); if(lightboxIndex>=lightboxImages.length)lightboxIndex=lightboxImages.length-1; showLightbox();
+        };
+      }
+    } else {
+      var bar2 = lb.querySelector('.doc-lb-bar');
+      if (bar2) bar2.remove();
     }
 
-    var img = document.createElement('img'); img.loading='lazy'; img.decoding='async'; img.src = lightboxImages[lightboxIndex];
-    lb.appendChild(img);
-    lb.addEventListener('click', function(e) { if (e.target === lb) { lb.remove(); removeArrowButtons(); } });
-    document.body.appendChild(lb);
+    var img = lb.querySelector('img');
+    if (!img) {
+      img = document.createElement('img'); img.decoding='async';
+      lb.appendChild(img);
+    }
+    lb.classList.remove('lb-long');
+    lb.classList.remove('lb-tall');
+    img.style.visibility = 'hidden';
+    img.src = lightboxImages[lightboxIndex];
+    img.onload = function() {
+      if (lightboxDelKey && img.naturalWidth && img.naturalHeight) {
+        var ratio = img.naturalHeight / img.naturalWidth;
+        if (ratio > 2) { lb.classList.add('lb-long'); }
+        else if (ratio > 1) { lb.classList.add('lb-tall'); }
+      }
+      img.style.visibility = 'visible';
+    };
 
     if (lightboxImages.length > 1) {
       var prevBtn = document.createElement('button'); prevBtn.className = 'lb-prev'; prevBtn.textContent = '‹';
       var nextBtn = document.createElement('button'); nextBtn.className = 'lb-next'; nextBtn.textContent = '›';
-      var counter = document.createElement('span'); counter.className = 'lb-counter'; counter.textContent = (lightboxIndex+1) + '/' + lightboxImages.length;
       prevBtn.onclick = function(e) { e.stopPropagation(); lightboxIndex = (lightboxIndex - 1 + lightboxImages.length) % lightboxImages.length; showLightbox(); };
       nextBtn.onclick = function(e) { e.stopPropagation(); lightboxIndex = (lightboxIndex + 1) % lightboxImages.length; showLightbox(); };
       document.body.appendChild(prevBtn);
       document.body.appendChild(nextBtn);
-      document.body.appendChild(counter);
     }
   }
 
   function removeArrowButtons() {
-    document.querySelectorAll('.lb-prev, .lb-next, .lb-counter, .lb-del-btn, .doc-lb-del-btn').forEach(function(el) { el.remove(); });
+    document.querySelectorAll('.lb-prev, .lb-next, .lb-counter, .lb-del-btn').forEach(function(el) { el.remove(); });
   }
 
   document.addEventListener('keydown', function(e) {
@@ -2485,7 +2511,7 @@ document.querySelector('.modal-box').classList.add('glass');
 
   var _di=[{p:'百威 ABI',t:'Mobile / TV',im:['images/budweiser-logo.png']},{p:'永辉超市',t:'PC',im:['images/yonghui-logo.png']},{p:'达能水业',t:'Mobile',im:['images/danone-logo.png']},{p:'日本罗森',t:'PC',im:['images/lawson-logo.png']}];
   // Load design images: localStorage first (instant), IndexedDB with timeout fallback
-  function _designLoad(k,cb){var done=false;function resolve(a){if(!done){done=true;cb(a);}}var r=localStorage.getItem(k);if(r){try{var a=JSON.parse(r);if(a.length)return resolve(a);}catch(e){}}_prodDBLoad(k,function(db){if(db&&db.length){resolve(db);return;}_cloudFileLoad(k,function(cd){if(cd){try{localStorage.setItem(k,JSON.stringify(cd));}catch(e){}_prodDBSave(k,cd);resolve(cd);}else{resolve([]);}});});setTimeout(function(){resolve([]);},2000);}
+  function _designLoad(k,cb){var done=false;function resolve(a){if(!done){done=true;cb(a);}}var r=localStorage.getItem(k);if(r){try{var a=JSON.parse(r);a=a.filter(function(x){return typeof x==='string'&&x.indexOf('data:')===0;});if(a.length)return resolve(a);}catch(e){}}_prodDBLoad(k,function(db){if(db&&db.length){db=db.filter(function(x){return typeof x==='string'&&x.indexOf('data:')===0;});resolve(db);return;}_cloudFileLoad(k,function(cd){if(cd){try{localStorage.setItem(k,JSON.stringify(cd));}catch(e){}_prodDBSave(k,cd);resolve(cd);}else{resolve([]);}});});setTimeout(function(){resolve([]);},2000);}
   // Design image upload — canvas compression + progress ring + IndexedDB
   window._du=function(e,idx){var f=e.target.files;if(!f.length)return;var k='design_img_'+idx;
     var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center';
@@ -2494,21 +2520,20 @@ document.querySelector('.modal-box').classList.add('glass');
     rg.appendChild(inn);ov.appendChild(rg);document.body.appendChild(ov);
     function upd(p){inn.textContent=p+'%';rg.style.background='conic-gradient(#10B981 '+p*3.6+'deg,transparent 0deg)';}
     _designLoad(k,function(a){var t=f.length;var dn=0;
-      function finish(){localStorage.setItem(k,JSON.stringify(a));_prodDBSave(k,a);_cloudFileSave(k,a);
-        for(var ci=Math.max(0,a.length-t);ci<a.length;ci++){_uploadToCloud(a[ci],'design',k,'img_'+ci+'.jpg');}
+      function finish(){try{localStorage.setItem(k,JSON.stringify(a));}catch(e){}_prodDBSave(k,a);_cloudFileSave(k,a);
         setTimeout(function(){ov.innerHTML='<div style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:10000;background:rgba(255,255,255,.55);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.4);border-radius:30px;padding:8px 18px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.6);font-size:12px;color:var(--text)"><span style="display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#10B981;color:#fff;font-size:11px;flex-shrink:0">&#10003;</span><span>上传成功，共 <b>'+a.length+'</b> 张</span></div>';},100);
         setTimeout(function(){ov.remove();},2000);
         var c=document.querySelectorAll('.design-gallery-item')[idx];if(c)_refreshDesignCard(c,idx,k,a);
       }
       for(var i=0;i<f.length;i++){(function(file){
-        var img=new Image();img.onload=function(){var cvs=document.createElement('canvas');var mx=2400,w=img.width,h=img.height;if(w>mx){h=h*mx/w;w=mx;}cvs.width=w;cvs.height=h;cvs.getContext('2d').drawImage(img,0,0,w,h);cvs.toBlob(function(blob){var fr=new FileReader();fr.onload=function(ev){a.push(ev.target.result);dn++;upd(Math.round(dn/t*100));if(dn>=t)finish();};fr.readAsDataURL(blob);},'image/jpeg',0.85);};
+        var img=new Image();img.onload=function(){var cvs=document.createElement('canvas');var mx=2400,w=img.width,h=img.height;if(w>mx){h=h*mx/w;w=mx;}cvs.width=w;cvs.height=h;cvs.getContext('2d').drawImage(img,0,0,w,h);var outType=(file.type==='image/png')?'image/png':'image/jpeg';cvs.toBlob(function(blob){var fr=new FileReader();fr.onload=function(ev){a.push(ev.target.result);dn++;upd(Math.round(dn/t*100));if(dn>=t)finish();};fr.readAsDataURL(blob);},outType,0.95);};
         img.onerror=function(){dn++;if(dn>=t)finish();};img.src=URL.createObjectURL(file);
       })(f[i]);}
     });
   };
   // Refresh a single design card after upload/delete
   function _refreshDesignCard(c,idx,k,a){var hu=a&&a.length>0;
-    if(hu){c.style.cursor='pointer';c.onclick=function(ev){ev.stopPropagation();var im=window._designGetImgs(k);if(im.length)openLightbox(im[0],im,k,idx);};}
+    if(hu){c.style.cursor='pointer';c.onclick=function(ev){ev.stopPropagation();if(a.length)openLightbox(a[0],a,k,idx);};}
     else{c.onclick=null;c.style.cursor='default';}
     var bd=c.querySelector('.design-badge');
     if(hu){if(!bd){bd=document.createElement('span');bd.className='design-badge';bd.style.cssText='position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:5;background:rgba(0,0,0,.25);color:#fff;font-size:10px;padding:2px 8px;border-radius:12px;pointer-events:none';c.querySelector('.dg-img-wrap').appendChild(bd);}bd.textContent=a.length+'张';bd.style.display='';}
@@ -2886,7 +2911,7 @@ document.querySelector('.modal-box').classList.add('glass');
   }
 
   // Design modal — async load from IndexedDB, localStorage fallback, then render
-  (function(){var dl=document.querySelector('.design-portfolio-link');if(!dl)return;dl.addEventListener('click',function(e){e.stopPropagation();var designDesc=(function(){try{var v=JSON.parse(localStorage.getItem('_design_desc')||'');return v||'';}catch(e){return'';}})()||'在埃森哲任职期间，先后服务百威、永辉、达能、罗森等国内外客户，负责项目覆盖全终端类型，这段经历积累了跨端设计能力和国际化项目交付经验，也为后续产品转型奠定了从视觉到业务的完整视角。';var th='<h3>代表设计</h3><p class=\"modal-desc\" data-design-desc-key=\"design\">'+designDesc+'</p>';
+  (function(){var dl=document.querySelector('.design-portfolio-link');if(!dl)return;dl.addEventListener('click',function(e){e.stopPropagation();var designDesc=(function(){try{var v=JSON.parse(localStorage.getItem('_design_desc')||'');return v||'';}catch(e){return'';}})()||'在埃森哲任职期间，先后服务百威、永辉、达能、罗森等国内外客户，负责项目覆盖全终端类型，这段经历积累了跨端设计能力和国际化项目交付经验，也为后续产品转型奠定了从视觉到业务的完整视角。';var th='<h3>往期设计</h3><p class=\"modal-desc\" data-design-desc-key=\"design\">'+designDesc+'</p>';
     var results=[];var pending=0;
     function render(){var bh='<div class=\"design-gallery\">';_di.forEach(function(it,idx){var arr=results[idx]||[];var hu=arr.length>0;var cover=it.im[0];bh+='<div class=\"design-gallery-item\"'+(hu?' onclick=\"event.stopPropagation();openLightbox(\x27'+arr[0]+'\x27,\x27'+JSON.stringify(arr).replace(/\"/g,'&quot;')+'\x27,\x27design_img_'+idx+'\x27,'+idx+')\" style=\"cursor:pointer\"':' style=\"cursor:default\"')+'><div class=\"dg-img-wrap\"><img src=\"'+cover+'\" alt=\"'+it.p+'\" loading=\"lazy\" onerror=\"imgFallback(this)\">';if(hu)bh+='<span class=\"design-badge\" style=\"position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:5;background:rgba(0,0,0,.25);color:#fff;font-size:10px;padding:2px 8px;border-radius:12px;pointer-events:none\">'+arr.length+'张</span>';bh+='<div class=\"dg-actions\"><label class=\"dg-act-btn\" title=\"上传\" onclick=\"event.stopPropagation()\"><input type=\"file\" accept=\"image/*\" multiple style=\"display:none\" onchange=\"window._du(event,'+idx+')\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"pointer-events:none\"><line x1=\"12\" y1=\"19\" x2=\"12\" y2=\"5\"/><polyline points=\"5 12 12 5 19 12\"/></svg></label>';if(hu)bh+='<button class=\"dg-act-btn dg-del-btn\" title=\"清除\" onclick=\"event.stopPropagation();window._dd('+idx+')\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><polyline points=\"3 6 5 6 21 6\"/><path d=\"M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2\"/></svg></button>';bh+='</div></div><div class=\"dg-info\"><strong>'+it.p+' · '+it.t+'</strong></div></div>';});bh+='</div>';document.querySelector('.modal-box').classList.add('glass');document.getElementById('modalHeaderContent').innerHTML=th;document.getElementById('modal-body').innerHTML=bh;var modal=document.getElementById('modal');modal.classList.add('on');modal.scrollTop=0;document.body.style.overflow='hidden';}
     var _desGen=++_modalGen;render();_di.forEach(function(it,idx){_designLoad('design_img_'+idx,function(imgs){if(_desGen!==_modalGen)return;results[idx]=imgs;pending++;if(pending>=_di.length&&document.getElementById('modal').classList.contains('on'))render();});});
@@ -3074,7 +3099,7 @@ document.querySelector('.modal-box').classList.add('glass');
     if (!window.DS || !window.DS.isOnline()) return;
 
     // 扫描所有 category，从云端拉文件列表
-    var CATS = ['doc', 'sln', 'design', 'prod'];
+    var CATS = ['doc', 'sln', 'prod'];
     var allTasks = [];
 
     // 1. 先扫描 local key（已有上传记录的）
@@ -3084,7 +3109,6 @@ document.querySelector('.modal-box').classList.add('glass');
       var cat = null;
       if (k.indexOf('docimg_') === 0) cat = 'doc';
       else if (k.indexOf('sln_file_') === 0) cat = 'sln';
-      else if (k.indexOf('design_img_') === 0) cat = 'design';
       else if (k.indexOf('prod_imgs_') === 0) cat = 'prod';
       if (!cat) continue;
       allTasks.push({ key: k, cat: cat });
@@ -3128,10 +3152,6 @@ document.querySelector('.modal-box').classList.add('glass');
             var merged = existing.concat(added);
             try { localStorage.setItem(fkey, JSON.stringify(merged)); } catch(e) {}
             if (fkey.indexOf('docimg_') === 0) window._docImgs[fkey] = merged;
-            if (!sessionStorage.getItem('_files_sync_once')) {
-              sessionStorage.setItem('_files_sync_once', '1');
-              setTimeout(function() { location.reload(); }, 800);
-            }
           }
         });
       }).catch(function() {});

@@ -28,6 +28,14 @@
   window.addEventListener('online', function () { _online = true; });
   window.addEventListener('offline', function () { _online = false; });
 
+  // 清理大文件缓存（base64 图片不缓存到 localStorage，避免配额被占满导致后续上传失败）
+  try {
+    for (var _i = localStorage.length - 1; _i >= 0; _i--) {
+      var _k = localStorage.key(_i);
+      if (_k && _k.indexOf('_sc__files_') === 0) localStorage.removeItem(_k);
+    }
+  } catch (e) { }
+
   /* ---- Supabase REST 帮助函数 ---- */
   function apiURL(path) {
     return SUPABASE_URL + path;
@@ -43,7 +51,7 @@
 
   /* ---- 内容 API（文本数据）---- */
   function saveContent(key, value) {
-    try { localStorage.setItem(CACHE_PREFIX + key, JSON.stringify(value)); } catch (e) { }
+    try { var _s = JSON.stringify(value); if (_s.length < 500000) { localStorage.setItem(CACHE_PREFIX + key, _s); } } catch (e) { }
     if (!_online) return Promise.resolve();
 
     var payload = { key: key, value: value, updated_at: new Date().toISOString() };

@@ -2526,7 +2526,7 @@ document.querySelector('.modal-box').classList.add('glass');
         var c=document.querySelectorAll('.design-gallery-item')[idx];if(c)_refreshDesignCard(c,idx,k,a);
       }
       for(var i=0;i<f.length;i++){(function(file){
-        var img=new Image();img.onload=function(){var cvs=document.createElement('canvas');var mx=2400,w=img.width,h=img.height;if(w>mx){h=h*mx/w;w=mx;}cvs.width=w;cvs.height=h;cvs.getContext('2d').drawImage(img,0,0,w,h);var outType=(file.type==='image/png')?'image/png':'image/jpeg';cvs.toBlob(function(blob){var fr=new FileReader();fr.onload=function(ev){a.push(ev.target.result);dn++;upd(Math.round(dn/t*100));if(dn>=t)finish();};fr.readAsDataURL(blob);},outType,0.95);};
+        var img=new Image();img.onload=function(){var cvs=document.createElement('canvas');var mx=1600,w=img.width,h=img.height;if(w>mx){h=h*mx/w;w=mx;}cvs.width=w;cvs.height=h;cvs.getContext('2d').drawImage(img,0,0,w,h);cvs.toBlob(function(blob){var fr=new FileReader();fr.onload=function(ev){a.push(ev.target.result);dn++;upd(Math.round(dn/t*100));if(dn>=t)finish();};fr.readAsDataURL(blob);},'image/webp',0.9);};
         img.onerror=function(){dn++;if(dn>=t)finish();};img.src=URL.createObjectURL(file);
       })(f[i]);}
     });

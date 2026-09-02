@@ -729,6 +729,7 @@ li[data-product]:hover::before { background:var(--blue); }
 .design-gallery-item:nth-child(2) .dg-img-wrap,
 .design-gallery-item:nth-child(3) .dg-img-wrap,
 .design-gallery-item:nth-child(4) .dg-img-wrap { padding-top:14px; padding-bottom:12px; }
+.design-gallery-item:nth-child(5) .dg-img-wrap { padding:22px 28px 20px; }
 
 .dg-actions {
   position:absolute; top:6px; right:6px; z-index:4;

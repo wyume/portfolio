@@ -1114,6 +1114,9 @@ document.querySelector('.modal-box').classList.add('glass','sln-modal');
         var ratio = img.naturalHeight / img.naturalWidth;
         if (ratio > 2) { lb.classList.add('lb-long'); }
         else if (ratio > 1) { lb.classList.add('lb-tall'); }
+        var capPx = (ratio > 1) ? window.innerWidth * 0.6 : window.innerWidth * 0.86;
+        if (img.naturalWidth < capPx) { img.style.maxWidth = img.naturalWidth + 'px'; }
+        else { img.style.maxWidth = ''; }
       }
       img.style.visibility = 'visible';
     };
@@ -2526,7 +2529,7 @@ document.querySelector('.modal-box').classList.add('glass');
         var c=document.querySelectorAll('.design-gallery-item')[idx];if(c)_refreshDesignCard(c,idx,k,a);
       }
       for(var i=0;i<f.length;i++){(function(file){
-        var img=new Image();img.onload=function(){var cvs=document.createElement('canvas');var mx=1600,w=img.width,h=img.height;if(w>mx){h=h*mx/w;w=mx;}cvs.width=w;cvs.height=h;cvs.getContext('2d').drawImage(img,0,0,w,h);cvs.toBlob(function(blob){var fr=new FileReader();fr.onload=function(ev){a.push(ev.target.result);dn++;upd(Math.round(dn/t*100));if(dn>=t)finish();};fr.readAsDataURL(blob);},'image/webp',0.95);};
+        var img=new Image();img.onload=function(){var cvs=document.createElement('canvas');var mx=1600,w=img.width,h=img.height;if(w>mx){h=h*mx/w;w=mx;}cvs.width=w;cvs.height=h;cvs.getContext('2d').drawImage(img,0,0,w,h);cvs.toBlob(function(blob){var fr=new FileReader();fr.onload=function(ev){a.push(ev.target.result);dn++;upd(Math.round(dn/t*100));if(dn>=t)finish();};fr.readAsDataURL(blob);},'image/webp',1.0);};
         img.onerror=function(){dn++;if(dn>=t)finish();};img.src=URL.createObjectURL(file);
       })(f[i]);}
     });

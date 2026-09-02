@@ -2512,7 +2512,7 @@ document.querySelector('.modal-box').classList.add('glass');
     document.addEventListener('keydown',onEsc);
   }
 
-  var _di=[{p:'百威 ABI',t:'Mobile / TV',im:['images/budweiser-logo.png']},{p:'永辉超市',t:'PC',im:['images/yonghui-logo.png']},{p:'达能水业',t:'Mobile',im:['images/danone-logo.png']},{p:'日本罗森',t:'PC',im:['images/lawson-logo.png']}];
+  var _di=[{p:'百威 ABI',t:'Mobile / TV',im:['images/budweiser-logo.png']},{p:'永辉超市',t:'PC',im:['images/yonghui-logo.png']},{p:'达能水业',t:'Mobile',im:['images/danone-logo.png']},{p:'日本罗森',t:'PC',im:['images/lawson-logo.png']},{p:'美的',t:'TV',im:['images/美的.jpg']}];
   // Load design images: localStorage first (instant), IndexedDB with timeout fallback
   function _designLoad(k,cb){var done=false;function resolve(a){if(!done){done=true;cb(a);}}var r=localStorage.getItem(k);if(r){try{var a=JSON.parse(r);a=a.filter(function(x){return typeof x==='string'&&x.indexOf('data:')===0;});if(a.length)return resolve(a);}catch(e){}}_prodDBLoad(k,function(db){if(db&&db.length){db=db.filter(function(x){return typeof x==='string'&&x.indexOf('data:')===0;});resolve(db);return;}_cloudFileLoad(k,function(cd){if(cd){try{localStorage.setItem(k,'["__IDB__"]');}catch(e){}_prodDBSave(k,cd);resolve(cd);}else{resolve([]);}});});setTimeout(function(){resolve([]);},2000);}
   // Design image upload — canvas compression + progress ring + IndexedDB

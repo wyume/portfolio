@@ -1,5 +1,25 @@
 # Portfolio（改进版）— 作品集项目文档
 
+## 2026-09-02/03 更新日志
+
+### 往期设计（原「代表设计」）卡片与预览完善
+- **新增第 5 个卡片「美的 · TV」（M-Box）**：`_di` 增加 `{p:'M-Box',t:'TV',im:['images/美的.png']}`，logo 为去白底透明 PNG
+- **弹窗 5 列一屏**：`.design-gallery` grid 改 `repeat(5,1fr)`、间距 `24→16px`（含 ≤1024px 的 `!important` 覆盖同步改）
+- **图片压缩改 WebP 无损**：`_du` 压缩 `image/webp` 质量 `0.9→1.0`（无损），最大宽 1600px
+- **预览不放大**：`showLightbox` 的 `img.onload` 里按图片原始宽度设 `max-width`，避免小图在高分屏被放大导致模糊
+- **圆角统一 16px**：横图/竖图/长图统一
+- **logo 大小多次微调**：`.dg-img-wrap` padding 最终 `20px 24px 18px`（2/3/4 张 `24px 18px`），美的单独 `26px 30px 24px`
+- **百威 logo 替换后又恢复**：先换 `百威logo1`（去白底）→ 因不协调恢复旧版 `budweiser-logo.png`
+
+### 文件变更
+| 文件 | 变更 |
+|------|------|
+| `script.js` | `_di` 新增美的卡片；WebP 无损 1.0；预览不放大 |
+| `style.css` | 5 列布局；圆角 16px；logo padding 微调 |
+| `index.html` | `style.css?t=20260901x`、`script.js?v=0901v` |
+| `images/美的.png` | 新增（去白底透明） |
+| `CLAUDE.md` | 更新日志 |
+
 ## 2026-09-01 更新日志
 
 ### 设计图片云同步去重 + 删除同步 + 取消自动刷新
